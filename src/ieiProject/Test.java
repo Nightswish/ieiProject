@@ -33,16 +33,16 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
        
     JPanel mp = new JPanel(new BorderLayout(3, 3));
       
-    ImageIcon home = new ImageIcon("C:\\김찬중\\work\\Ticket\\ticket\\home2.jpg");
-    ImageIcon image1 = new ImageIcon("C:\\김찬중\\work\\Ticket\\ticket\\특별시민.jpg");
-    ImageIcon image2 = new ImageIcon("C:\\김찬중\\work\\Ticket\\ticket\\아빠는딸.jpg");
-    ImageIcon image3 = new ImageIcon("C:\\김찬중\\work\\Ticket\\ticket\\분노의질주.jpg");
-    ImageIcon image4 = new ImageIcon("C:\\김찬중\\work\\Ticket\\ticket\\미녀와야수.jpg");
-    ImageIcon image5 = new ImageIcon("C:\\김찬중\\work\\Ticket\\ticket\\스머프.jpg");
-    ImageIcon image6 = new ImageIcon("C:\\김찬중\\work\\Ticket\\ticket\\스톰 인사이드.jpg");
-    ImageIcon image7 = new ImageIcon("C:\\김찬중\\work\\Ticket\\ticket\\악마는프라다.jpg");
-    ImageIcon image8 = new ImageIcon("C:\\김찬중\\work\\Ticket\\ticket\\8마일.jpg");
-    ImageIcon image9 = new ImageIcon("C:\\김찬중\\work\\Ticket\\ticket\\인카네이트.jpg");
+    ImageIcon home = new ImageIcon("..\\ieiProject\\image\\home2.jpg");
+    ImageIcon image1 = new ImageIcon("..\\ieiProject\\image\\특별시민.jpg");
+    ImageIcon image2 = new ImageIcon("..\\ieiProject\\image\\아빠는딸.jpg");
+    ImageIcon image3 = new ImageIcon("..\\ieiProject\\image\\분노의질주.jpg");
+    ImageIcon image4 = new ImageIcon("..\\ieiProject\\image\\미녀와야수.jpg");
+    ImageIcon image5 = new ImageIcon("..\\ieiProject\\image\\스머프.jpg");
+    ImageIcon image6 = new ImageIcon("..\\ieiProject\\image\\스톰 인사이드.jpg");
+    ImageIcon image7 = new ImageIcon("..\\ieiProject\\image\\악마는프라다.jpg");
+    ImageIcon image8 = new ImageIcon("..\\ieiProject\\image\\8마일.jpg");
+    ImageIcon image9 = new ImageIcon("..\\ieiProject\\image\\인카네이트.jpg");
       
     private JLabel homebt = new JLabel(home);
    
@@ -131,27 +131,27 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
    // 구매자 끼리
     private JPanel BuyerP = new JPanel(new BorderLayout(5,5));
       
-      private Label  Buyerlb = new Label("구매자끼리 티켓매매");
-      private JPanel buyerjp = new JPanel(new BorderLayout(3,3));
-      private JPanel tbuy = new JPanel();
-      private JScrollPane jstbuy = new JScrollPane(tbuy);
-      private JButton tupbt = new JButton("표 올리기");
-      
-      private JPanel t1in = new JPanel(new GridLayout(1,1));
-      private JPanel t1ini = new JPanel(new BorderLayout(3,3));
-      private JPanel t1 = new JPanel();
-      private JLabel t1lb = new JLabel(new ImageIcon("C:\\김찬중\\work\\Ticket\\ticket\\ticket.png"));
-      private JButton tbuybt = new JButton("구 매");
-      private JPanel t2in = new JPanel(new GridLayout(1,1));
-      private JPanel t2ini = new JPanel(new BorderLayout(3,3));
-      private JPanel t2 = new JPanel();
-      private JLabel t2lb = new JLabel(new ImageIcon("C:\\김찬중\\work\\Ticket\\ticket\\ticket.png"));
-      private JButton tbuybt2 = new JButton("구 매");
-      private JPanel t3in = new JPanel(new GridLayout(1,1));
-      private JPanel t3ini = new JPanel(new BorderLayout(3,3));
-      private JPanel t3 = new JPanel();
-      private JLabel t3lb = new JLabel(new ImageIcon("C:\\김찬중\\work\\Ticket\\ticket\\ticket.png"));
-      private JButton tbuybt3 = new JButton("구 매");
+    private Label  Buyerlb = new Label("구매자끼리 티켓매매");
+    private JPanel buyerjp = new JPanel(new BorderLayout(3,3));
+    private JPanel tbuy = new JPanel();
+    private JScrollPane jstbuy = new JScrollPane(tbuy);
+    private JButton tupbt = new JButton("표 올리기");
+    
+    private JPanel t1in = new JPanel(new GridLayout(1,1));
+    private JPanel t1ini = new JPanel(new BorderLayout(3,3));
+    private JPanel t1 = new JPanel();
+    private JLabel t1lb = new JLabel(new ImageIcon("..\\ieiProject\\image\\ticket.png"));
+    private JButton tbuybt = new JButton("구 매");
+    private JPanel t2in = new JPanel(new GridLayout(1,1));
+    private JPanel t2ini = new JPanel(new BorderLayout(3,3));
+    private JPanel t2 = new JPanel();
+    private JLabel t2lb = new JLabel(new ImageIcon("..\\ieiProject\\image\\ticket.png"));
+    private JButton tbuybt2 = new JButton("구 매");
+    private JPanel t3in = new JPanel(new GridLayout(1,1));
+    private JPanel t3ini = new JPanel(new BorderLayout(3,3));
+    private JPanel t3 = new JPanel();
+    private JLabel t3lb = new JLabel(new ImageIcon("..\\ieiProject\\image\\ticket.png"));
+    private JButton tbuybt3 = new JButton("구 매");
 
     
     //예매 버튼 클릭 구성 
@@ -167,7 +167,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
         private JLabel lbPriceDB = new JLabel("50,000");
         private JLabel lbTicketNum = new JLabel("티켓 번호  ");
         private JLabel lbTicketNumDB = new JLabel("201704220000001");
-        private ImageIcon imgPoster = new ImageIcon("C:\\김찬중\\work\\Ticket\\ticket\\poster.jpg"); 
+        private ImageIcon imgPoster = new ImageIcon("..\\ieiProject\\image\\poster.jpg"); 
         //private JLabel imgPosterLb = new JLabel(imgPoster);
         private Image originImg = imgPoster.getImage();
         private Image changedImg = originImg.getScaledInstance(150, 200, Image.SCALE_SMOOTH);
