@@ -7,11 +7,13 @@ import java.util.Vector;
 
 import javax.swing.*;
 import javax.swing.border.*;
+
 public class Test {
    public static void main(String[] ar){
    TotalTicket_sub ex = new TotalTicket_sub();
    }
 }
+
 class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, KeyListener, FocusListener{
     private Container con;
     private BorderLayout bl = new BorderLayout(5, 5);
