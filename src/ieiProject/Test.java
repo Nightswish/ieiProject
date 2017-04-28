@@ -3,6 +3,11 @@ package ieiProject;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Vector;
 
 import javax.swing.*;
@@ -57,7 +62,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
     
     
    //회원가입 다이얼로그
-    private Container joincon;
+   private Container joincon;
    private JDialog joindlg = new JDialog(this, "회원가입", true);
    private JLabel joinidlb = new JLabel("아이디 : ", JLabel.RIGHT);
    private JLabel joinpwlb = new JLabel("비밀번호 : ", JLabel.RIGHT);
@@ -135,23 +140,27 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
     private JPanel buyerjp = new JPanel(new BorderLayout(3,3));
     private JPanel tbuy = new JPanel();
     private JScrollPane jstbuy = new JScrollPane(tbuy);
+    private JPanel buyer_Top_btp = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+    private JPanel buyer_Top_btp1 = new JPanel(new FlowLayout());
+    private JPanel buyer_Top_btp2 = new JPanel(new FlowLayout());
     private JButton tupbt = new JButton("표 올리기");
+    private JButton tbuybt = new JButton("구 매");
     
     private JPanel t1in = new JPanel(new GridLayout(1,1));
     private JPanel t1ini = new JPanel(new BorderLayout(3,3));
     private JPanel t1 = new JPanel();
     private JLabel t1lb = new JLabel(new ImageIcon("..\\ieiProject\\image\\ticket.png"));
-    private JButton tbuybt = new JButton("구 매");
+    private JCheckBox t1check = new JCheckBox();
     private JPanel t2in = new JPanel(new GridLayout(1,1));
     private JPanel t2ini = new JPanel(new BorderLayout(3,3));
     private JPanel t2 = new JPanel();
     private JLabel t2lb = new JLabel(new ImageIcon("..\\ieiProject\\image\\ticket.png"));
-    private JButton tbuybt2 = new JButton("구 매");
+    
     private JPanel t3in = new JPanel(new GridLayout(1,1));
     private JPanel t3ini = new JPanel(new BorderLayout(3,3));
     private JPanel t3 = new JPanel();
     private JLabel t3lb = new JLabel(new ImageIcon("..\\ieiProject\\image\\ticket.png"));
-    private JButton tbuybt3 = new JButton("구 매");
+   
 
     
     //예매 버튼 클릭 구성 
@@ -181,14 +190,14 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
         
         //마이페이지
         
-        private GridBagLayout gridb = new GridBagLayout();
+       private GridBagLayout gridb = new GridBagLayout();
        private GridBagConstraints  constraint  =  new  GridBagConstraints();
-        private JPanel mypagep= new JPanel(new FlowLayout());
-         protected JTabbedPane tPane = new JTabbedPane();
-        protected Panel myP = new Panel();
-        protected Panel edit = new Panel(new BorderLayout());
-        protected Panel pointp = new Panel(new BorderLayout());
-        protected Panel show = new Panel();
+       private JPanel mypagep= new JPanel(new FlowLayout());
+       protected JTabbedPane tPane = new JTabbedPane();
+       protected Panel myP = new Panel();
+       protected Panel edit = new Panel(new BorderLayout());
+       protected Panel pointp = new Panel(new BorderLayout());
+       protected Panel show = new Panel();
         
         
         ///////////////////////////////마이페이지창
@@ -237,6 +246,23 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
         
         private Button check = new Button("확인");
         private Button cancel = new Button("취소");
+	        
+	///////////////////////////////////////수정 완료 다이얼로그
+	private Container updateokcon;
+	private JDialog updateokdlg = new JDialog(this, "수정완료", true);
+	
+	private JLabel updateokidlb = new JLabel("아이디 : ", JLabel.RIGHT);
+	private JLabel updateoktellb = new JLabel("전화번호 : ", JLabel.RIGHT);
+	private JLabel updateokniklb = new JLabel("닉네임 : ", JLabel.RIGHT);
+	private JLabel updateokemaillb = new JLabel("이메일 : ", JLabel.RIGHT);
+	
+	private JLabel updateokidtf = new JLabel("", JLabel.LEFT);
+	private JLabel updateokteltf = new JLabel("", JLabel.LEFT);
+	private JLabel updateokniktf = new JLabel("", JLabel.LEFT);
+	private JLabel updateokemailtf = new JLabel("", JLabel.LEFT);
+	private JButton updateokbt = new JButton("확인");
+
+	
         
         ////////////////////////////////////////포인트창
         private Panel pointP = new Panel(new FlowLayout());
@@ -253,7 +279,104 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
         private Panel chargeP = new Panel(new FlowLayout());
         private Button charge = new Button("포인트 충전");
         
+     // DB 연결
+	 Connection conn;
+	 String url ="jdbc:oracle:thin:@localhost:1521:orcl";
+	 String id = "scott";
+	 String pass = "tiger";
     
+	// DB 회원가입
+			public void joinMember(){
+		 		try{
+		 			Class.forName("oracle.jdbc.driver.OracleDriver");
+					conn = DriverManager.getConnection(url, id, pass);
+					String query = "insert into member values(?,?,?,?,?,?)";
+					PreparedStatement pstmt = conn.prepareStatement(query);
+					pstmt.setString(1, joinidtf.getText().trim());
+					pstmt.setString(2, new String(joinpwtf.getPassword()));
+					pstmt.setString(3, new String(joinpwoktf.getPassword()));
+					pstmt.setString(4, jointeltf.getText().trim());
+					pstmt.setString(5, joinniktf.getText().trim());
+					pstmt.setString(6, joinemailtf.getText().trim());
+					pstmt.executeUpdate();
+					pstmt.close();
+				}catch(ClassNotFoundException eee){
+					
+				}
+		 		catch(SQLException ee){
+					System.err.println("회원 가입 실패!!!");
+				}
+			}
+	
+			//DB 로그인
+			public void loginMember(){
+				try{
+					Class.forName("oracle.jdbc.driver.OracleDriver");
+					conn = DriverManager.getConnection(url, id, pass);
+					String query="select * from member where id=? and pw=?";
+					PreparedStatement pstmt = conn.prepareStatement(query);
+					pstmt.setString(1, loginidtf.getText().trim());
+					pstmt.setString(2, new String(loginpwtf.getPassword()));
+					
+					ResultSet rs = pstmt.executeQuery();
+					if(!rs.next()){
+						loginxdlg.setVisible(true);
+						rs.close();
+						pstmt.close();
+					}else{
+						loginokdlglb1.setText(rs.getString("id"));
+						id2.setText(rs.getString("id"));
+						nname2.setText(rs.getString("nik"));
+						phone2.setText(rs.getString("tel"));
+						email2.setText(rs.getString("email"));
+						eID1.setText(rs.getString("id"));
+						tphone.setText(rs.getString("tel"));
+						tmail.setText(rs.getString("email"));
+						tname.setText(rs.getString("nik"));
+						lb.setText(rs.getString("id") + " 님 ");
+						loginokdlg.setVisible(true);
+						
+						rs.close();
+						pstmt.close();
+					}
+				}catch(ClassNotFoundException eee){
+					
+				}catch(SQLException e){
+					System.err.println("로그인 실패!!!");
+				}
+			}
+			
+			// DB 수정
+			public void updateMember(){
+				try{
+					Class.forName("oracle.jdbc.driver.OracleDriver");
+					conn = DriverManager.getConnection(url, id, pass);
+					String query="update member set tel=?, nik=?, email=? where id=?";
+					PreparedStatement pstmt = conn.prepareStatement(query);
+					pstmt.setString(1, tphone.getText().trim());
+					pstmt.setString(2, tname.getText().trim());
+					pstmt.setString(3, tmail.getText().trim());
+					pstmt.setString(4, id2.getText().trim());
+					updateokidtf.setText(eID1.getText().trim());
+					updateokteltf.setText(tphone.getText().trim());
+					updateokniktf.setText(tname.getText().trim());
+					updateokemailtf.setText(tmail.getText().trim());
+					phone2.setText(tphone.getText().trim());
+					nname2.setText(tname.getText().trim());
+					email2.setText(tmail.getText().trim());
+					
+					pstmt.executeUpdate();
+					pstmt.close();
+				}catch(ClassNotFoundException eee){
+					
+				}catch(SQLException e){
+					System.err.println("수정 실패!!!");
+				}
+				
+			}
+	
+	
+	
     public TotalTicket_sub(){
        super("메인");
         this.init();
@@ -294,6 +417,9 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
        mv7.addMouseListener(this);
        mv8.addMouseListener(this);
        btnCancle.addActionListener(this);
+       check.addActionListener(this);
+       cancel.addActionListener(this);
+       updateokbt.addActionListener(this);
 
          
       }
@@ -307,13 +433,13 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
            
         sp2.add(homebt);
         sp2.add(lb);
-       sp2.add(logoutbt);
+        sp2.add(logoutbt);
         sp2.add(joinbt);
         sp2.add(loginbt);
         sp2.add(mypagebt);
         mypagebt.setVisible(false);
         lb.setVisible(false);
-       logoutbt.setVisible(false);
+        logoutbt.setVisible(false);
         mp.add("East", sp2);
            
            
@@ -498,25 +624,27 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
          
          //구매자 끼리
           tbuy.setLayout(new BoxLayout(tbuy, BoxLayout.Y_AXIS));
-            t1lb.setPreferredSize(new Dimension(300, 60));
-            t2lb.setPreferredSize(new Dimension(300, 60));
-            t3lb.setPreferredSize(new Dimension(300, 60));
+          t1lb.setPreferredSize(new Dimension(300, 60));
+          t2lb.setPreferredSize(new Dimension(300, 60));
+          t3lb.setPreferredSize(new Dimension(300, 60));
             
-            t1ini.add("Center", t1lb); t1ini.add("East",tbuybt);
-            t1in.add(t1ini);
-            t1.add(t1in);
-            t2ini.add("Center", t2lb); t2ini.add("East",tbuybt2);
-            t2in.add(t2ini);
-            t2.add(t2in);
-            t3ini.add("Center", t3lb); t3ini.add("East",tbuybt3);
-            t3in.add(t3ini);
-            t3.add(t3in);
+          t1ini.add("Center", t1lb); 
+          t1in.add(t1ini);
+          t1.add(t1in);
+          t2ini.add("Center", t2lb); 
+          t2in.add(t2ini);
+          t2.add(t2in);
+          t3ini.add("Center", t3lb); 
+          t3in.add(t3ini);
+          t3.add(t3in);
             
-            tbuy.add(t1);tbuy.add(t2);tbuy.add(t3);
+          tbuy.add(t1);tbuy.add(t2);tbuy.add(t3);
             
 
+          buyer_Top_btp1.add(tupbt); buyer_Top_btp2.add(tbuybt);
+          buyer_Top_btp.add(buyer_Top_btp1);buyer_Top_btp.add(buyer_Top_btp2);
             
-            buyerjp.add("North", tupbt);
+            buyerjp.add("North", buyer_Top_btp);
             buyerjp.add("Center", jstbuy);
                   
             BuyerP.add("North", Buyerlb);
@@ -618,12 +746,29 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
                mypagep.add(tPane);
                MainP.add(mypagep);
             
-
-
-        
-        
+            // 수정 완료 다이얼로그
+        updateokcon = updateokdlg.getContentPane();
+        updateokcon.setLayout(new BorderLayout());
+		updateokdlg.setSize(300,150);
+		updateokdlg.setResizable(false);
+		Dimension di7 = updateokdlg.getSize();
+		updateokdlg.setLocation((int)(di.getWidth() / 2 - di7.getWidth() / 2),(int)(di.getHeight() / 2 - di7.getHeight() / 2));
+				
+		JPanel updateokp = new JPanel(new GridLayout(4,2));
+		updateokp.add(updateokidlb); updateokp.add(updateokidtf);
+		updateokp.add(updateoktellb); updateokp.add(updateokteltf);
+		updateokp.add(updateokniklb); updateokp.add(updateokniktf);
+		updateokp.add(updateokemaillb); updateokp.add(updateokemailtf);
+					
+		JPanel updateok = new JPanel(new FlowLayout());
+		updateok.add(updateokp);
+					
+		JPanel updateokbtp = new JPanel(new FlowLayout());
+		updateokbtp.add(updateokbt);
+				
+		updateokcon.add("Center", updateok);
+		updateokcon.add("South", updateokbtp);   
       }
-
 
 
     @Override
@@ -649,7 +794,8 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
                joinxdlg.setVisible(true);
             }
             else{
-               TotalTicket_sub1 sss = new TotalTicket_sub1(a1, b1, c1, d1, e1, f1);
+            	joinMember();
+               /*TotalTicket_sub1 sss = new TotalTicket_sub1(a1, b1, c1, d1, e1, f1);
                vc.addElement(sss);
                File file = new File("C:\\workspace\\data\\info.txt");
                try{
@@ -662,7 +808,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
                   fo.close();
                }catch(Exception ee){
                   System.err.println("Error = " + ee.toString());
-               }
+               }*/
                joinokidtf.setText(joinidtf.getText().trim());
                joinidtf.setText("");
                joinpwtf.setText("");
@@ -706,7 +852,8 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
          } // 로그인
          
          else if(e.getSource() == loginok){ //로그인 다이얼로그의 완료
-            File file = new File("C:\\workspace\\data\\info.txt");
+            loginMember();
+        	/* File file = new File("C:\\workspace\\data\\info.txt");
             try{
                FileInputStream fi = new FileInputStream(file);
                BufferedInputStream bi = new BufferedInputStream(fi);
@@ -736,7 +883,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
                else{
                   loginxdlg.setVisible(true);
                }
-            }
+            }*/
             
          } //로그인 다이얼로그의 완료
          
@@ -767,7 +914,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
             lb.setVisible(true);
             
             
-            File file = new File("C:\\workspace\\data\\info.txt");
+           /* File file = new File("C:\\workspace\\data\\info.txt");
             try{
                FileInputStream fi = new FileInputStream(file);
                BufferedInputStream bi = new BufferedInputStream(fi);
@@ -783,7 +930,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
             for(int i=0;i<vc.size();i++){
                TotalTicket_sub1 imsi = (TotalTicket_sub1)vc.elementAt(i);
                lb.setText(imsi.getId());
-            }
+            }*/
             
             logoutbt.setVisible(true);
             mypagebt.setVisible(true);
@@ -801,9 +948,10 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
             lb.setText(" ");
             lb.setText("");
             logoutbt.setVisible(false);
-            mypagebt.setVisible(false);
-            loginbt.setVisible(true);
-            joinbt.setVisible(true);
+			mypagebt.setVisible(false);
+			loginbt.setVisible(true);
+			joinbt.setVisible(true);
+			mypagep.setVisible(false);
          }// 로그아웃 버튼
        
          else if(e.getSource() == btnCancle){ // 예매 취소버튼
@@ -813,8 +961,25 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
          
          else if(e.getSource()== mypagebt){ // 마이페이지
             tp.setVisible(false);
-           mypagep.setVisible(true);
+            BuyerP.setVisible(false);
+            mypagep.setVisible(true);
          } // 마이페이지
+         else if(e.getSource()==check){ // 마이페이지 수정 확인버튼
+				updateMember();
+				updateokdlg.setVisible(true);
+				
+			} // 마이페이지 수정 확인버튼
+         else if(e.getSource()==cancel){ // 마이페이지 수정 취소버튼
+				tphone.setText(phone2.getText().trim());
+				tname.setText(nname2.getText().trim());
+				tmail.setText(email2.getText().trim());
+				
+			}// 마이페이지 수정 취소버튼
+		 
+         else if(e.getSource()==updateokbt){ // 수정 완료 다이얼로그 확인버튼
+				updateokdlg.setVisible(false);
+				
+			}// 수정 완료 다이얼로그 확인버튼
 
       
     }
