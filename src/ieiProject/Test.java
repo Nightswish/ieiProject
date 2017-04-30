@@ -21,18 +21,36 @@ public class Test {
 
 class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, KeyListener, FocusListener{
     private Container con;
+    //메뉴화면
     private BorderLayout bl = new BorderLayout(5, 5);
     private JButton Buyer_bt = new JButton("구매자끼리");
     private JButton joinbt = new JButton("회원가입");
     private JButton loginbt = new JButton("로그인");
     private JButton mypagebt = new JButton("마이페이지");
     private JPanel MainP = new JPanel(new CardLayout());
+    JPanel sp1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    JPanel sp2 = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     
     private JLabel lb = new JLabel("");
     private JButton logoutbt = new JButton("로그아웃");
-      
-    JPanel sp1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    JPanel sp2 = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+    
+    //검색창
+    JPanel tpmain = new JPanel(new BorderLayout(3, 3));
+    JPanel search = new JPanel(new BorderLayout(3, 3));
+    
+    private TextField searchtf = new TextField();
+    private JButton btsearch = new JButton("검색");
+    
+    //인기순, 날짜순
+    JPanel tklistpn = new JPanel(new GridLayout(2,1,3,3));
+    JPanel tlingi = new JPanel(new BorderLayout(3, 3));
+    JPanel tldate = new JPanel(new BorderLayout(3, 3));
+    JLabel lbingi = new JLabel("이달의 Best Ticket!");
+    JLabel lbdate = new JLabel("날짜순");
+    JList ltingi = new JList();
+    JList ltdate = new JList();
+    
+    //티켓화면
     JPanel tp = new JPanel(new GridLayout(2,4,3,3));
     JScrollPane scroller = new JScrollPane(tp);
        
@@ -382,8 +400,8 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
         this.init();
         this.start();
         this.pack();
-        this.setResizable(false);
-        this.setSize(1080, 650);
+        this.setResizable(true);
+        this.setSize(1080, 820);
         Toolkit tk = Toolkit.getDefaultToolkit();
         Dimension di = tk.getScreenSize();
         Dimension di1 = this.getSize();
@@ -444,60 +462,61 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
            
            
         //메인화면 구성 - 중앙 티켓화면 구성
-        JScrollPane jsp = new JScrollPane(tp);
-        tp.setBorder(new BevelBorder(BevelBorder.RAISED));
+        tpmain.setBorder(new BevelBorder(BevelBorder.RAISED));
+        
+        //검색창(North)
+        search.add("Center", searchtf);
+        search.add("East", btsearch);
+        
+        //인기순, 날짜순(East)
+        tlingi.add("North", lbingi);
+        tlingi.add("Center", ltingi);
+        tklistpn.add(tlingi);
+        tldate.add("North", lbdate);
+        tldate.add("Center", ltdate);
+        tklistpn.add(tldate);
+        
+        //중앙의 티켓화면 구성(Center)
+        JScrollPane jsp = new JScrollPane(tp);		//<<이거 작동 되나요???안되네...되게좀....해주세요 ㅠㅠ
+        //tp.setBorder(new BevelBorder(BevelBorder.RAISED));
            
-        JPanel itp1= new JPanel(new BorderLayout(3,3));
         mv1.setVerticalTextPosition(SwingConstants.BOTTOM);
         mv1.setHorizontalTextPosition(SwingConstants.CENTER);
-        itp1.add(mv1);
-        tp.add(itp1);
+        tp.add(mv1);
 
-        JPanel itp2= new JPanel(new BorderLayout(3,3));
         mv2.setVerticalTextPosition(SwingConstants.BOTTOM);
         mv2.setHorizontalTextPosition(SwingConstants.CENTER);
-        itp2.add(mv2);
-        tp.add(itp2);
+        tp.add(mv2);
            
-        JPanel itp3= new JPanel(new BorderLayout(3,3));
         mv3.setVerticalTextPosition(JLabel.BOTTOM);
         mv3.setHorizontalTextPosition(JLabel.CENTER);
-        itp3.add(mv3);
-         tp.add(itp3);
+         tp.add(mv3);
            
-        JPanel itp4= new JPanel(new BorderLayout(3,3));
         mv4.setVerticalTextPosition(JLabel.BOTTOM);
         mv4.setHorizontalTextPosition(JLabel.CENTER);
-        itp4.add(mv4);
-        tp.add(itp4);
+        tp.add(mv4);
            
-        JPanel itp5= new JPanel(new BorderLayout(3,3));
         mv5.setVerticalTextPosition(JLabel.BOTTOM);
         mv5.setHorizontalTextPosition(JLabel.CENTER);
-        itp5.add(mv5);
-        tp.add(itp5);
+        tp.add(mv5);
            
-        JPanel itp6= new JPanel(new BorderLayout(3,3));
         mv6.setVerticalTextPosition(JLabel.BOTTOM);
         mv6.setHorizontalTextPosition(JLabel.CENTER);
-        itp6.add(mv6);
-        tp.add(itp6);
+        tp.add(mv6);
            
-        JPanel itp7= new JPanel(new BorderLayout(3,3));
         mv7.setVerticalTextPosition(JLabel.BOTTOM);
         mv7.setHorizontalTextPosition(JLabel.CENTER);
-        itp7.add(mv7);
-        tp.add(itp7);
+        tp.add(mv7);
            
-        JPanel itp8= new JPanel(new BorderLayout(3,3));
         mv8.setVerticalTextPosition(JLabel.BOTTOM);
         mv8.setHorizontalTextPosition(JLabel.CENTER);
-        itp8.add(mv8);
-        tp.add(itp8);
+        tp.add(mv8);
         
-           
+        tpmain.add("East", tklistpn);
+        tpmain.add("North", search);
+        tpmain.add("Center", tp);   
         con.add("North", mp);
-        con.add("Center",tp);
+        con.add("Center",tpmain);
         
       //회원가입 다이얼로그 구성
          joincon = joindlg.getContentPane();
