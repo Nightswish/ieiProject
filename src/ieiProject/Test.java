@@ -35,14 +35,15 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
     private JButton logoutbt = new JButton("로그아웃");
     
     //검색창
+    Choice ch1 = new Choice();
     JPanel tpmain = new JPanel(new BorderLayout(3, 3));
-    JPanel search = new JPanel(new BorderLayout(3, 3));
+    JPanel search = new JPanel(new FlowLayout(FlowLayout.LEFT));
     
-    private TextField searchtf = new TextField();
+    private TextField searchtf = new TextField("티켓 이름 또는 날짜 입력", 80);
     private JButton btsearch = new JButton("검색");
     
     //인기순, 날짜순
-    JPanel tklistpn = new JPanel(new GridLayout(2,1,3,3));
+    JPanel tklistpn = new JPanel(new GridLayout(2,1,5,5));
     JPanel tlingi = new JPanel(new BorderLayout(3, 3));
     JPanel tldate = new JPanel(new BorderLayout(3, 3));
     JLabel lbingi = new JLabel("이달의 Best Ticket!");
@@ -465,6 +466,10 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
         tpmain.setBorder(new BevelBorder(BevelBorder.RAISED));
         
         //검색창(North)
+		ch1.add("----------");
+		ch1.add("티켓이름");
+		ch1.add("공연날짜");
+		search.add("West", ch1);
         search.add("Center", searchtf);
         search.add("East", btsearch);
         
@@ -477,7 +482,6 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
         tklistpn.add(tldate);
         
         //중앙의 티켓화면 구성(Center)
-        JScrollPane jsp = new JScrollPane(tp);		//<<이거 작동 되나요???안되네...되게좀....해주세요 ㅠㅠ
         //tp.setBorder(new BevelBorder(BevelBorder.RAISED));
            
         mv1.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -669,7 +673,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
             BuyerP.add("North", Buyerlb);
             BuyerP.add("Center", buyerjp);
             
-            MainP.add(tp); MainP.add(BuyerP); 
+            MainP.add(tpmain); MainP.add(BuyerP); 
             
             con.add("North", mp); //메인
             con.add("Center",MainP);
@@ -793,7 +797,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
     @Override
     public void actionPerformed(ActionEvent e) {
        if(e.getSource() == Buyer_bt){ // 구매자 끼리
-            tp.setVisible(false);
+            tpmain.setVisible(false);
            BuyerP.setVisible(true);
          }// 구매자 끼리
        
@@ -979,7 +983,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
        
          
          else if(e.getSource()== mypagebt){ // 마이페이지
-            tp.setVisible(false);
+            tpmain.setVisible(false);
             BuyerP.setVisible(false);
             mypagep.setVisible(true);
          } // 마이페이지
@@ -1016,7 +1020,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
     @Override
     public void mouseReleased(MouseEvent e) {
        if(e.getSource()== homebt){ // 홈버튼
-            tp.setVisible(true);
+            tpmain.setVisible(true);
             BuyerP.setVisible(false);
             mypagep.setVisible(false);
          } // 홈버튼
