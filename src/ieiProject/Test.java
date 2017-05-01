@@ -168,7 +168,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
     private JPanel t1ini = new JPanel(new BorderLayout(3,3));
     private JPanel t1 = new JPanel();
     private JLabel t1lb = new JLabel(new ImageIcon("..\\ieiProject\\image\\ticket.png"));
-    private JCheckBox t1check = new JCheckBox();
+    
     private JPanel t2in = new JPanel(new GridLayout(1,1));
     private JPanel t2ini = new JPanel(new BorderLayout(3,3));
     private JPanel t2 = new JPanel();
