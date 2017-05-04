@@ -297,7 +297,42 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
         
         private Panel chargeP = new Panel(new FlowLayout());
         private Button charge = new Button("포인트 충전");
+ //////////////////////////////////////공연내역창
         
+        //private BoxLayout box = new BoxLayout();
+        
+       // private JScrollPane showfpsc = new JScrollPane(show);
+       
+      private JPanel showtkp = new JPanel();
+      private JPanel t1in1 = new JPanel(new GridLayout(1,1));// 
+       private JPanel t1ini1 = new JPanel(new BorderLayout(3,3));//
+       private JPanel t11 = new JPanel();
+       private Checkbox cancelcb = new Checkbox();
+       private JLabel t1lb1 = new JLabel(new ImageIcon("C:\\Users\\Public\\Pictures\\Sample Pictures\\desert.jpg"));
+       private JButton tbuybt1 = new JButton("상세보기1");
+       
+       private JPanel t2in1 = new JPanel(new GridLayout(1,1));// 
+       private JPanel t2ini1 = new JPanel(new BorderLayout(3,3));//
+       private JPanel t21 = new JPanel();
+       private Checkbox cancelcb2 = new Checkbox();
+       private JLabel t2lb1 = new JLabel(new ImageIcon("C:\\Users\\Public\\Pictures\\Sample Pictures\\desert.jpg"));
+       private JButton tbuybt21 = new JButton("상세보기2");
+       
+       private JPanel t3in1 = new JPanel(new GridLayout(1,1));// 
+       private JPanel t3ini1 = new JPanel(new BorderLayout(3,3));//
+       private JPanel t31 = new JPanel();
+       private Checkbox cancelcb3 = new Checkbox();
+       private JLabel t3lb1 = new JLabel(new ImageIcon("C:\\Users\\Public\\Pictures\\Sample Pictures\\desert.jpg"));
+       private JButton tbuybt31 = new JButton("상세보기3");
+        
+      private Button canceltk = new Button("예매취소");
+      ///////////////////예ㅐ매취소 다이아로그
+      private JDialog canceldlg = new JDialog(this,"예매취소",true);
+      private Panel realcancelp = new Panel(new BorderLayout());
+      private Label realcancel = new Label("예약을 취소하시겠습니까?");
+      private Panel canceldlgp = new Panel(new FlowLayout());
+      private Button cancelokbt = new Button("확인");
+      private Button cancelnobt = new Button("취소");
      // DB 연결
 	 Connection conn;
 	 String url ="jdbc:oracle:thin:@localhost:1521:orcl";
