@@ -216,7 +216,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
        protected Panel myP = new Panel();
        protected Panel edit = new Panel(new BorderLayout());
        protected Panel pointp = new Panel(new BorderLayout());
-       protected Panel show = new Panel();
+       protected Panel show = new Panel(new BorderLayout());
         
         
         ///////////////////////////////마이페이지창
@@ -297,6 +297,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
         
         private Panel chargeP = new Panel(new FlowLayout());
         private Button charge = new Button("포인트 충전");
+        
  //////////////////////////////////////공연내역창
         
         //private BoxLayout box = new BoxLayout();
@@ -475,7 +476,10 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
        cancel.addActionListener(this);
        updateokbt.addActionListener(this);
 
-         
+       //공연내역 취소버튼
+       canceltk.addActionListener(this);
+       cancelokbt.addActionListener(this);
+       cancelnobt.addActionListener(this);
       }
     
     private void init() {
@@ -800,6 +804,40 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
                p4.add(p4_1);p4.add(p4_2);p4.add(p4_3);p4.add(p4_4);p4.add(p4_5);
                p5.add("West",p4);
                
+               
+/////////////////////////////////공연내역
+
+showtkp.setLayout(new BoxLayout(showtkp, BoxLayout.Y_AXIS));
+t1lb1.setPreferredSize(new Dimension(300, 60));
+t1ini1.add("West", cancelcb);t1ini1.add("Center", t1lb1); t1ini1.add("East",tbuybt1);
+t1in1.add(t1ini1);
+t11.add(t1in1);
+
+
+t2lb1.setPreferredSize(new Dimension(300, 60));
+t2ini1.add("West", cancelcb2);t2ini1.add("Center", t2lb1); t2ini1.add("East",tbuybt21);
+t2in1.add(t2ini1);
+t21.add(t2in1);
+
+t3lb1.setPreferredSize(new Dimension(300, 60));              
+t3ini1.add("West", cancelcb3);t3ini1.add("Center", t3lb1); t3ini1.add("East",tbuybt31);
+t3in1.add(t3ini1);
+t31.add(t3in1);
+
+showtkp.add(t11); showtkp.add(t21); showtkp.add(t31);
+show.add("North", canceltk);
+show.add("Center", showtkp);
+////////////////////////////////////예매취소다이어로그
+
+canceldlgp.add(cancelokbt);
+canceldlgp.add(cancelnobt);
+
+realcancelp.add("North", realcancel);
+realcancelp.add("Center", canceldlgp);
+canceldlg.add(realcancelp);
+
+///////////////////////////////////////////////////
+               
                myP.add("Center",p5);
                mypagep.add(tPane);
                MainP.add(mypagep);
@@ -1039,8 +1077,32 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 				
 			}// 수정 완료 다이얼로그 확인버튼
 
-      
-    }
+       /////////////////////////////////////////////////////공연내역 예매취소
+
+         else if(e.getSource()==canceltk){
+        	   if(cancelcb.getState()==true){
+        	   canceldlg.setSize(200,200);
+        	   canceldlg.setVisible(true);}
+        	  }else if(e.getSource()==cancelokbt){
+        	   if(cancelcb.getState()==true){
+        	    t11.setVisible(false);
+        	    canceldlg.setVisible(false);
+        	   }
+        	   if(cancelcb2.getState()==true){
+        	    t21.setVisible(false);
+        	    canceldlg.setVisible(false);
+        	   }
+        	   if(cancelcb3.getState()==true){
+        	    t31.setVisible(false);
+        	    canceldlg.setVisible(false);
+        	   }
+        	  }
+        	  else if(e.getSource()==cancelnobt){
+        	   canceldlg.setVisible(false);
+        	  }
+       }
+  
+   
 
     @Override
     public void mouseClicked(MouseEvent e) {
