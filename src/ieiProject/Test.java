@@ -1513,7 +1513,9 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	@Override
 	public void focusGained(FocusEvent e) {
 		// TODO Auto-generated method stub
-
+		if(e.getSource() ==searchtf){
+			searchtf.setText("");
+		}
 	}
 
 	@Override
@@ -1541,7 +1543,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	}
 }
 
-class TotalTicket_sub1 implements Serializable {
+/*class TotalTicket_sub1 implements Serializable {
 	private String id;
 	private String pw;
 	private String pwok;
@@ -1605,4 +1607,4 @@ class TotalTicket_sub1 implements Serializable {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-}
+}*/
