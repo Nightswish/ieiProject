@@ -766,18 +766,18 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
             //마이페이지
             tPane.setPreferredSize(new Dimension(1000, 550));
             tPane.add("마이페이지",myP); 
-               tPane.add("수정", edit);
-               tPane.add("포인트", pointp);
-               tPane.add("공연내역", show);
-               tPane.setTabPlacement(JTabbedPane.LEFT); 
+            tPane.add("수정", edit);
+            tPane.add("포인트", pointp);
+            tPane.add("공연내역", show);
+            tPane.setTabPlacement(JTabbedPane.LEFT); 
                
-               p2_1.add(eID);p2_1.add(eID1);
-               p2_2.add(ephone);p2_2.add(tphone);
-               p2_3.add(ename);p2_3.add(tname);
-               p2_4.add(eemail);p2_4.add(tmail);
-               p2_5.add(elevel);p2_5.add(elevel1);
-               p2_6.add(check);p2_6.add(cancel);
-                
+            p2_1.add(eID);p2_1.add(eID1);
+            p2_2.add(ephone);p2_2.add(tphone);
+            p2_3.add(ename);p2_3.add(tname);
+            p2_4.add(eemail);p2_4.add(tmail);
+            p2_5.add(elevel);p2_5.add(elevel1);
+            p2_6.add(check);p2_6.add(cancel);
+               
                p22.add(p2_1);p22.add(p2_2);p22.add(p2_3);p22.add(p2_4);p22.add(p2_5);
                p22_2.add(p22);
                p2_6_2.add(p2_6);
