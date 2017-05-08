@@ -1,58 +1,12 @@
 package ieiProject;
 
-import java.awt.BorderLayout;
-import java.awt.Button;
-import java.awt.CardLayout;
-import java.awt.Checkbox;
-import java.awt.Choice;
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.Label;
-import java.awt.Panel;
-import java.awt.TextField;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.io.Serializable;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import java.sql.*;
 import java.util.Vector;
-
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.SoftBevelBorder;
-import javax.swing.border.TitledBorder;
-
-//소스수정 170508_01
+import javax.swing.*;
+import javax.swing.border.*;
 
 public class Test {
 	public static void main(String[] ar) {
@@ -226,42 +180,17 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	private JLabel lbNameDB = new JLabel("윤한 투어 콘서트");
 	private JLabel lbLoc = new JLabel("공연 장소  ");
 	private JLabel lbLocDB = new JLabel("kucca 경복궁점");
-<<<<<<< HEAD
-
-	private JLabel lbSeat = new JLabel("좌석 번호  ");
-	private JLabel lbSeatDB = new JLabel("A005");
-
-=======
-	private JLabel lbSeat = new JLabel("좌석 번호  ");
-	private JLabel lbSeatDB = new JLabel("A005");
->>>>>>> yumi
 	private JLabel lbPrice = new JLabel("가격  ");
 	private JLabel lbPriceDB = new JLabel("50,000");
 	private JLabel lbTicketNum = new JLabel("티켓 번호  ");
 	private JLabel lbTicketNumDB = new JLabel("201704220000001");
-<<<<<<< HEAD
-
-	//private ImageIcon imgPoster = new ImageIcon("/Users/youmeelee/Desktop/poster.jpg"); //맥용
-
-	private ImageIcon imgPoster = new ImageIcon("..\\ieiProject\\image\\poster.jpg"); //윈도우용
-	// private JLabel imgPosterLb = new JLabel(imgPoster);
-
-=======
-	// private ImageIcon imgPoster = new
-	// ImageIcon("/Users/youmeelee/Desktop/poster.jpg");
-	private ImageIcon imgPoster = new ImageIcon("..\\ieiProject\\image\\poster.jpg");
-	// private JLabel imgPosterLb = new JLabel(imgPoster);
->>>>>>> yumi
+	private ImageIcon imgPoster = new ImageIcon("/Users/youmeelee/Desktop/poster.jpg");
 	private Image originImg = imgPoster.getImage();
 	private Image changedImg = originImg.getScaledInstance(150, 200, Image.SCALE_SMOOTH);
 	private ImageIcon poster = new ImageIcon(changedImg);
 	private JLabel imgPosterLb = new JLabel(poster);
-<<<<<<< HEAD
-
-=======
->>>>>>> yumi
 	private JButton btnSeatSelect = new JButton("좌석 선택");
-	private JButton btnCanCle = new JButton("취소");
+	private JButton btnCancle = new JButton("취소");
 	private JLabel lbSelectPerson = new JLabel("인원수 선택");
 
 	String cntPerson[] = { "1", "2", "3", "4", "5" };
@@ -295,20 +224,6 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	private JButton btnPayDlgCancle = new JButton("취소");
 
 	// 마이페이지
-<<<<<<< HEAD
-
-	private JButton btnPay = new JButton("결제");
-	private JButton btnCancle = new JButton("취소");
-
-	// 마이페이지
-
-
-=======
-//	private JButton btnPay = new JButton("결제");
-//	private JButton btnCancle = new JButton("취소");
-
-	// 마이페이지
->>>>>>> yumi
 	private GridBagLayout gridb = new GridBagLayout();
 	private GridBagConstraints constraint = new GridBagConstraints();
 	private JPanel mypagep = new JPanel(new FlowLayout());
@@ -420,15 +335,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	private JButton tbuybt31 = new JButton("상세보기3");
 
 	private Button canceltk = new Button("예매취소");
-<<<<<<< HEAD
-
 	/////////////////// 예매취소 다이아로그
-
-	/////////////////// 예ㅐ매취소 다이아로그
-
-=======
-	/////////////////// 예매취소 다이아로그
->>>>>>> yumi
 	private JDialog canceldlg = new JDialog(this, "예매취소", true);
 	private Panel realcancelp = new Panel(new BorderLayout());
 	private Label realcancel = new Label("예약을 취소하시겠습니까?");
@@ -494,10 +401,6 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 
 				rs.close();
 				pstmt.close();
-<<<<<<< HEAD
-
-=======
->>>>>>> yumi
 			}
 		} catch (ClassNotFoundException eee) {
 
@@ -1154,408 +1057,6 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 
 		payCon.add("North", pl12);
 		payCon.add("Center", pl13);
-<<<<<<< HEAD
-
-			}
-		} catch(ClassNotFoundException eee) {
-
-		} catch(SQLException e) {
-			System.err.println("로그인 실패!!!");
-		}
-=======
-	}catch(
-
-	ClassNotFoundException eee){} 
-	catch(SQLException e){System.err.println("로그인 실패!!!");}
-
->>>>>>> yumi
-	}
-
-	// DB 수정
-	public void updateMember() {
-		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			conn = DriverManager.getConnection(url, id, pass);
-			String query = "update member set tel=?, nik=?, email=? where id=?";
-			PreparedStatement pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, tphone.getText().trim());
-			pstmt.setString(2, tname.getText().trim());
-			pstmt.setString(3, tmail.getText().trim());
-			pstmt.setString(4, id2.getText().trim());
-			updateokidtf.setText(eID1.getText().trim());
-			updateokteltf.setText(tphone.getText().trim());
-			updateokniktf.setText(tname.getText().trim());
-			updateokemailtf.setText(tmail.getText().trim());
-			phone2.setText(tphone.getText().trim());
-			nname2.setText(tname.getText().trim());
-			email2.setText(tmail.getText().trim());
-
-			pstmt.executeUpdate();
-			pstmt.close();
-		} catch (ClassNotFoundException eee) {
-
-		} catch (SQLException e) {
-			System.err.println("수정 실패!!!");
-		}
-
-	}
-
-	public TotalTicket_sub() {
-		super("메인");
-		this.init();
-		this.start();
-		this.pack();
-		this.setResizable(true);
-		this.setSize(1080, 820);
-		Toolkit tk = Toolkit.getDefaultToolkit();
-		Dimension di = tk.getScreenSize();
-		Dimension di1 = this.getSize();
-		this.setLocation((int) (di.getWidth() / 2 - di1.getWidth() / 2),
-				(int) (di.getHeight() / 2 - di1.getHeight() / 2));
-		this.setVisible(true);
-	}
-
-	private void start() {
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		Buyer_bt.addActionListener(this);
-		joinbt.addActionListener(this);
-		loginbt.addActionListener(this);
-		mypagebt.addActionListener(this);
-		homebt.addMouseListener(this);
-		joinok.addActionListener(this);
-		joinx.addActionListener(this);
-		loginok.addActionListener(this);
-		loginx.addActionListener(this);
-		joinokbt.addActionListener(this);
-		joinxbt.addActionListener(this);
-		loginokdlgbt.addActionListener(this);
-		loginxdlgbt.addActionListener(this);
-		logoutbt.addActionListener(this);
-		mv1.addMouseListener(this);
-		mv2.addMouseListener(this);
-		mv3.addMouseListener(this);
-		mv4.addMouseListener(this);
-		mv5.addMouseListener(this);
-		mv6.addMouseListener(this);
-		mv7.addMouseListener(this);
-		mv8.addMouseListener(this);
-		btnCancle2.addActionListener(this);
-		check.addActionListener(this);
-		cancel.addActionListener(this);
-		updateokbt.addActionListener(this);
-
-		// 공연내역 취소버튼
-		canceltk.addActionListener(this);
-		cancelokbt.addActionListener(this);
-		cancelnobt.addActionListener(this);
-	}
-
-	private void init() {
-		// 메인화면 구성 - 상단 메뉴바
-		con = this.getContentPane();
-		con.setLayout(bl);
-		sp1.add(Buyer_bt);
-		mp.add("West", sp1);
-
-		sp2.add(homebt);
-		sp2.add(lb);
-		sp2.add(logoutbt);
-		sp2.add(joinbt);
-		sp2.add(loginbt);
-		sp2.add(mypagebt);
-		mypagebt.setVisible(false);
-		lb.setVisible(false);
-		logoutbt.setVisible(false);
-		mp.add("East", sp2);
-
-		// 메인화면 구성 - 중앙 티켓화면 구성
-		tpmain.setBorder(new BevelBorder(BevelBorder.RAISED));
-
-		// 검색창(North)
-		ch1.add("----------");
-		ch1.add("티켓이름");
-		ch1.add("공연날짜");
-		search.add("West", ch1);
-		search.add("Center", searchtf);
-		search.add("East", btsearch);
-
-		// 인기순, 날짜순(East)
-		tlingi.add("North", lbingi);
-		tlingi.add("Center", ltingi);
-		tklistpn.add(tlingi);
-		tldate.add("North", lbdate);
-		tldate.add("Center", ltdate);
-		tklistpn.add(tldate);
-
-		// 중앙의 티켓화면 구성(Center)
-		// tp.setBorder(new BevelBorder(BevelBorder.RAISED));
-
-		mv1.setVerticalTextPosition(SwingConstants.BOTTOM);
-		mv1.setHorizontalTextPosition(SwingConstants.CENTER);
-		tp.add(mv1);
-
-		mv2.setVerticalTextPosition(SwingConstants.BOTTOM);
-		mv2.setHorizontalTextPosition(SwingConstants.CENTER);
-		tp.add(mv2);
-
-		mv3.setVerticalTextPosition(JLabel.BOTTOM);
-		mv3.setHorizontalTextPosition(JLabel.CENTER);
-		tp.add(mv3);
-
-		mv4.setVerticalTextPosition(JLabel.BOTTOM);
-		mv4.setHorizontalTextPosition(JLabel.CENTER);
-		tp.add(mv4);
-
-		mv5.setVerticalTextPosition(JLabel.BOTTOM);
-		mv5.setHorizontalTextPosition(JLabel.CENTER);
-		tp.add(mv5);
-
-		mv6.setVerticalTextPosition(JLabel.BOTTOM);
-		mv6.setHorizontalTextPosition(JLabel.CENTER);
-		tp.add(mv6);
-
-		mv7.setVerticalTextPosition(JLabel.BOTTOM);
-		mv7.setHorizontalTextPosition(JLabel.CENTER);
-		tp.add(mv7);
-
-		mv8.setVerticalTextPosition(JLabel.BOTTOM);
-		mv8.setHorizontalTextPosition(JLabel.CENTER);
-		tp.add(mv8);
-
-		tpmain.add("East", tklistpn);
-		tpmain.add("North", search);
-		tpmain.add("Center", tp);
-		con.add("North", mp);
-		con.add("Center", tpmain);
-
-		// 회원가입 다이얼로그 구성
-		joincon = joindlg.getContentPane();
-		joincon.setLayout(new BorderLayout());
-		joindlg.setSize(300, 220);
-		joindlg.setResizable(false);
-		Toolkit tk = Toolkit.getDefaultToolkit();
-		Dimension di = tk.getScreenSize();
-		Dimension di1 = joindlg.getSize();
-		joindlg.setLocation((int) (di.getWidth() / 2 - di1.getWidth() / 2),
-				(int) (di.getHeight() / 2 - di1.getHeight() / 2));
-
-		JPanel joinp = new JPanel(new GridLayout(6, 2));
-		joinp.add(joinidlb);
-		joinp.add(joinidtf);
-		joinp.add(joinpwlb);
-		joinp.add(joinpwtf);
-		joinp.add(joinpwoklb);
-		joinp.add(joinpwoktf);
-		joinp.add(jointellb);
-		joinp.add(jointeltf);
-		joinp.add(joinniklb);
-		joinp.add(joinniktf);
-		joinp.add(joinemaillb);
-		joinp.add(joinemailtf);
-
-		JPanel join = new JPanel(new FlowLayout());
-		join.add(joinp);
-
-		JPanel joinbtp = new JPanel(new FlowLayout());
-		joinbtp.add(joinok);
-		joinbtp.add(joinx);
-
-		joincon.add("Center", join);
-		joincon.add("South", joinbtp);
-
-		// 회원가입 완료 다이얼로그 구성
-		joinokcon = joinokdlg.getContentPane();
-		joinokcon.setLayout(new BorderLayout());
-		joinokdlg.setSize(300, 150);
-		joinokdlg.setResizable(false);
-		Dimension di3 = joinokdlg.getSize();
-		joinokdlg.setLocation((int) (di.getWidth() / 2 - di3.getWidth() / 2),
-				(int) (di.getHeight() / 2 - di3.getHeight() / 2));
-
-		JPanel joinokp = new JPanel(new GridLayout(4, 2));
-		joinokp.add(joinokidlb);
-		joinokp.add(joinokidtf);
-		joinokp.add(joinoktellb);
-		joinokp.add(joinokteltf);
-		joinokp.add(joinokniklb);
-		joinokp.add(joinokniktf);
-		joinokp.add(joinokemaillb);
-		joinokp.add(joinokemailtf);
-
-		JPanel joinok = new JPanel(new FlowLayout());
-		joinok.add(joinokp);
-
-		JPanel joinokbtp = new JPanel(new FlowLayout());
-		joinokbtp.add(joinokbt);
-
-		joinokcon.add("Center", joinok);
-		joinokcon.add("South", joinokbtp);
-
-		// 회원가입 실패 다이얼로그 구성
-		joinxcon = joinxdlg.getContentPane();
-		joinxcon.setLayout(new BorderLayout());
-		joinxdlg.setSize(230, 100);
-		joinxdlg.setResizable(false);
-		Dimension di4 = joinxdlg.getSize();
-		joinxdlg.setLocation((int) (di.getWidth() / 2 - di4.getWidth() / 2),
-				(int) (di.getHeight() / 2 - di4.getHeight() / 2));
-
-		JPanel joinxlbp = new JPanel(new FlowLayout());
-		joinxlbp.add(joinxlb);
-
-		JPanel joinxbtp = new JPanel(new FlowLayout());
-		joinxbtp.add(joinxbt);
-
-		joinxcon.add("Center", joinxlbp);
-		joinxcon.add("South", joinxbtp);
-
-		// 로그인 다이얼로그 구성
-		logincon = logindlg.getContentPane();
-		logincon.setLayout(new BorderLayout());
-		logindlg.setSize(300, 120);
-		logindlg.setResizable(false);
-		Dimension di2 = logindlg.getSize();
-		logindlg.setLocation((int) (di.getWidth() / 2 - di2.getWidth() / 2),
-				(int) (di.getHeight() / 2 - di2.getHeight() / 2));
-
-		JPanel loginp = new JPanel(new GridLayout(2, 2));
-		loginp.add(loginidlb);
-		loginp.add(loginidtf);
-		loginp.add(loginpwlb);
-		loginp.add(loginpwtf);
-
-		JPanel login = new JPanel(new FlowLayout());
-		login.add(loginp);
-
-		JPanel loginbtp = new JPanel(new FlowLayout());
-		loginbtp.add(loginok);
-		loginbtp.add(loginx);
-
-		logincon.add("Center", login);
-		logincon.add("South", loginbtp);
-
-		// 로그인 완료 다이얼로그 구성
-		loginokcon = loginokdlg.getContentPane();
-		loginokcon.setLayout(new BorderLayout());
-		loginokdlg.setSize(300, 100);
-		loginokdlg.setResizable(false);
-		Dimension di6 = loginokdlg.getSize();
-		loginokdlg.setLocation((int) (di.getWidth() / 2 - di6.getWidth() / 2),
-				(int) (di.getHeight() / 2 - di6.getHeight() / 2));
-
-		JPanel loginokp = new JPanel(new FlowLayout());
-		loginokp.add(loginokdlglb1);
-		loginokp.add(loginokdlglb2);
-
-		JPanel loginokbtp = new JPanel(new FlowLayout());
-		loginokbtp.add(loginokdlgbt);
-
-		loginokcon.add("Center", loginokp);
-		loginokcon.add("South", loginokbtp);
-
-		// 로그인 실패 다이얼로그 구성
-		loginxcon = loginxdlg.getContentPane();
-		loginxcon.setLayout(new BorderLayout());
-		loginxdlg.setSize(300, 100);
-		loginxdlg.setResizable(false);
-		Dimension di5 = loginxdlg.getSize();
-		loginxdlg.setLocation((int) (di.getWidth() / 2 - di5.getWidth() / 2),
-				(int) (di.getHeight() / 2 - di5.getHeight() / 2));
-
-		JPanel loginxp = new JPanel(new FlowLayout());
-		loginxp.add(loginxdlglb);
-
-		JPanel loginxbtp = new JPanel(new FlowLayout());
-		loginxbtp.add(loginxdlgbt);
-
-		loginxcon.add("Center", loginxp);
-		loginxcon.add("South", loginxbtp);
-
-		// 구매자 끼리
-		tbuy.setLayout(new BoxLayout(tbuy, BoxLayout.Y_AXIS));
-		t1lb.setPreferredSize(new Dimension(300, 60));
-		t2lb.setPreferredSize(new Dimension(300, 60));
-		t3lb.setPreferredSize(new Dimension(300, 60));
-
-		t1ini.add("Center", t1lb);
-		t1in.add(t1ini);
-		t1.add(t1in);
-		t2ini.add("Center", t2lb);
-		t2in.add(t2ini);
-		t2.add(t2in);
-		t3ini.add("Center", t3lb);
-		t3in.add(t3ini);
-		t3.add(t3in);
-
-		tbuy.add(t1);
-		tbuy.add(t2);
-		tbuy.add(t3);
-
-		buyer_Top_btp1.add(tupbt);
-		buyer_Top_btp2.add(tbuybt);
-		buyer_Top_btp.add(buyer_Top_btp1);
-		buyer_Top_btp.add(buyer_Top_btp2);
-
-		buyerjp.add("North", buyer_Top_btp);
-		buyerjp.add("Center", jstbuy);
-
-		BuyerP.add("North", Buyerlb);
-		BuyerP.add("Center", buyerjp);
-
-		MainP.add(tpmain);
-		MainP.add(BuyerP);
-
-		con.add("North", mp); // 메인
-		con.add("Center", MainP);
-
-		// 예매 컨테이너 구성
-		rsvCon = rsvDlg.getContentPane();
-		rsvDlg.setLayout(new BorderLayout());
-		rsvDlg.setSize(500, 300);
-		;
-		rsvDlg.setResizable(false);
-
-		// 위치 구성
-		Dimension dm1 = Toolkit.getDefaultToolkit().getScreenSize();
-		Dimension dm2 = rsvDlg.getSize();
-		rsvDlg.setLocation((int) (dm1.getWidth() / 2 - dm2.getWidth() / 2),
-				(int) (dm1.getHeight() / 2 - dm2.getHeight() / 2));
-
-		JPanel pl3 = new JPanel(new BorderLayout());
-
-		// 왼쪽 라벨 구성
-		JPanel pl1 = new JPanel(new GridLayout(5, 1));
-		pl1.add(lbTicketNum);
-		pl1.add(lbName);
-		pl1.add(lbLoc);
-		pl1.add(lbSeat);
-		pl1.add(lbPrice);
-		pl3.add("West", pl1);
-
-		// 오른쪽 라벨 구성
-		JPanel pl2 = new JPanel(new GridLayout(5, 1));
-		pl2.add(lbTicketNumDB);
-		pl2.add(lbNameDB);
-		pl2.add(lbLocDB);
-		pl2.add(lbSeatDB);
-		pl2.add(lbPriceDB);
-		pl3.add("Center", pl2);
-
-		pl3.setBorder(new TitledBorder(new SoftBevelBorder(SoftBevelBorder.RAISED), "Reservation"));
-
-		rsvCon.add("Center", pl3);
-
-		// 버튼 추가하기
-		JPanel pl4 = new JPanel(new FlowLayout());
-		pl4.add(btnPay);
-		pl4.add(btnCancle);
-
-		rsvCon.add("South", pl4);
-		rsvCon.add("West", imgPosterLb);
-<<<<<<< HEAD
-
-=======
->>>>>>> yumi
 
 		// 마이페이지
 		tPane.setPreferredSize(new Dimension(1000, 550));
@@ -1700,25 +1201,16 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		updateokcon.add("Center", updateok);
 		updateokcon.add("South", updateokbtp);
 	}
-<<<<<<< HEAD
 
-
-=======
->>>>>>> yumi
 	int cnt = 0;
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
 
 		// 콤보 박스 예매 인원수 선택 출력
 		String strPersonCnt = cbCount.getSelectedItem().toString();
 		lbAllSeat.setText(strPersonCnt);
-<<<<<<< HEAD
 
-=======
->>>>>>> yumi
-		
 		if (e.getSource() == Buyer_bt) { // 구매자 끼리
 			tpmain.setVisible(false);
 			BuyerP.setVisible(true);
@@ -1874,10 +1366,6 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 			mypagep.setVisible(false);
 		} // 로그아웃 버튼
 
-<<<<<<< HEAD
-
-=======
->>>>>>> yumi
 		else if (e.getSource() == btnCancle) { // 취소 버튼
 			rsvDlg.setVisible(false);
 		} else if (e.getSource() == btnSeatSelect) { // 좌석 선택 부분 눌렀을 때
@@ -1895,21 +1383,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 			cnt = 0;
 			lbSltSeat.setText(Integer.toString(cnt));
 
-<<<<<<< HEAD
 		} else if (e.getSource() == mypagebt) { // 마이페이지
-
-		else if (e.getSource() == btnCancle) { // 예매 취소버튼
-=======
-		}else if (e.getSource() == btnCancle) { // 예매 취소버튼
->>>>>>> yumi
-			rsvDlg.setVisible(false);
-		} // 예매 취소버튼
-
-		else if (e.getSource() == mypagebt) { // 마이페이지
-<<<<<<< HEAD
-
-=======
->>>>>>> yumi
 			tpmain.setVisible(false);
 			BuyerP.setVisible(false);
 			mypagep.setVisible(true);
@@ -1954,6 +1428,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		} else if (e.getSource() == cancelnobt) {
 			canceldlg.setVisible(false);
 		}
+
 		// 좌석 콤보 박스 수만큼 선택
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 16; j++) {
@@ -1968,11 +1443,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 					break;
 			}
 		}
-<<<<<<< HEAD
 
-
-=======
->>>>>>> yumi
 	}
 
 	@Override
@@ -2070,14 +1541,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	}
 }
 
-
-<<<<<<< HEAD
 class TotalTicket_sub1 implements Serializable {
-
-=======
->>>>>>> yumi
-/*class TotalTicket_sub1 implements Serializable { // 벡터 지웠기때문에 주석처리
->>>>>>> 8e9584cce8a773d6109aa44ba6a4c3d1b11cb050
 	private String id;
 	private String pw;
 	private String pwok;
@@ -2142,8 +1606,3 @@ class TotalTicket_sub1 implements Serializable {
 		this.email = email;
 	}
 }
-}*/
-<<<<<<< HEAD
-
-=======
->>>>>>> yumi
