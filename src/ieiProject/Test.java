@@ -3,13 +3,8 @@ package ieiProject;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Vector;
-
 import javax.swing.*;
 import javax.swing.border.*;
 
