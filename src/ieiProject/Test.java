@@ -1625,9 +1625,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		String strPersonCnt = cbCount.getSelectedItem().toString();
 		lbAllSeat.setText(strPersonCnt);
 
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
+		
 		if (e.getSource() == Buyer_bt) { // 구매자 끼리
 			tpmain.setVisible(false);
 			BuyerP.setVisible(true);
