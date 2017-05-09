@@ -157,17 +157,14 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	private JPanel buyer_Top_btp2 = new JPanel(new FlowLayout());
 	private JButton tupbt = new JButton("표 올리기");
 	private JButton tbuybt = new JButton("구 매");
-
-	private JPanel t1in = new JPanel(new GridLayout(1, 1));
-	private JPanel t1ini = new JPanel(new BorderLayout(3, 3));
+	
+	private JPanel t1in = new JPanel(new BorderLayout(3,3));
+	private JPanel t1show = new JPanel(new BorderLayout(3, 3));
+	private JPanel t1infop = new JPanel(new GridLayout(2,1));
+	private Checkbox buycb = new Checkbox();
+	private Label t1name = new Label("특별시민",Label.CENTER);
+	private Label t1date = new Label("2017-04-23",Label.CENTER);
 	private JPanel t1 = new JPanel();
-	private JLabel t1lb = new JLabel(new ImageIcon("..\\ieiProject\\image\\ticket.png"));
-
-	private JPanel t2in = new JPanel(new GridLayout(1, 1));
-	private JPanel t2ini = new JPanel(new BorderLayout(3, 3));
-	private JPanel t2 = new JPanel();
-	private JLabel t2lb = new JLabel(new ImageIcon("..\\ieiProject\\image\\ticket.png"));
-
 	private JPanel t3in = new JPanel(new GridLayout(1, 1));
 	private JPanel t3ini = new JPanel(new BorderLayout(3, 3));
 	private JPanel t3 = new JPanel();
@@ -720,17 +717,37 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		loginxcon.add("Center", loginxp);
 		loginxcon.add("South", loginxbtp);
 
-		// 구매자 끼리
+////////////////////// 구매자 끼리
 		tbuy.setLayout(new BoxLayout(tbuy, BoxLayout.Y_AXIS));
-		t1lb.setPreferredSize(new Dimension(300, 60));
-		t2lb.setPreferredSize(new Dimension(300, 60));
+				
 		t3lb.setPreferredSize(new Dimension(300, 60));
 
-		t1ini.add("Center", t1lb);
-		t1in.add(t1ini);
+		JPanel t1in = new JPanel(new BorderLayout(3,3));
+		JPanel t1show = new JPanel(new BorderLayout(3, 3));
+		JPanel t1infop = new JPanel(new GridLayout(2,1));
+		Checkbox buycb = new Checkbox();
+		Label t1name = new Label("특별시민",Label.CENTER);
+		Label t1date = new Label("2017-04-23",Label.CENTER);
+		JPanel t1 = new JPanel();
+		JLabel t1lb = new JLabel(image1);
+		JPanel t2in = new JPanel(new BorderLayout(3,3));
+		JPanel t2show = new JPanel(new BorderLayout(3, 3));
+		JPanel t2infop = new JPanel(new GridLayout(2,1));
+		Checkbox buycb1 = new Checkbox();
+		Label t2name = new Label("아빠는딸",Label.CENTER);
+		Label t2date = new Label("2017-04-12",Label.CENTER);
+		JPanel t2 = new JPanel();
+		JLabel t2lb = new JLabel(image2);
+						
+		t1infop.add(t1name);t1infop.add(t1date);
+		t1show.add("Center", t1lb); t1show.add("East",t1infop);		
+		t1in.add("Center",t1show);
+		t1in.add("West",buycb);
 		t1.add(t1in);
-		t2ini.add("Center", t2lb);
-		t2in.add(t2ini);
+		t2infop.add(t2name);t2infop.add(t2date);
+		t2show.add("Center", t2lb); t1show.add("East",t2infop);
+		t2in.add("Center",t2show);
+		t2in.add("West",buycb1);
 		t2.add(t2in);
 		t3ini.add("Center", t3lb);
 		t3in.add(t3ini);
@@ -738,7 +755,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 
 		tbuy.add(t1);
 		tbuy.add(t2);
-		tbuy.add(t3);
+		tbuy.add(t3);		
 
 		buyer_Top_btp1.add(tupbt);
 		buyer_Top_btp2.add(tbuybt);
@@ -1215,6 +1232,13 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 			tpmain.setVisible(false);
 			BuyerP.setVisible(true);
 		} // 구매자 끼리
+		
+		if (e.getSource()== tbuybt){
+			if(buycb.getState()==true){
+				System.out.println("???");
+				t1.setVisible(false);
+			}
+		}
 
 		else if (e.getSource() == joinbt) { // 회원가입
 			// tp.setVisible(false);
