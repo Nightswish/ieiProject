@@ -34,7 +34,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	JPanel tpmain = new JPanel(new BorderLayout(3, 3));
 	JPanel search = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-	private TextField searchtf = new TextField("티켓 이름 또는 날짜 입력", 80);
+	private TextField searchtf = new TextField("제목 또는 날짜 검색",80);
 	private JButton btsearch = new JButton("검색");
 
 	// 인기순, 날짜순
@@ -483,6 +483,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		btnPayDlgCancle.addActionListener(this);
 		cbCount.addActionListener(this);
 		btnReselect.addActionListener(this);
+		searchtf.addFocusListener(this);
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 16; j++) {
 				btnNotSelected[i][j].addActionListener(this);
@@ -524,6 +525,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		ch1.add("----------");
 		ch1.add("티켓이름");
 		ch1.add("공연날짜");
+		
 		search.add("West", ch1);
 		search.add("Center", searchtf);
 		search.add("East", btsearch);
@@ -1448,7 +1450,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-
+		
 	}
 
 	@Override
@@ -1513,7 +1515,15 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	@Override
 	public void focusGained(FocusEvent e) {
 		// TODO Auto-generated method stub
-
+		if(e.getSource()==searchtf){
+			searchtf.setText("");
+		}
+		
+		/*if(e.getSource()==searchtf){
+			int x = searchtf.getText().trim().length();
+			if(x==10)
+				searchtf.setText("");
+		}*/
 	}
 
 	@Override
@@ -1541,7 +1551,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	}
 }
 
-class TotalTicket_sub1 implements Serializable {
+/*class TotalTicket_sub1 implements Serializable {
 	private String id;
 	private String pw;
 	private String pwok;
@@ -1605,4 +1615,4 @@ class TotalTicket_sub1 implements Serializable {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-}
+}*/
