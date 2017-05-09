@@ -1542,10 +1542,6 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		if(e.getSource()==searchtf){
 			searchtf.setText("");
 		}
-		
-		if(e.getSource() ==searchtf){
-			searchtf.setText("");
-		}
 	}
 
 	@Override
