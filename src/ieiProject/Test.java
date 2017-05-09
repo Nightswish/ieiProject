@@ -1539,7 +1539,6 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	@Override
 	public void focusGained(FocusEvent e) {
 		// TODO Auto-generated method stub
-<<<<<<< HEAD
 		if(e.getSource()==searchtf){
 			searchtf.setText("");
 		}
@@ -1549,11 +1548,9 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 			if(x==10)
 				searchtf.setText("");
 		}*/
-=======
 		if(e.getSource() ==searchtf){
 			searchtf.setText("");
 		}
->>>>>>> 65aba7b58966892c0c7071ab1681c36901083bc5
 	}
 
 	@Override
