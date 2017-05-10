@@ -547,7 +547,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		ch1.add("티켓이름");
 		ch1.add("공연날짜");
 		
-		search.add("West", ch1);
+		//search.add("West", ch1);
 		search.add("Center", searchtf);
 		search.add("East", searchbt);
 
@@ -608,7 +608,6 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		con.add("North", mp);
 		con.add("Center", MainP);
 		
-		srchresult.setVisible(false);
 		// 회원가입 다이얼로그 구성
 		joincon = joindlg.getContentPane();
 		joincon.setLayout(new BorderLayout());
@@ -1322,8 +1321,6 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 					mv8c.setVerticalTextPosition(SwingConstants.BOTTOM);
 					mv8c.setHorizontalTextPosition(SwingConstants.CENTER);
 					srchresult.add(mv8c);}
-				else
-					System.err.println("error");
 			}
 			catch(PatternSyntaxException ee){
 				System.err.println(ee);
