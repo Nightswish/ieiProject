@@ -555,6 +555,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		cbCount.addActionListener(this);
 		btnReselect.addActionListener(this);
 		searchtf.addFocusListener(this);
+		searchtf.addMouseListener(this);
 		searchbt.addActionListener(this);
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 16; j++) {
@@ -602,17 +603,17 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		ch1.add("티켓이름");
 		ch1.add("공연날짜");
 		
-		//search.add("West", ch1);
+		search.add("West", ch1);
 		search.add("Center", searchtf);
 		search.add("East", searchbt);
 
-		/*// 인기순, 날짜순(East)
+		// 인기순, 날짜순(East)
 		tlingi.add("North", lbingi);
 		tlingi.add("Center", ltingi);
 		tklistpn.add(tlingi);
 		tldate.add("North", lbdate);
 		tldate.add("Center", ltdate);
-		tklistpn.add(tldate);*/
+		tklistpn.add(tldate);
 
 		// 중앙의 티켓화면 구성(Center)
 		// tp.setBorder(new BevelBorder(BevelBorder.RAISED));
@@ -1359,7 +1360,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		}
 		//검색버튼
 		else if(e.getSource() == searchbt){
-			
+			srchresult.removeAll();
 			String rslt = searchtf.getText().trim();
 			String mvst1 = mv1.getText().trim();
 			String mvst2 = mv2.getText().trim();
@@ -1403,23 +1404,6 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 					mv8c.setVerticalTextPosition(SwingConstants.BOTTOM);
 					mv8c.setHorizontalTextPosition(SwingConstants.CENTER);
 					srchresult.add(mv8c);}
-
-				if(mvst1.matches(".*"+rslt+".*"))
-					srchresult.add(mv1);
-				if(mvst2.matches(".*"+rslt+".*"))
-					srchresult.add(mv2);
-				if(mvst3.matches(".*"+rslt+".*"))
-					srchresult.add(mv3);
-				if(mvst4.matches(".*"+rslt+".*"))
-					srchresult.add(mv4);
-				if(mvst5.matches(".*"+rslt+".*"))
-					srchresult.add(mv5);
-				if(mvst6.matches(".*"+rslt+".*"))
-					srchresult.add(mv6);
-				if(mvst7.matches(".*"+rslt+".*"))
-					srchresult.add(mv7);
-				if(mvst8.matches(".*"+rslt+".*"))
-					srchresult.add(mv8);
 
 			}
 			catch(PatternSyntaxException ee){
@@ -1724,7 +1708,9 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 			rsvDlg.setVisible(true);
 		else if (e.getSource() == mv8c) 
 			rsvDlg.setVisible(true);
-		
+		else if(e.getSource()==searchtf){
+			searchtf.setText("");
+		}
 
 	}
 
@@ -1751,13 +1737,6 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	@Override
 	public void focusLost(FocusEvent e) {
 		// TODO Auto-generated method stub
-
-		if(e.getSource()==searchtf){
-			searchtf.setText("제목 또는 날짜 입력");
-		}
-
-		
-
 
 	}
 
