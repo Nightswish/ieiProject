@@ -1358,14 +1358,13 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 					srchresult.add(mv7);
 				if(mvst8.matches(".*"+rslt+".*"))
 					srchresult.add(mv8);
-				else
-					System.err.println("search not found");
 			}
 			catch(PatternSyntaxException ee){
 				System.err.println(ee);
 			}
+			searchtf.setText("제목 또는 날짜 검색");
 			tpmain.setVisible(false);
-			srchresult.setVisible(false);
+			srchresult.setVisible(true);
 		}
 		
 		else if (e.getSource() == joinbt) { // 회원가입
@@ -1627,6 +1626,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 			srchresult.setVisible(false);
 			BuyerP.setVisible(false);
 			mypagep.setVisible(false);
+			searchtf.setText("제목 또는 날짜 검색");
 		} // 홈버튼
 
 		else if (e.getSource() == mv1) {
@@ -1686,6 +1686,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	@Override
 	public void focusLost(FocusEvent e) {
 		// TODO Auto-generated method stub
+		
 
 	}
 
