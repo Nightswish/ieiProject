@@ -1511,6 +1511,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 			lb.setVisible(false);
 			lb.setText(" ");
 			lb.setText("");
+			tpmain.setVisible(true);
 			logoutbt.setVisible(false);
 			mypagebt.setVisible(false);
 			loginbt.setVisible(true);
