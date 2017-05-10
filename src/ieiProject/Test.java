@@ -5,6 +5,8 @@ import java.awt.event.*;
 import java.io.*;
 import java.sql.*;
 import java.util.Vector;
+import java.util.regex.*;
+
 import javax.swing.*;
 import javax.swing.border.*;
 
@@ -34,8 +36,11 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	JPanel tpmain = new JPanel(new BorderLayout(3, 3));
 	JPanel search = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-	private TextField searchtf = new TextField("티켓 이름 또는 날짜 입력", 80);
-	private JButton btsearch = new JButton("검색");
+	private TextField searchtf = new TextField("제목 또는 날짜 검색",80);
+	private JButton searchbt = new JButton("검색");
+	
+	// 검색 결과
+	JPanel srchresult = new JPanel(new GridLayout(2,4,3,3));
 
 	// 인기순, 날짜순
 	JPanel tklistpn = new JPanel(new GridLayout(2, 1, 5, 5));
@@ -64,7 +69,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	ImageIcon image9 = new ImageIcon("..\\ieiProject\\image\\인카네이트.jpg");
 
 	private JLabel homebt = new JLabel(home);
-
+	
 	JLabel mv1 = new JLabel("특별시민  2017-04-23", image1, JLabel.CENTER);
 	JLabel mv2 = new JLabel("아빠는딸  2017-04-23", image2, JLabel.CENTER);
 	JLabel mv3 = new JLabel("분노의질주  2017-04-23", image3, JLabel.CENTER);
@@ -157,17 +162,14 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	private JPanel buyer_Top_btp2 = new JPanel(new FlowLayout());
 	private JButton tupbt = new JButton("표 올리기");
 	private JButton tbuybt = new JButton("구 매");
-
-	private JPanel t1in = new JPanel(new GridLayout(1, 1));
-	private JPanel t1ini = new JPanel(new BorderLayout(3, 3));
+	
+	private JPanel t1in = new JPanel(new BorderLayout(3,3));
+	private JPanel t1show = new JPanel(new BorderLayout(3, 3));
+	private JPanel t1infop = new JPanel(new GridLayout(2,1));
+	private Checkbox buycb = new Checkbox();
+	private Label t1name = new Label("특별시민",Label.CENTER);
+	private Label t1date = new Label("2017-04-23",Label.CENTER);
 	private JPanel t1 = new JPanel();
-	private JLabel t1lb = new JLabel(new ImageIcon("..\\ieiProject\\image\\ticket.png"));
-
-	private JPanel t2in = new JPanel(new GridLayout(1, 1));
-	private JPanel t2ini = new JPanel(new BorderLayout(3, 3));
-	private JPanel t2 = new JPanel();
-	private JLabel t2lb = new JLabel(new ImageIcon("..\\ieiProject\\image\\ticket.png"));
-
 	private JPanel t3in = new JPanel(new GridLayout(1, 1));
 	private JPanel t3ini = new JPanel(new BorderLayout(3, 3));
 	private JPanel t3 = new JPanel();
@@ -534,6 +536,8 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		btnPayDlgCancle.addActionListener(this);
 		cbCount.addActionListener(this);
 		btnReselect.addActionListener(this);
+		searchtf.addFocusListener(this);
+		searchbt.addActionListener(this);
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 16; j++) {
 				btnNotSelected[i][j].addActionListener(this);
@@ -579,9 +583,10 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		ch1.add("----------");
 		ch1.add("티켓이름");
 		ch1.add("공연날짜");
+		
 		search.add("West", ch1);
 		search.add("Center", searchtf);
-		search.add("East", btsearch);
+		search.add("East", searchbt);
 
 		// 인기순, 날짜순(East)
 		tlingi.add("North", lbingi);
@@ -774,18 +779,47 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 
 		loginxcon.add("Center", loginxp);
 		loginxcon.add("South", loginxbtp);
-
-		// 구매자 끼리
+		
+		//검색창
+		
+		MainP.add(tpmain);
+		MainP.add(srchresult);
+		
+		con.add("North", mp);
+		con.add("Center", MainP);
+		
+		
+////////////////////// 구매자 끼리
 		tbuy.setLayout(new BoxLayout(tbuy, BoxLayout.Y_AXIS));
-		t1lb.setPreferredSize(new Dimension(300, 60));
-		t2lb.setPreferredSize(new Dimension(300, 60));
+				
 		t3lb.setPreferredSize(new Dimension(300, 60));
 
-		t1ini.add("Center", t1lb);
-		t1in.add(t1ini);
+		JPanel t1in = new JPanel(new BorderLayout(3,3));
+		JPanel t1show = new JPanel(new BorderLayout(3, 3));
+		JPanel t1infop = new JPanel(new GridLayout(2,1));
+		Checkbox buycb = new Checkbox();
+		Label t1name = new Label("특별시민",Label.CENTER);
+		Label t1date = new Label("2017-04-23",Label.CENTER);
+		JPanel t1 = new JPanel();
+		JLabel t1lb = new JLabel(image1);
+		JPanel t2in = new JPanel(new BorderLayout(3,3));
+		JPanel t2show = new JPanel(new BorderLayout(3, 3));
+		JPanel t2infop = new JPanel(new GridLayout(2,1));
+		Checkbox buycb1 = new Checkbox();
+		Label t2name = new Label("아빠는딸",Label.CENTER);
+		Label t2date = new Label("2017-04-12",Label.CENTER);
+		JPanel t2 = new JPanel();
+		JLabel t2lb = new JLabel(image2);
+						
+		t1infop.add(t1name);t1infop.add(t1date);
+		t1show.add("Center", t1lb); t1show.add("East",t1infop);		
+		t1in.add("Center",t1show);
+		t1in.add("West",buycb);
 		t1.add(t1in);
-		t2ini.add("Center", t2lb);
-		t2in.add(t2ini);
+		t2infop.add(t2name);t2infop.add(t2date);
+		t2show.add("Center", t2lb); t1show.add("East",t2infop);
+		t2in.add("Center",t2show);
+		t2in.add("West",buycb1);
 		t2.add(t2in);
 		t3ini.add("Center", t3lb);
 		t3in.add(t3ini);
@@ -793,7 +827,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 
 		tbuy.add(t1);
 		tbuy.add(t2);
-		tbuy.add(t3);
+		tbuy.add(t3);		
 
 		buyer_Top_btp1.add(tupbt);
 		buyer_Top_btp2.add(tbuybt);
@@ -1277,16 +1311,62 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-
+		
 		// 콤보 박스 예매 인원수 선택 출력
 		String strPersonCnt = cbCount.getSelectedItem().toString();
 		lbAllSeat.setText(strPersonCnt);
 
 		if (e.getSource() == Buyer_bt) { // 구매자 끼리
 			tpmain.setVisible(false);
+			srchresult.setVisible(false);
 			BuyerP.setVisible(true);
 		} // 구매자 끼리
-
+		
+		if (e.getSource()== tbuybt){
+			if(buycb.getState()==true){
+				System.out.println("???");
+				t1.setVisible(false);
+			}
+		}
+		//검색버튼
+		else if(e.getSource() == searchbt){
+			
+			String rslt = searchtf.getText().trim();
+			String mvst1 = mv1.getText().trim();
+			String mvst2 = mv2.getText().trim();
+			String mvst3 = mv3.getText().trim();
+			String mvst4 = mv4.getText().trim();
+			String mvst5 = mv5.getText().trim();
+			String mvst6 = mv6.getText().trim();
+			String mvst7 = mv7.getText().trim();
+			String mvst8 = mv8.getText().trim();
+			try{
+				if(mvst1.matches(".*"+rslt+".*"))
+					srchresult.add(mv1);
+				if(mvst2.matches(".*"+rslt+".*"))
+					srchresult.add(mv2);
+				if(mvst3.matches(".*"+rslt+".*"))
+					srchresult.add(mv3);
+				if(mvst4.matches(".*"+rslt+".*"))
+					srchresult.add(mv4);
+				if(mvst5.matches(".*"+rslt+".*"))
+					srchresult.add(mv5);
+				if(mvst6.matches(".*"+rslt+".*"))
+					srchresult.add(mv6);
+				if(mvst7.matches(".*"+rslt+".*"))
+					srchresult.add(mv7);
+				if(mvst8.matches(".*"+rslt+".*"))
+					srchresult.add(mv8);
+				else
+					System.err.println("search not found");
+			}
+			catch(PatternSyntaxException ee){
+				System.err.println(ee);
+			}
+			tpmain.setVisible(false);
+			srchresult.setVisible(true);
+		}
+		
 		else if (e.getSource() == joinbt) { // 회원가입
 			// tp.setVisible(false);
 			joindlg.setVisible(true);
@@ -1456,6 +1536,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 
 		} else if (e.getSource() == mypagebt) { // 마이페이지
 			tpmain.setVisible(false);
+			srchresult.setVisible(false);
 			BuyerP.setVisible(false);
 			mypagep.setVisible(true);
 		} // 마이페이지
@@ -1529,7 +1610,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-
+		
 	}
 
 	@Override
@@ -1541,6 +1622,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	public void mouseReleased(MouseEvent e) {
 		if (e.getSource() == homebt) { // 홈버튼
 			tpmain.setVisible(true);
+			srchresult.setVisible(false);
 			BuyerP.setVisible(false);
 			mypagep.setVisible(false);
 		} // 홈버튼
@@ -1594,7 +1676,9 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	@Override
 	public void focusGained(FocusEvent e) {
 		// TODO Auto-generated method stub
-
+		if(e.getSource()==searchtf){
+			searchtf.setText("");
+		}
 	}
 
 	@Override
@@ -1622,7 +1706,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	}
 }
 
-class TotalTicket_sub1 implements Serializable {
+/*class TotalTicket_sub1 implements Serializable {
 	private String id;
 	private String pw;
 	private String pwok;
@@ -1686,4 +1770,4 @@ class TotalTicket_sub1 implements Serializable {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-}
+}*/
