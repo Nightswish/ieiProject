@@ -297,7 +297,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	private Panel pointP = new Panel(new FlowLayout());
 
 	private Label point = new Label("잔여 포인트: ");
-	private Label point1 = new Label("1000(예를 들어서)");
+	private Label point1 = new Label("0");
 
 	private Panel pointP1 = new Panel();
 	private Label point2 = new Label("1000원 충전: 1100p 지급");
@@ -308,6 +308,14 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	private Panel chargeP = new Panel(new FlowLayout());
 	private Button charge = new Button("포인트 충전");
 
+	///////////////////////////////////////////////포인트 충전창
+	private Container chargecon;
+	private JDialog chargedlg = new JDialog(this,"포인트 충전",true);
+
+	private Panel chargep = new Panel(new FlowLayout());
+	private Label chargelb = new Label("충전: ");
+	private TextField chargetf = new TextField(10);
+	private Button chargebt = new Button("충전");
 	////////////////////////////////////// 공연내역창
 
 	// private BoxLayout box = new BoxLayout();
@@ -344,7 +352,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	private Panel canceldlgp = new Panel(new FlowLayout());
 	private Button cancelokbt = new Button("확인");
 	private Button cancelnobt = new Button("취소");
-
+ 
 	// DB 연결
 	Connection conn;
 	String url = "jdbc:oracle:thin:@localhost:1521:orcl";
@@ -356,7 +364,8 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(url, id, pass);
-			String query = "insert into member values(?,?,?,?,?,?)";
+			String query = "insert into member(ID,PW,PWOK,TEL,NIK,EMAIL) values(?,?,?,?,?,?)";
+			//member에 point추가해서 쿼리문 바꿨습니다(2017.5.10)
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, joinidtf.getText().trim());
 			pstmt.setString(2, new String(joinpwtf.getPassword()));
@@ -398,6 +407,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 				tphone.setText(rs.getString("tel"));
 				tmail.setText(rs.getString("email"));
 				tname.setText(rs.getString("nik"));
+				point1.setText(rs.getString("POINT"));//포인트 추가(2017.5.10)
 				lb.setText(rs.getString("id") + " 님 ");
 				loginokdlg.setVisible(true);
 
@@ -440,6 +450,47 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 
 	}
 
+	////////////////////////////////포인트 충전DB(2017.5.10)
+	public void chargepoint(){
+		 if(Integer.parseInt(chargetf.getText().trim())==1000){
+      		point1.setText(String.valueOf(Integer.parseInt(point1.getText().trim())+1030));  
+      		 chargetf.setText("");
+      	 }
+      	
+    		 else if(Integer.parseInt(chargetf.getText().trim())==5000){
+      		 point1.setText(String.valueOf(Integer.parseInt(point1.getText().trim())+5200)); 
+      		 chargetf.setText("");
+      	 }
+      	 
+    		 else if(Integer.parseInt(chargetf.getText().trim())==10000){
+      		 point1.setText(String.valueOf(Integer.parseInt(point1.getText().trim())+10500));
+      		 chargetf.setText("");
+      	 }
+      	
+    		 else if(Integer.parseInt(chargetf.getText().trim())==50000){
+      		point1.setText(String.valueOf(Integer.parseInt(point1.getText().trim())+53000)); 
+      		 chargetf.setText("");
+      		
+      	 } 
+ 	  try{
+           Class.forName("oracle.jdbc.driver.OracleDriver");
+           conn = DriverManager.getConnection(url, id, pass);
+           String query="update member set POINT=? where ID=?";
+           PreparedStatement pstmt = conn.prepareStatement(query);
+           pstmt.setString(1, point1.getText().trim());
+           pstmt.setString(2, id2.getText().trim());
+           pstmt.executeUpdate();
+           pstmt.close();
+           
+           System.out.println("충전성공11111");
+         
+        }catch(ClassNotFoundException eee){
+     	   System.err.println("충전 실패!!!11111");
+        }catch(SQLException e){
+           System.err.println("충전 실패!!!2222222");
+        } 
+ 	  
+   }
 	public TotalTicket_sub() {
 		super("메인");
 		this.init();
@@ -501,6 +552,10 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		canceltk.addActionListener(this);
 		cancelokbt.addActionListener(this);
 		cancelnobt.addActionListener(this);
+		
+		//포인트(2017.5.10)
+		charge.addActionListener(this);
+		chargebt.addActionListener(this);
 	}
 
 	private void init() {
@@ -1145,6 +1200,22 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		pointp.add("South", chargeP);
 		pointp.add("Center", pointP1);
 
+		 //////////포인트충전(2017.5.10)
+        chargecon = chargedlg.getContentPane();
+        chargecon.setLayout(new BorderLayout());
+        chargedlg.setSize(300,220);
+        chargedlg.setResizable(false);
+        tk = Toolkit.getDefaultToolkit();
+         di = tk.getScreenSize();
+        di1 = chargedlg.getSize();
+        chargedlg.setLocation((int)(di.getWidth() / 2 - di1.getWidth() / 2),(int)(di.getHeight() / 2 - di1.getHeight() / 2));
+        
+        chargep.add(chargelb);
+        chargep.add(chargetf);
+        chargep.add(chargebt);
+        
+        chargecon.add("Center",chargep);
+        /////////////////////////////////////////
 		p4_1.add(id1);
 		p4_1.add(id2);
 		p4_2.add(phone1);
@@ -1487,6 +1558,16 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 
 		} // 수정 완료 다이얼로그 확인버튼
 
+
+		/////////////////////////////////////////////////////////포인트
+
+		else if(e.getSource()==charge){
+			chargedlg.setVisible(true);
+			}//포인트 충전버튼
+		else if(e.getSource()==chargebt){
+			chargepoint();
+			chargedlg.setVisible(false);
+			}
 		///////////////////////////////////////////////////// 공연내역 예매취소
 
 		else if (e.getSource() == canceltk) {
