@@ -303,7 +303,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	private Label point2 = new Label("1000원 충전: 1100p 지급");
 	private Label point3 = new Label("5000원 충전: 5600p 지급");
 	private Label point4 = new Label("10000원 충전: 12000p 지급");
-	private Label point5 = new Label("50000원 충전: 65000p 지급");
+	private Label point5 = new Label("50000원 충전: 53000p 지급");
 
 	private Panel chargeP = new Panel(new FlowLayout());
 	private Button charge = new Button("포인트 충전");
