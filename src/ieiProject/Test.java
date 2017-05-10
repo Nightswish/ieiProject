@@ -733,7 +733,6 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		con.add("North", mp);
 		con.add("Center", MainP);
 		
-		
 ////////////////////// 구매자 끼리
 		tbuy.setLayout(new BoxLayout(tbuy, BoxLayout.Y_AXIS));
 				
@@ -1234,6 +1233,8 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 
 		updateokcon.add("Center", updateok);
 		updateokcon.add("South", updateokbtp);
+		
+		tpmain.setVisible(true);
 	}
 
 	int cnt = 0;
@@ -1293,7 +1294,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 				System.err.println(ee);
 			}
 			tpmain.setVisible(false);
-			srchresult.setVisible(true);
+			srchresult.setVisible(false);
 		}
 		
 		else if (e.getSource() == joinbt) { // 회원가입
