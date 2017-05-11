@@ -8,6 +8,26 @@ import java.util.Vector;
 import javax.swing.*;
 import javax.swing.border.*;
 
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.SoftBevelBorder;
+import javax.swing.border.TitledBorder;
+
+//소스수정 170511
+
 public class Test {
 	public static void main(String[] ar) {
 		TotalTicket_sub ex = new TotalTicket_sub();
