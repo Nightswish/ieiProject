@@ -26,7 +26,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.TitledBorder;
 
-//소스수정 170511
+//소스수정 170511_01      
 
 public class Test {
 	public static void main(String[] ar) {
