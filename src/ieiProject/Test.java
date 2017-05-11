@@ -28,7 +28,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.TitledBorder;
 
-//소스수정 170511_01      
+//소스수정 170511      
 
 public class Test {
 	public static void main(String[] ar) {
@@ -1597,6 +1597,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 			for (int i = 0; i < 6; i++) {
 				for (int j = 0; j < 16; j++) {
 					btnNotSelected[i][j].setEnabled(true);
+					btnNotSelected[i][j].setBackground(null);
 				}
 			}
 			cnt = 0;
