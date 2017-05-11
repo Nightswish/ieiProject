@@ -76,37 +76,38 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	JScrollPane scroller = new JScrollPane(tp);
 
 	JPanel mp = new JPanel(new BorderLayout(3, 3));
-
+	
+	
 	ImageIcon home = new ImageIcon("..\\ieiProject\\image\\home2.jpg");
-	ImageIcon image1 = new ImageIcon("..\\ieiProject\\image\\특별시민.jpg");
-	ImageIcon image2 = new ImageIcon("..\\ieiProject\\image\\아빠는딸.jpg");
-	ImageIcon image3 = new ImageIcon("..\\ieiProject\\image\\분노의질주.jpg");
-	ImageIcon image4 = new ImageIcon("..\\ieiProject\\image\\미녀와야수.jpg");
-	ImageIcon image5 = new ImageIcon("..\\ieiProject\\image\\스머프.jpg");
-	ImageIcon image6 = new ImageIcon("..\\ieiProject\\image\\스톰 인사이드.jpg");
-	ImageIcon image7 = new ImageIcon("..\\ieiProject\\image\\악마는프라다.jpg");
-	ImageIcon image8 = new ImageIcon("..\\ieiProject\\image\\8마일.jpg");
-	ImageIcon image9 = new ImageIcon("..\\ieiProject\\image\\인카네이트.jpg");
+	ImageIcon image1;
+	ImageIcon image2;
+	ImageIcon image3;
+	ImageIcon image4;
+	ImageIcon image5;
+	ImageIcon image6;
+	ImageIcon image7;
+	ImageIcon image8;
 
 	private JLabel homebt = new JLabel(home);
 	//원본 라벨
-	JLabel mv1 = new JLabel("특별시민  2017-04-23", image1, JLabel.CENTER);
-	JLabel mv2 = new JLabel("아빠는딸  2017-04-23", image2, JLabel.CENTER);
-	JLabel mv3 = new JLabel("분노의질주  2017-04-23", image3, JLabel.CENTER);
-	JLabel mv4 = new JLabel("미녀와야수  2017-04-23", image4, JLabel.CENTER);
-	JLabel mv5 = new JLabel("스머프  2017-04-23", image5, JLabel.CENTER);
-	JLabel mv6 = new JLabel("스톰 인사이드  2017-04-23", image6, JLabel.CENTER);
-	JLabel mv7 = new JLabel("악마는 프라다를 입는다  2017-04-23", image7, JLabel.CENTER);
-	JLabel mv8 = new JLabel("8마일  2017-04-23", image8, JLabel.CENTER);
+	JLabel mv1 = new JLabel();
+	JLabel mv2 = new JLabel();
+	JLabel mv3 = new JLabel();
+	JLabel mv4 = new JLabel();
+	JLabel mv5 = new JLabel();
+	JLabel mv6 = new JLabel();
+	JLabel mv7 = new JLabel();
+	JLabel mv8 = new JLabel();
+	
 	//copy 라벨 
-	JLabel mv1c = new JLabel("특별시민  2017-04-23", image1, JLabel.CENTER);
-	JLabel mv2c = new JLabel("아빠는딸  2017-04-23", image2, JLabel.CENTER);
-	JLabel mv3c = new JLabel("분노의질주  2017-04-23", image3, JLabel.CENTER);
-	JLabel mv4c = new JLabel("미녀와야수  2017-04-23", image4, JLabel.CENTER);
-	JLabel mv5c = new JLabel("스머프  2017-04-23", image5, JLabel.CENTER);
-	JLabel mv6c = new JLabel("스톰 인사이드  2017-04-23", image6, JLabel.CENTER);
-	JLabel mv7c = new JLabel("악마는 프라다를 입는다  2017-04-23", image7, JLabel.CENTER);
-	JLabel mv8c = new JLabel("8마일  2017-04-23", image8, JLabel.CENTER);
+	JLabel mv1c;
+	JLabel mv2c;
+	JLabel mv3c;
+	JLabel mv4c;
+	JLabel mv5c;
+	JLabel mv6c;
+	JLabel mv7c;
+	JLabel mv8c;
 	
 	// 회원가입 다이얼로그
 	private Container joincon;
@@ -613,6 +614,84 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		lb.setVisible(false);
 		logoutbt.setVisible(false);
 		mp.add("East", sp2);
+				
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			conn = DriverManager.getConnection(url, id, pass);			
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery("select * from show");			
+			while(rs.next()) {
+				if(rs.getString("SNAME").equals("특별시민")){
+					image1 = new ImageIcon(rs.getString("SIMG"));
+					mv1 = new JLabel(rs.getString("SNAME"), image1, JLabel.CENTER);
+					mv1c = new JLabel(rs.getString("SNAME"), image1, JLabel.CENTER);
+				}
+				if(rs.getString("SNAME").equals("아빠는딸")){
+					image2 = new ImageIcon(rs.getString("SIMG"));
+					mv2 = new JLabel(rs.getString("SNAME"), image2, JLabel.CENTER);
+					mv2c = new JLabel(rs.getString("SNAME"), image2, JLabel.CENTER);
+				}
+				if(rs.getString("SNAME").equals("분노의질주")){
+					image3 = new ImageIcon(rs.getString("SIMG"));
+					mv3 = new JLabel(rs.getString("SNAME"), image3, JLabel.CENTER);
+					mv3c = new JLabel(rs.getString("SNAME"), image3, JLabel.CENTER);
+				}
+				if(rs.getString("SNAME").equals("미녀와야수")){
+					image4 = new ImageIcon(rs.getString("SIMG"));
+					mv4 = new JLabel(rs.getString("SNAME"), image4, JLabel.CENTER);
+					mv4c = new JLabel(rs.getString("SNAME"), image4, JLabel.CENTER);
+				}
+				if(rs.getString("SNAME").equals("스머프")){
+					image5 = new ImageIcon(rs.getString("SIMG"));
+					mv5 = new JLabel(rs.getString("SNAME"), image5, JLabel.CENTER);
+					mv5c = new JLabel(rs.getString("SNAME"), image5, JLabel.CENTER);
+				}
+				if(rs.getString("SNAME").equals("스톰 인사이드")){
+					image6 = new ImageIcon(rs.getString("SIMG"));
+					mv6 = new JLabel(rs.getString("SNAME"), image6, JLabel.CENTER);
+					mv6c = new JLabel(rs.getString("SNAME"), image6, JLabel.CENTER);
+				}
+				if(rs.getString("SNAME").equals("악마는 프라다를 입는다")){
+					image7 = new ImageIcon(rs.getString("SIMG"));
+					mv7 = new JLabel(rs.getString("SNAME"), image7, JLabel.CENTER);
+					mv7c = new JLabel(rs.getString("SNAME"), image7, JLabel.CENTER);
+				}
+				if(rs.getString("SNAME").equals("8마일")){
+					image8 = new ImageIcon(rs.getString("SIMG"));
+					mv8 = new JLabel(rs.getString("SNAME"), image8, JLabel.CENTER);
+					mv8c = new JLabel(rs.getString("SNAME"), image8, JLabel.CENTER);
+				}
+			} 
+			rs.close();
+			stmt.close();
+		} catch (ClassNotFoundException eee) {
+
+		} catch (SQLException e) {
+			System.err.println("로그인 실패!!!");
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		// 메인화면 구성 - 중앙 티켓화면 구성
 		tpmain.setBorder(new BevelBorder(BevelBorder.RAISED));
