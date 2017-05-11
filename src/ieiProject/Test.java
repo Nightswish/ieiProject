@@ -364,15 +364,14 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(url, id, pass);
-			String query = "insert into member(ID,PW,PWOK,TEL,NIK,EMAIL) values(?,?,?,?,?,?)";
+			String query = "insert into customer(ID,PW,TEL,NIK,EMAIL) values(?,?,?,?,?)";
 			//member에 point추가해서 쿼리문 바꿨습니다(2017.5.10)
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, joinidtf.getText().trim());
 			pstmt.setString(2, new String(joinpwtf.getPassword()));
-			pstmt.setString(3, new String(joinpwoktf.getPassword()));
-			pstmt.setString(4, jointeltf.getText().trim());
-			pstmt.setString(5, joinniktf.getText().trim());
-			pstmt.setString(6, joinemailtf.getText().trim());
+			pstmt.setString(3, jointeltf.getText().trim());
+			pstmt.setString(4, joinniktf.getText().trim());
+			pstmt.setString(5, joinemailtf.getText().trim());
 			pstmt.executeUpdate();
 			pstmt.close();
 		} catch (ClassNotFoundException eee) {
@@ -387,7 +386,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(url, id, pass);
-			String query = "select * from member where id=? and pw=?";
+			String query = "select * from customer where id=? and pw=?";
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, loginidtf.getText().trim());
 			pstmt.setString(2, new String(loginpwtf.getPassword()));
@@ -426,7 +425,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(url, id, pass);
-			String query = "update member set tel=?, nik=?, email=? where id=?";
+			String query = "update customer set tel=?, nik=?, email=? where id=?";
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, tphone.getText().trim());
 			pstmt.setString(2, tname.getText().trim());
@@ -475,7 +474,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
  	  try{
            Class.forName("oracle.jdbc.driver.OracleDriver");
            conn = DriverManager.getConnection(url, id, pass);
-           String query="update member set POINT=? where ID=?";
+           String query="update customer set POINT=? where ID=?";
            PreparedStatement pstmt = conn.prepareStatement(query);
            pstmt.setString(1, point1.getText().trim());
            pstmt.setString(2, id2.getText().trim());
