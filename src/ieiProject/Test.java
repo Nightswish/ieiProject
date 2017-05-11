@@ -56,7 +56,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	Choice ch1 = new Choice();
 	JPanel tpmain = new JPanel(new BorderLayout(3, 3));
 	JPanel search = new JPanel(new FlowLayout(FlowLayout.LEFT));
-<<<<<<< HEAD
+
 	Choice ch11 = new Choice();
 	JPanel tpmain1 = new JPanel(new BorderLayout(3, 3));
 	JPanel search1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -69,14 +69,6 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	// 검색 결과
 	JPanel srchrslt = new JPanel(new BorderLayout(3, 3));
 	JPanel srchresult = new JPanel(new GridLayout(2,4,3,3));
-=======
-
-	private TextField searchtf = new TextField("제목 또는 날짜 입력", 80);
-	private JButton searchbt = new JButton("검색");
-
-	// 검색 결과
-	JPanel srchresult = new JPanel(new GridLayout(2, 4, 3, 3));
->>>>>>> yumi
 
 	// 인기순, 날짜순
 	JPanel tklistpn = new JPanel(new GridLayout(2, 1, 5, 5));
@@ -108,7 +100,6 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	// 원본 라벨
 	JLabel mv1 = new JLabel("특별시민  2017-04-23", image1, JLabel.CENTER);
 	JLabel mv2 = new JLabel("아빠는딸  2017-04-23", image2, JLabel.CENTER);
-<<<<<<< HEAD
 	JLabel mv3 = new JLabel("분노의질주  2017-04-24", image3, JLabel.CENTER);
 	JLabel mv4 = new JLabel("미녀와야수  2017-04-24", image4, JLabel.CENTER);
 	JLabel mv5 = new JLabel("스머프  2017-04-25", image5, JLabel.CENTER);
@@ -125,24 +116,9 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	JLabel mv7c = new JLabel("악마는 프라다를 입는다  2017-04-26", image7, JLabel.CENTER);
 	JLabel mv8c = new JLabel("8마일  2017-04-26", image8, JLabel.CENTER);
 	
-=======
-	JLabel mv3 = new JLabel("분노의질주  2017-04-23", image3, JLabel.CENTER);
-	JLabel mv4 = new JLabel("미녀와야수  2017-04-23", image4, JLabel.CENTER);
-	JLabel mv5 = new JLabel("스머프  2017-04-23", image5, JLabel.CENTER);
-	JLabel mv6 = new JLabel("스톰 인사이드  2017-04-23", image6, JLabel.CENTER);
-	JLabel mv7 = new JLabel("악마는 프라다를 입는다  2017-04-23", image7, JLabel.CENTER);
-	JLabel mv8 = new JLabel("8마일  2017-04-23", image8, JLabel.CENTER);
-	// copy 라벨
-	JLabel mv1c = new JLabel("특별시민  2017-04-23", image1, JLabel.CENTER);
-	JLabel mv2c = new JLabel("아빠는딸  2017-04-23", image2, JLabel.CENTER);
-	JLabel mv3c = new JLabel("분노의질주  2017-04-23", image3, JLabel.CENTER);
-	JLabel mv4c = new JLabel("미녀와야수  2017-04-23", image4, JLabel.CENTER);
-	JLabel mv5c = new JLabel("스머프  2017-04-23", image5, JLabel.CENTER);
-	JLabel mv6c = new JLabel("스톰 인사이드  2017-04-23", image6, JLabel.CENTER);
-	JLabel mv7c = new JLabel("악마는 프라다를 입는다  2017-04-23", image7, JLabel.CENTER);
-	JLabel mv8c = new JLabel("8마일  2017-04-23", image8, JLabel.CENTER);
 
->>>>>>> yumi
+
+
 	// 회원가입 다이얼로그
 	private Container joincon;
 	private JDialog joindlg = new JDialog(this, "회원가입", true);
@@ -513,47 +489,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 
 	}
 
-	////////////////////////////////포인트 충전DB(2017.5.10)
-	public void chargepoint(){
-		 if(Integer.parseInt(chargetf.getText().trim())==1000){
-      		point1.setText(String.valueOf(Integer.parseInt(point1.getText().trim())+1030));  
-      		 chargetf.setText("");
-      	 }
-      	
-    		 else if(Integer.parseInt(chargetf.getText().trim())==5000){
-      		 point1.setText(String.valueOf(Integer.parseInt(point1.getText().trim())+5200)); 
-      		 chargetf.setText("");
-      	 }
-      	 
-    		 else if(Integer.parseInt(chargetf.getText().trim())==10000){
-      		 point1.setText(String.valueOf(Integer.parseInt(point1.getText().trim())+10500));
-      		 chargetf.setText("");
-      	 }
-      	
-    		 else if(Integer.parseInt(chargetf.getText().trim())==50000){
-      		point1.setText(String.valueOf(Integer.parseInt(point1.getText().trim())+53000)); 
-      		 chargetf.setText("");
-      		
-      	 } 
- 	  try{
-           Class.forName("oracle.jdbc.driver.OracleDriver");
-           conn = DriverManager.getConnection(url, id, pass);
-           String query="update customer set POINT=? where ID=?";
-           PreparedStatement pstmt = conn.prepareStatement(query);
-           pstmt.setString(1, point1.getText().trim());
-           pstmt.setString(2, id2.getText().trim());
-           pstmt.executeUpdate();
-           pstmt.close();
-           
-           System.out.println("충전성공11111");
-         
-        }catch(ClassNotFoundException eee){
-     	   System.err.println("충전 실패!!!11111");
-        }catch(SQLException e){
-           System.err.println("충전 실패!!!2222222");
-        } 
- 	  
-   }
+
 	//////////////////////////////// 포인트 충전DB(2017.5.10)
 	public void chargepoint() {
 		if (Integer.parseInt(chargetf.getText().trim()) == 1000) {
@@ -596,7 +532,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 
 	}
 
->>>>>>> yumi
+
 	public TotalTicket_sub() {
 		super("메인");
 		this.init();
@@ -785,7 +721,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		tpmain.add("Center", tp);
 		con.add("North", mp);
 		con.add("Center", tpmain);
-<<<<<<< HEAD
+
 		
 		//검색 결과창
 		srchrslt.add("North", search1);
@@ -794,7 +730,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		MainP.add(tpmain);
 		MainP.add(srchrslt);
 		
-=======
+
 
 		// 검색 결과창
 
@@ -802,7 +738,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		MainP.add(srchresult);
 
 		con.add("North", mp);
->>>>>>> yumi
+
 		con.add("Center", MainP);
 
 		// 회원가입 다이얼로그 구성
@@ -947,12 +883,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 
 		loginxcon.add("Center", loginxp);
 		loginxcon.add("South", loginxbtp);
-<<<<<<< HEAD
-		
-		
-		
-////////////////////// 구매자 끼리
-=======
+
 
 		// 검색창
 
@@ -963,7 +894,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		con.add("Center", MainP);
 
 		////////////////////// 구매자 끼리
->>>>>>> yumi
+
 		tbuy.setLayout(new BoxLayout(tbuy, BoxLayout.Y_AXIS));
 
 		t3lb.setPreferredSize(new Dimension(300, 60));
@@ -1571,7 +1502,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 			tpmain.setVisible(false);
 			srchrslt.setVisible(true);
 		}
-<<<<<<< HEAD
+
 		//검색버튼(Copy)
 		else if(e.getSource() == searchbt1){
 			srchresult.removeAll();
@@ -1628,9 +1559,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		}		
 
 		
-=======
 
->>>>>>> yumi
 		else if (e.getSource() == joinbt) { // 회원가입
 			// tp.setVisible(false);
 			joindlg.setVisible(true);
@@ -1815,15 +1744,12 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 
 		} // 수정 완료 다이얼로그 확인버튼
 
-<<<<<<< HEAD
-		/////////////////////////////////////////////////////////포인트
 
-		else if(e.getSource()==charge){
-=======
+
 		///////////////////////////////////////////////////////// 포인트
 
 		else if (e.getSource() == charge) {
->>>>>>> yumi
+
 			chargedlg.setVisible(true);
 		} // 포인트 충전버튼
 		else if (e.getSource() == chargebt) {
@@ -1923,12 +1849,10 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 			rsvDlg.setVisible(true);
 		else if (e.getSource() == mv8c)
 			rsvDlg.setVisible(true);
-<<<<<<< HEAD
-		else if(e.getSource()==searchtf)
-=======
-		else if (e.getSource() == searchtf) {
->>>>>>> yumi
+
+		else if (e.getSource() == searchtf){
 			searchtf.setText("");
+		}
 		else if(e.getSource()==searchtf1)
 			searchtf1.setText("");
 		
