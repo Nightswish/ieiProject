@@ -614,7 +614,8 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		lb.setVisible(false);
 		logoutbt.setVisible(false);
 		mp.add("East", sp2);
-				
+		
+		//DB에서 이미지 가져오는것 수정
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(url, id, pass);			
