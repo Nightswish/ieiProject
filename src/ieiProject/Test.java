@@ -1,14 +1,38 @@
 package ieiProject;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.sql.*;
+import java.awt.BorderLayout;
+import java.awt.Button;
+import java.awt.CardLayout;
+import java.awt.Checkbox;
+import java.awt.Choice;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Label;
+import java.awt.Panel;
+import java.awt.TextField;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Vector;
-import java.util.regex.*;
-
-import javax.swing.*;
-import javax.swing.border.*;
+import java.util.regex.PatternSyntaxException;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -26,7 +50,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
-import javax.swing.border.TitledBorder;
 
 //소스수정 170511      
 
@@ -384,14 +407,29 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	private Button cancelnobt = new Button("취소");
  
 	// DB 연결
-	Connection conn;
+	/*Connection conn;
 	String url = "jdbc:oracle:thin:@localhost:1521:orcl";
 	String id = "scott";
-	String pass = "tiger";
+	String pass = "tiger";*/
 
 	// DB 회원가입
 	public void joinMember() {
-		try {
+		String id = joinidtf.getText().trim();
+		String pw = new String(joinpwtf.getPassword());
+		String tel = jointeltf.getText().trim();
+		String nik = joinniktf.getText().trim();
+		String email = joinemailtf.getText().trim();
+		MemberDao memberdao = new DaoFactory().memberDao();
+		Member member = new Member(id, pw, tel, nik, email);
+		try{
+			memberdao.add(member);
+			System.out.println("가입 완료");
+		}catch(Exception e1){
+			System.out.println("회원 가입 실패!!!");
+		};
+		
+		
+		/*try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(url, id, pass);
 			String query = "insert into customer(ID,PW,TEL,NIK,EMAIL) values(?,?,?,?,?)";
@@ -408,12 +446,46 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 
 		} catch (SQLException ee) {
 			System.err.println("회원 가입 실패!!!");
-		}
+		}*/
 	}
 
 	// DB 로그인
 	public void loginMember() {
-		try {
+		String id = joinidtf.getText().trim();
+		String pw = new String(joinpwtf.getPassword());
+		String tel = jointeltf.getText().trim();
+		String nik = joinniktf.getText().trim();
+		String email = joinemailtf.getText().trim();
+		MemberDao memberdao = new DaoFactory().memberDao();
+		Member member = new Member(id, pw, tel, nik, email);
+		try{
+			memberdao.join(id, pw);
+			if(id != member.getId()){
+				loginxdlg.setVisible(true);
+			}else{
+				loginokdlglb1.setText(member.getId());
+				id2.setText(member.getId());
+				nname2.setText(member.getNik());
+				phone2.setText(member.getTel());
+				email2.setText(member.getEmail());
+				eID1.setText(member.getId());
+				tphone.setText(member.getTel());
+				tmail.setText(member.getEmail());
+				tname.setText(member.getNik());
+				//point1.setText(member.getPoint());//포인트 추가(2017.5.10)
+				lb.setText(member.getId() + " 님 ");
+				loginokdlg.setVisible(true);
+			}
+		}catch (ClassNotFoundException eee) {
+
+		} catch (SQLException e) {
+			System.err.println("로그인 실패!!!");
+		}
+	
+		
+		
+		
+		/*try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(url, id, pass);
 			String query = "select * from customer where id=? and pw=?";
@@ -424,8 +496,8 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 			ResultSet rs = pstmt.executeQuery();
 			if (!rs.next()) {
 				loginxdlg.setVisible(true);
-				rs.close();
-				pstmt.close();
+				//rs.close();
+				//pstmt.close();
 			} else {
 				loginokdlglb1.setText(rs.getString("id"));
 				id2.setText(rs.getString("id"));
@@ -440,18 +512,28 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 				lb.setText(rs.getString("id") + " 님 ");
 				loginokdlg.setVisible(true);
 
-				rs.close();
-				pstmt.close();
+				//rs.close();
+				//pstmt.close();
 			}
 		} catch (ClassNotFoundException eee) {
 
 		} catch (SQLException e) {
 			System.err.println("로그인 실패!!!");
-		}
+		}*/
 	}
 
 	// DB 수정
 	public void updateMember() {
+		String id = joinidtf.getText().trim();
+		String pw = new String(joinpwtf.getPassword());
+		String tel = jointeltf.getText().trim();
+		String nik = joinniktf.getText().trim();
+		String email = joinemailtf.getText().trim();
+		MemberDao memberdao = new DaoFactory().memberDao();
+		Member member = new Member(id, pw, tel, nik, email);
+		
+		
+		
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(url, id, pass);
