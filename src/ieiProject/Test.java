@@ -232,11 +232,11 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	private Container rsvCon;
 	private JDialog rsvDlg = new JDialog(this, "예매 하기", true);
 	private JLabel lbName = new JLabel("공연 이름  ");
-	private JLabel lbNameDB = new JLabel("윤한 투어 콘서트");
+	private JLabel lbNameDB = new JLabel();
 	private JLabel lbLoc = new JLabel("공연 장소  ");
-	private JLabel lbLocDB = new JLabel("kucca 경복궁점");
+	private JLabel lbLocDB = new JLabel();
 	private JLabel lbPrice = new JLabel("가격  ");
-	private JLabel lbPriceDB = new JLabel("50,000");
+	private JLabel lbPriceDB = new JLabel();
 	private JLabel lbTicketNum = new JLabel("티켓 번호  ");
 	private JLabel lbTicketNumDB = new JLabel("201704220000001");
 	private ImageIcon imgPoster = new ImageIcon("/Users/youmeelee/Desktop/poster.jpg");
@@ -252,9 +252,10 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	private JComboBox cbCount = new JComboBox(cntPerson);
 
 	private JLabel lbDay = new JLabel("공연 날짜 ");
-	String day[] = { "2017년 5월 25일 17:30", "2017년 5월 25일 10:30" };
-	private JComboBox cbDay = new JComboBox(day);
-
+	/*String day[] = { "2017년 5월 25일 17:30", "2017년 5월 25일 10:30" };
+	private JComboBox cbDay = new JComboBox(day);*/
+	private JComboBox cbDay = new JComboBox(); //(5/12 공연별 상세공연보여주기)
+	private String saveshowname = null;
 	// 좌석 선택 버튼 클릭 구성
 	private Container sltSeatCon;
 	private JDialog sltSeatDlg = new JDialog(this, "좌석 선택", true);
@@ -602,6 +603,33 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
         } 
  	  
    }
+	////////////////////////////////////////////////공연별 상세내용 db에서 가져오는 함수
+	public void detshow(){
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			conn = DriverManager.getConnection(url, id, pass);
+			String query = "select * from detshow where sname=?";	
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, saveshowname);
+
+			ResultSet rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+					lbNameDB.setText(rs.getString("SNAME"));
+					lbLocDB.setText(rs.getString("SLOC"));
+					lbPriceDB.setText(rs.getString("SPRICE"));
+					cbDay.addItem(rs.getString("DTDATE"));
+					cbDay.setSelectedItem(rs.getString("DTDATE"));	
+			}
+			rs.close();
+			pstmt.close();
+		} catch (ClassNotFoundException eee) {
+
+		} catch (SQLException e) {
+			System.err.println("상세내용 보기 실패");
+		}
+		/////////////////////
+	}
 	public TotalTicket_sub() {
 		super("메인");
 		this.init();
@@ -1858,38 +1886,104 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 			searchtf.setText("제목 또는 날짜 검색");
 		} // 홈버튼
 
-		else if (e.getSource() == mv1) 
+		/////////////////공연포스터 눌렀을 떄 보이는 상세내용(5/12)
+		else if (e.getSource() == mv1){
+			saveshowname =mv1.getText().trim();
+			detshow();
 			rsvDlg.setVisible(true);
-		else if (e.getSource() == mv2) 
+			cbDay.removeAllItems();
+			}
+		else if (e.getSource() == mv2){
+			saveshowname =mv2.getText().trim();
+		    detshow();
 			rsvDlg.setVisible(true);
-		else if (e.getSource() == mv3) 
+			cbDay.removeAllItems();
+			}
+		else if (e.getSource() == mv3){
+			saveshowname =mv3.getText().trim();
+			detshow();
 			rsvDlg.setVisible(true);
-		else if (e.getSource() == mv4) 
+			cbDay.removeAllItems();
+			}
+		else if (e.getSource() == mv4){
+			saveshowname =mv4.getText().trim();
+			detshow();
 			rsvDlg.setVisible(true);
-		else if (e.getSource() == mv5) 
+			cbDay.removeAllItems();
+		}
+		else if (e.getSource() == mv5){
+			saveshowname =mv5.getText().trim();
+			detshow();
 			rsvDlg.setVisible(true);
-		else if (e.getSource() == mv6) 
+			cbDay.removeAllItems();
+		}
+		else if (e.getSource() == mv6){
+			saveshowname =mv6.getText().trim();			
+			detshow();
 			rsvDlg.setVisible(true);
-		else if (e.getSource() == mv7) 
+			cbDay.removeAllItems();
+						
+			}
+		else if (e.getSource() == mv7){
+			saveshowname =mv7.getText().trim();
+			detshow();
 			rsvDlg.setVisible(true);
-		else if (e.getSource() == mv8) 
+			cbDay.removeAllItems();
+			}
+		else if (e.getSource() == mv8){
+			saveshowname =mv8.getText().trim();
+			detshow();
 			rsvDlg.setVisible(true);
-		else if (e.getSource() == mv1c) 
+			cbDay.removeAllItems();
+			}
+		else if (e.getSource() == mv1c){
+			saveshowname =mv1c.getText().trim();
+			detshow();
 			rsvDlg.setVisible(true);
-		else if (e.getSource() == mv2c) 
+			cbDay.removeAllItems();
+			}
+		else if (e.getSource() == mv2c){
+			saveshowname =mv2c.getText().trim();
+			detshow();
 			rsvDlg.setVisible(true);
-		else if (e.getSource() == mv3c) 
+			cbDay.removeAllItems();
+			}
+		else if (e.getSource() == mv3c){
+			saveshowname =mv3c.getText().trim();
+			detshow();
 			rsvDlg.setVisible(true);
-		else if (e.getSource() == mv4c) 
+			cbDay.removeAllItems();
+			}
+		else if (e.getSource() == mv4c){
+			saveshowname =mv4c.getText().trim();
+			detshow();
 			rsvDlg.setVisible(true);
-		else if (e.getSource() == mv5c) 
+			cbDay.removeAllItems();
+			}
+		else if (e.getSource() == mv5c){
+			saveshowname =mv5c.getText().trim();
+			detshow();
 			rsvDlg.setVisible(true);
-		else if (e.getSource() == mv6c) 
+			cbDay.removeAllItems();
+			}
+		else if (e.getSource() == mv6c){
+			saveshowname =mv6c.getText().trim();
+			detshow();
 			rsvDlg.setVisible(true);
-		else if (e.getSource() == mv7c) 
+			cbDay.removeAllItems();
+			}
+		else if (e.getSource() == mv7c){
+			saveshowname =mv7c.getText().trim();
+			detshow();
 			rsvDlg.setVisible(true);
-		else if (e.getSource() == mv8c) 
+			cbDay.removeAllItems();
+			}
+		else if (e.getSource() == mv8c){
+			saveshowname =mv8c.getText().trim();
+			detshow();
 			rsvDlg.setVisible(true);
+			cbDay.removeAllItems();
+			}
 		else if(e.getSource()==searchtf){
 			searchtf.setText("");
 		}
