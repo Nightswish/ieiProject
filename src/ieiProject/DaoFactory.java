@@ -2,9 +2,9 @@ package ieiProject;
 
 
 public class DaoFactory {
-	public MemberDao memberDao() { // MemberDao 积己
-		MemberDao memberDao = new MemberDao(); // userDao 努贰胶狼 按眉 积己 
-		return memberDao; // 府畔
+	public CustomerDao customerDao() { // MemberDao 积己
+		CustomerDao customerDao = new CustomerDao(); // userDao 努贰胶狼 按眉 积己 
+		return customerDao; // 府畔
 	}
 	/*public LoginDao loginDao(){
 		LoginDao loginDao = new LoginDao();

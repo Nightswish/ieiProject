@@ -1,53 +1,12 @@
 package ieiProject;
 
-import java.awt.BorderLayout;
-import java.awt.Button;
-import java.awt.CardLayout;
-import java.awt.Checkbox;
-import java.awt.Choice;
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.Label;
-import java.awt.Panel;
-import java.awt.TextField;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.*;
 import java.util.Vector;
 import java.util.regex.PatternSyntaxException;
 
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
 
@@ -420,10 +379,10 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		String tel = jointeltf.getText().trim();
 		String nik = joinniktf.getText().trim();
 		String email = joinemailtf.getText().trim();
-		MemberDao memberdao = new DaoFactory().memberDao();
-		Member member = new Member(id, pw, tel, nik, email);
+		CustomerDao memberdao = new DaoFactory().customerDao();
+		Customer customer = new Customer(id, pw, tel, nik, email);
 		try{
-			memberdao.add(member);
+			memberdao.add(customer);
 			System.out.println("가입 완료");
 		}catch(Exception e1){
 			System.out.println("회원 가입 실패!!!");
@@ -457,24 +416,24 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		String tel = jointeltf.getText().trim();
 		String nik = joinniktf.getText().trim();
 		String email = joinemailtf.getText().trim();
-		MemberDao memberdao = new DaoFactory().memberDao();
-		Member member = new Member(id, pw, tel, nik, email);
+		CustomerDao memberdao = new DaoFactory().customerDao();
+		Customer customer = new Customer(id, pw, tel, nik, email);
 		try{
 			memberdao.join(id, pw);
-			if(id != member.getId()){
+			if(id != customer.getId()){
 				loginxdlg.setVisible(true);
 			}else{
-				loginokdlglb1.setText(member.getId());
-				id2.setText(member.getId());
-				nname2.setText(member.getNik());
-				phone2.setText(member.getTel());
-				email2.setText(member.getEmail());
-				eID1.setText(member.getId());
-				tphone.setText(member.getTel());
-				tmail.setText(member.getEmail());
-				tname.setText(member.getNik());
+				loginokdlglb1.setText(customer.getId());
+				id2.setText(customer.getId());
+				nname2.setText(customer.getNik());
+				phone2.setText(customer.getTel());
+				email2.setText(customer.getEmail());
+				eID1.setText(customer.getId());
+				tphone.setText(customer.getTel());
+				tmail.setText(customer.getEmail());
+				tname.setText(customer.getNik());
 				//point1.setText(member.getPoint());//포인트 추가(2017.5.10)
-				lb.setText(member.getId() + " 님 ");
+				lb.setText(customer.getId() + " 님 ");
 				loginokdlg.setVisible(true);
 			}
 		}catch (ClassNotFoundException eee) {
@@ -525,29 +484,47 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 
 	// DB 수정
 	public void updateMember() {
-		String id = joinidtf.getText().trim();
+		String ide = id2.getText().trim();
 		String pw = new String(joinpwtf.getPassword());
-		String tel = jointeltf.getText().trim();
-		String nik = joinniktf.getText().trim();
-		String email = joinemailtf.getText().trim();
-		MemberDao memberdao = new DaoFactory().memberDao();
-		Member member = new Member(id, pw, tel, nik, email);
+		String phone = tphone.getText().trim();
+		String name = tname.getText().trim();
+		String mail = tmail.getText().trim();
+		CustomerDao memberdao = new DaoFactory().customerDao();
+		Customer customer = new Customer(ide, pw, phone, name, mail);
 		
-		
-		
-		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			conn = DriverManager.getConnection(url, id, pass);
-			String query = "update customer set tel=?, nik=?, email=? where id=?";
-			PreparedStatement pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, tphone.getText().trim());
-			pstmt.setString(2, tname.getText().trim());
-			pstmt.setString(3, tmail.getText().trim());
-			pstmt.setString(4, id2.getText().trim());
+		try{
+			memberdao.update(ide, pw, phone, name, mail);
 			updateokidtf.setText(eID1.getText().trim());
 			updateokteltf.setText(tphone.getText().trim());
 			updateokniktf.setText(tname.getText().trim());
 			updateokemailtf.setText(tmail.getText().trim());
+			phone2.setText(tphone.getText().trim());
+			nname2.setText(tname.getText().trim());
+			email2.setText(tmail.getText().trim());
+			
+		}catch (ClassNotFoundException eee) {
+
+		} catch (SQLException e) {
+			System.err.println("수정 실패!!!");
+		}
+		
+		
+		/*try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			conn = DriverManager.getConnection(url, id, pass);
+			String query = "update customer set tel=?, nik=?, email=? where id=?";
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			
+			pstmt.setString(1, tphone.getText().trim());
+			pstmt.setString(2, tname.getText().trim());
+			pstmt.setString(3, tmail.getText().trim());
+			pstmt.setString(4, id2.getText().trim());
+			
+			updateokidtf.setText(eID1.getText().trim());
+			updateokteltf.setText(tphone.getText().trim());
+			updateokniktf.setText(tname.getText().trim());
+			updateokemailtf.setText(tmail.getText().trim());
+			
 			phone2.setText(tphone.getText().trim());
 			nname2.setText(tname.getText().trim());
 			email2.setText(tmail.getText().trim());
@@ -558,7 +535,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 
 		} catch (SQLException e) {
 			System.err.println("수정 실패!!!");
-		}
+		}*/
 
 	}
 

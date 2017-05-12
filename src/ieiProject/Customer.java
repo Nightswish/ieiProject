@@ -1,6 +1,6 @@
 package ieiProject;
 
-public class Member {
+public class Customer {
 	private String id;
 	private String pw;
 	private String tel;
@@ -9,14 +9,14 @@ public class Member {
 	private String grade;
 	private int point;
 	
-	public Member(String id, String pw,String tel, String nik,String email){
+	public Customer(String id, String pw,String tel, String nik,String email){
 		this.id = id;
 		this.pw = pw;
 		this.tel = tel;
 		this.nik = nik;
 		this.email = email;
 	}
-	public Member(){}
+	public Customer(){}
 	public String getId() {
 		return id;
 	}
