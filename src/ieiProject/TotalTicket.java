@@ -3,6 +3,9 @@ package ieiProject;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Vector;
 import java.util.regex.PatternSyntaxException;
 
@@ -12,13 +15,16 @@ import javax.swing.border.SoftBevelBorder;
 
 //소스수정 170511      
 
-public class Test {
+/*public class Test {
 	public static void main(String[] ar) {
-		TotalTicket_sub ex = new TotalTicket_sub();
+		TotalTicket_sub123 ex = new TotalTicket_sub123();
 	}
 }
-
-class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, KeyListener, FocusListener {
+*/
+public class TotalTicket extends JFrame implements ActionListener, MouseListener, KeyListener, FocusListener {
+	
+	ImageIcon error_image = new ImageIcon("..\\ieiProject\\image\\error.jpg");
+	private String saveshowname = null;
 	private Container con;
 	// 메뉴화면
 	private BorderLayout bl = new BorderLayout(5, 5);
@@ -38,12 +44,12 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	JPanel tpmain = new JPanel(new BorderLayout(3, 3));
 	JPanel search = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-	private TextField searchtf = new TextField("제목 또는 날짜 입력",80);
+	private TextField searchtf = new TextField("제목 또는 날짜 입력", 80);
 	private JButton searchbt = new JButton("검색");
-	
-	// 검색 결과
-	JPanel srchresult = new JPanel(new GridLayout(2,4,3,3));
 
+	// 검색 결과
+	JPanel srchresult = new JPanel(new GridLayout(2, 4, 3, 3));
+	
 	// 인기순, 날짜순
 	JPanel tklistpn = new JPanel(new GridLayout(2, 1, 5, 5));
 	JPanel tlingi = new JPanel(new BorderLayout(3, 3));
@@ -58,39 +64,20 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	JScrollPane scroller = new JScrollPane(tp);
 
 	JPanel mp = new JPanel(new BorderLayout(3, 3));
-	
-	
+
 	ImageIcon home = new ImageIcon("..\\ieiProject\\image\\home2.jpg");
-	ImageIcon image1;
-	ImageIcon image2;
-	ImageIcon image3;
-	ImageIcon image4;
-	ImageIcon image5;
-	ImageIcon image6;
-	ImageIcon image7;
-	ImageIcon image8;
+	private int num = 6;
+	ImageIcon[] image = new ImageIcon[num];
 
 	private JLabel homebt = new JLabel(home);
-	//원본 라벨
-	JLabel mv1 = new JLabel();
-	JLabel mv2 = new JLabel();
-	JLabel mv3 = new JLabel();
-	JLabel mv4 = new JLabel();
-	JLabel mv5 = new JLabel();
-	JLabel mv6 = new JLabel();
-	JLabel mv7 = new JLabel();
-	JLabel mv8 = new JLabel();
-	
-	//copy 라벨 
-	JLabel mv1c;
-	JLabel mv2c;
-	JLabel mv3c;
-	JLabel mv4c;
-	JLabel mv5c;
-	JLabel mv6c;
-	JLabel mv7c;
-	JLabel mv8c;
-	
+	// 원본 라벨
+	private JLabel[] mv = new JLabel[num];
+
+	// copy 라벨
+	private JLabel[] mvc = new JLabel[num];
+
+
+	String[] mvst = new String[num];
 	// 회원가입 다이얼로그
 	private Container joincon;
 	private JDialog joindlg = new JDialog(this, "회원가입", true);
@@ -174,18 +161,21 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	private JPanel buyer_Top_btp2 = new JPanel(new FlowLayout());
 	private JButton tupbt = new JButton("표 올리기");
 	private JButton tbuybt = new JButton("구 매");
-	
-	private JPanel t1in = new JPanel(new BorderLayout(3,3));
+
+	private JPanel t1in = new JPanel(new BorderLayout(3, 3));
 	private JPanel t1show = new JPanel(new BorderLayout(3, 3));
-	private JPanel t1infop = new JPanel(new GridLayout(2,1));
+	private JPanel t1infop = new JPanel(new GridLayout(2, 1));
 	private Checkbox buycb = new Checkbox();
-	private Label t1name = new Label("특별시민",Label.CENTER);
-	private Label t1date = new Label("2017-04-23",Label.CENTER);
+	private Label t1name = new Label("특별시민", Label.CENTER);
+	private Label t1date = new Label("2017-04-23", Label.CENTER);
 	private JPanel t1 = new JPanel();
 	private JPanel t3in = new JPanel(new GridLayout(1, 1));
 	private JPanel t3ini = new JPanel(new BorderLayout(3, 3));
 	private JPanel t3 = new JPanel();
 	private JLabel t3lb = new JLabel(new ImageIcon("..\\ieiProject\\image\\ticket.png"));
+
+	// 공연 아이디
+	String selectedSid;
 
 	// 예매 버튼 클릭 구성
 	private Container rsvCon;
@@ -195,14 +185,12 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	private JLabel lbLoc = new JLabel("공연 장소  ");
 	private JLabel lbLocDB = new JLabel();
 	private JLabel lbPrice = new JLabel("가격  ");
+	private int showPrice = 0;
 	private JLabel lbPriceDB = new JLabel();
 	private JLabel lbTicketNum = new JLabel("티켓 번호  ");
 	private JLabel lbTicketNumDB = new JLabel("201704220000001");
-	private ImageIcon imgPoster = new ImageIcon("/Users/youmeelee/Desktop/poster.jpg");
-	private Image originImg = imgPoster.getImage();
-	private Image changedImg = originImg.getScaledInstance(150, 200, Image.SCALE_SMOOTH);
-	private ImageIcon poster = new ImageIcon(changedImg);
-	private JLabel imgPosterLb = new JLabel(poster);
+	private ImageIcon imgPoster = new ImageIcon("..\\ieiProject\\image\\poster.jpg");
+	private JLabel imgPosterLb = new JLabel(imgPoster);
 	private JButton btnSeatSelect = new JButton("좌석 선택");
 	private JButton btnCancle = new JButton("취소");
 	private JLabel lbSelectPerson = new JLabel("인원수 선택");
@@ -210,31 +198,36 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	String cntPerson[] = { "1", "2", "3", "4", "5" };
 	private JComboBox cbCount = new JComboBox(cntPerson);
 
+	// 날짜 콤보 박스 설정
 	private JLabel lbDay = new JLabel("공연 날짜 ");
-	/*String day[] = { "2017년 5월 25일 17:30", "2017년 5월 25일 10:30" };
-	private JComboBox cbDay = new JComboBox(day);*/
-	private JComboBox cbDay = new JComboBox(); //(5/12 공연별 상세공연보여주기)
-	private String saveshowname = null;
+	String cbSelectedDate;
+	private JComboBox cbDay = new JComboBox();
+
 	// 좌석 선택 버튼 클릭 구성
 	private Container sltSeatCon;
 	private JDialog sltSeatDlg = new JDialog(this, "좌석 선택", true);
 	private JLabel lbNowSltSeat = new JLabel("현재 좌석 선택 수");
+	String strPersonCnt;
 	private JLabel lbAllSeat = new JLabel();
 	private JLabel lbSlash = new JLabel("/");
 	private JLabel lbSltSeat = new JLabel("0");
 	private JButton btnFinSeat = new JButton("선택 완료");
 	private JButton btnReselect = new JButton("다시 선택");
-
+	
+	//좌석 선택할 때 비로그인시 로그인하라고 하는 다이얼로그
+	private Container loginplzCon;
+	private JDialog loginplzdlg = new JDialog(this, "로그인 필요", true);
+	private JLabel loginplzlb = new JLabel("로그인이 필요한 기능입니다.", error_image, JLabel.CENTER);
+	private JButton loginplzok = new JButton("확인");
+	
 	// 좌석 버튼
-	private JButton btnSelected[][] = new JButton[6][16];
 	private JButton btnNotSelected[][] = new JButton[6][16];
-	private JButton btnNotAble[][] = new JButton[6][16];
 
 	// 결제창
 	private Container payCon;
 	private JDialog payDlg = new JDialog(this, "결제 하기", true);
 	private JLabel lbPay = new JLabel("결제 금액");
-	private JTextField txToPay = new JTextField(7);
+	private JLabel lbToPay = new JLabel("0");
 	private JButton btnPayDlgPay = new JButton("결제");
 	private JButton btnPayDlgCancle = new JButton("취소");
 
@@ -321,9 +314,9 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	private Panel chargeP = new Panel(new FlowLayout());
 	private Button charge = new Button("포인트 충전");
 
-	///////////////////////////////////////////////포인트 충전창
+	/////////////////////////////////////////////// 포인트 충전창
 	private Container chargecon;
-	private JDialog chargedlg = new JDialog(this,"포인트 충전",true);
+	private JDialog chargedlg = new JDialog(this, "포인트 충전", true);
 
 	private Panel chargep = new Panel(new FlowLayout());
 	private Label chargelb = new Label("충전: ");
@@ -340,21 +333,21 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	private JPanel t1ini1 = new JPanel(new BorderLayout(3, 3));//
 	private JPanel t11 = new JPanel();
 	private Checkbox cancelcb = new Checkbox();
-	private JLabel t1lb1 = new JLabel(new ImageIcon("C:\\Users\\Public\\Pictures\\Sample Pictures\\desert.jpg"));
+	private JLabel t1lb1 = new JLabel(new ImageIcon("..\\ieiProject\\image\\desert.jpg"));
 	private JButton tbuybt1 = new JButton("상세보기1");
 
 	private JPanel t2in1 = new JPanel(new GridLayout(1, 1));//
 	private JPanel t2ini1 = new JPanel(new BorderLayout(3, 3));//
 	private JPanel t21 = new JPanel();
 	private Checkbox cancelcb2 = new Checkbox();
-	private JLabel t2lb1 = new JLabel(new ImageIcon("C:\\Users\\Public\\Pictures\\Sample Pictures\\desert.jpg"));
+	private JLabel t2lb1 = new JLabel(new ImageIcon("..\\ieiProject\\image\\desert.jpg"));
 	private JButton tbuybt21 = new JButton("상세보기2");
 
 	private JPanel t3in1 = new JPanel(new GridLayout(1, 1));//
 	private JPanel t3ini1 = new JPanel(new BorderLayout(3, 3));//
 	private JPanel t31 = new JPanel();
 	private Checkbox cancelcb3 = new Checkbox();
-	private JLabel t3lb1 = new JLabel(new ImageIcon("C:\\Users\\Public\\Pictures\\Sample Pictures\\desert.jpg"));
+	private JLabel t3lb1 = new JLabel(new ImageIcon("..\\ieiProject\\image\\desert.jpg"));
 	private JButton tbuybt31 = new JButton("상세보기3");
 
 	private Button canceltk = new Button("예매취소");
@@ -365,35 +358,20 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	private Panel canceldlgp = new Panel(new FlowLayout());
 	private Button cancelokbt = new Button("확인");
 	private Button cancelnobt = new Button("취소");
- 
+
 	// DB 연결
-	/*Connection conn;
+	Connection conn;
 	String url = "jdbc:oracle:thin:@localhost:1521:orcl";
 	String id = "scott";
-	String pass = "tiger";*/
+	String pass = "tiger";
 
 	// DB 회원가입
 	public void joinMember() {
-		String id = joinidtf.getText().trim();
-		String pw = new String(joinpwtf.getPassword());
-		String tel = jointeltf.getText().trim();
-		String nik = joinniktf.getText().trim();
-		String email = joinemailtf.getText().trim();
-		CustomerDao memberdao = new DaoFactory().customerDao();
-		Customer customer = new Customer(id, pw, tel, nik, email);
-		try{
-			memberdao.add(customer);
-			System.out.println("가입 완료");
-		}catch(Exception e1){
-			System.out.println("회원 가입 실패!!!");
-		};
-		
-		
-		/*try {
+		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(url, id, pass);
 			String query = "insert into customer(ID,PW,TEL,NIK,EMAIL) values(?,?,?,?,?)";
-			//member에 point추가해서 쿼리문 바꿨습니다(2017.5.10)
+			// member에 point추가해서 쿼리문 바꿨습니다(2017.5.10)
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, joinidtf.getText().trim());
 			pstmt.setString(2, new String(joinpwtf.getPassword()));
@@ -406,46 +384,12 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 
 		} catch (SQLException ee) {
 			System.err.println("회원 가입 실패!!!");
-		}*/
+		}
 	}
 
 	// DB 로그인
 	public void loginMember() {
-		String id = joinidtf.getText().trim();
-		String pw = new String(joinpwtf.getPassword());
-		String tel = jointeltf.getText().trim();
-		String nik = joinniktf.getText().trim();
-		String email = joinemailtf.getText().trim();
-		CustomerDao memberdao = new DaoFactory().customerDao();
-		Customer customer = new Customer(id, pw, tel, nik, email);
-		try{
-			memberdao.join(id, pw);
-			if(id != customer.getId()){
-				loginxdlg.setVisible(true);
-			}else{
-				loginokdlglb1.setText(customer.getId());
-				id2.setText(customer.getId());
-				nname2.setText(customer.getNik());
-				phone2.setText(customer.getTel());
-				email2.setText(customer.getEmail());
-				eID1.setText(customer.getId());
-				tphone.setText(customer.getTel());
-				tmail.setText(customer.getEmail());
-				tname.setText(customer.getNik());
-				//point1.setText(member.getPoint());//포인트 추가(2017.5.10)
-				lb.setText(customer.getId() + " 님 ");
-				loginokdlg.setVisible(true);
-			}
-		}catch (ClassNotFoundException eee) {
-
-		} catch (SQLException e) {
-			System.err.println("로그인 실패!!!");
-		}
-	
-		
-		
-		
-		/*try {
+		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(url, id, pass);
 			String query = "select * from customer where id=? and pw=?";
@@ -456,8 +400,8 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 			ResultSet rs = pstmt.executeQuery();
 			if (!rs.next()) {
 				loginxdlg.setVisible(true);
-				//rs.close();
-				//pstmt.close();
+				rs.close();
+				pstmt.close();
 			} else {
 				loginokdlglb1.setText(rs.getString("id"));
 				id2.setText(rs.getString("id"));
@@ -468,63 +412,35 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 				tphone.setText(rs.getString("tel"));
 				tmail.setText(rs.getString("email"));
 				tname.setText(rs.getString("nik"));
-				point1.setText(rs.getString("POINT"));//포인트 추가(2017.5.10)
+				point1.setText(rs.getString("POINT"));// 포인트 추가(2017.5.10)
 				lb.setText(rs.getString("id") + " 님 ");
 				loginokdlg.setVisible(true);
 
-				//rs.close();
-				//pstmt.close();
+				rs.close();
+				pstmt.close();
 			}
 		} catch (ClassNotFoundException eee) {
 
 		} catch (SQLException e) {
 			System.err.println("로그인 실패!!!");
-		}*/
+		}
 	}
 
 	// DB 수정
 	public void updateMember() {
-		String ide = id2.getText().trim();
-		String pw = new String(joinpwtf.getPassword());
-		String phone = tphone.getText().trim();
-		String name = tname.getText().trim();
-		String mail = tmail.getText().trim();
-		CustomerDao memberdao = new DaoFactory().customerDao();
-		Customer customer = new Customer(ide, pw, phone, name, mail);
-		
-		try{
-			memberdao.update(ide, pw, phone, name, mail);
-			updateokidtf.setText(eID1.getText().trim());
-			updateokteltf.setText(tphone.getText().trim());
-			updateokniktf.setText(tname.getText().trim());
-			updateokemailtf.setText(tmail.getText().trim());
-			phone2.setText(tphone.getText().trim());
-			nname2.setText(tname.getText().trim());
-			email2.setText(tmail.getText().trim());
-			
-		}catch (ClassNotFoundException eee) {
-
-		} catch (SQLException e) {
-			System.err.println("수정 실패!!!");
-		}
-		
-		
-		/*try {
+		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(url, id, pass);
 			String query = "update customer set tel=?, nik=?, email=? where id=?";
 			PreparedStatement pstmt = conn.prepareStatement(query);
-			
 			pstmt.setString(1, tphone.getText().trim());
 			pstmt.setString(2, tname.getText().trim());
 			pstmt.setString(3, tmail.getText().trim());
 			pstmt.setString(4, id2.getText().trim());
-			
 			updateokidtf.setText(eID1.getText().trim());
 			updateokteltf.setText(tphone.getText().trim());
 			updateokniktf.setText(tname.getText().trim());
 			updateokemailtf.setText(tmail.getText().trim());
-			
 			phone2.setText(tphone.getText().trim());
 			nname2.setText(tname.getText().trim());
 			email2.setText(tmail.getText().trim());
@@ -535,79 +451,105 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 
 		} catch (SQLException e) {
 			System.err.println("수정 실패!!!");
-		}*/
+		}
 
 	}
 
-	////////////////////////////////포인트 충전DB(2017.5.10)
-	public void chargepoint(){
-		 if(Integer.parseInt(chargetf.getText().trim())==1000){
-      		point1.setText(String.valueOf(Integer.parseInt(point1.getText().trim())+1030));  
-      		 chargetf.setText("");
-      	 }
-      	
-    		 else if(Integer.parseInt(chargetf.getText().trim())==5000){
-      		 point1.setText(String.valueOf(Integer.parseInt(point1.getText().trim())+5200)); 
-      		 chargetf.setText("");
-      	 }
-      	 
-    		 else if(Integer.parseInt(chargetf.getText().trim())==10000){
-      		 point1.setText(String.valueOf(Integer.parseInt(point1.getText().trim())+10500));
-      		 chargetf.setText("");
-      	 }
-      	
-    		 else if(Integer.parseInt(chargetf.getText().trim())==50000){
-      		point1.setText(String.valueOf(Integer.parseInt(point1.getText().trim())+53000)); 
-      		 chargetf.setText("");
-      		
-      	 } 
- 	  try{
-           Class.forName("oracle.jdbc.driver.OracleDriver");
-           conn = DriverManager.getConnection(url, id, pass);
-           String query="update customer set POINT=? where ID=?";
-           PreparedStatement pstmt = conn.prepareStatement(query);
-           pstmt.setString(1, point1.getText().trim());
-           pstmt.setString(2, id2.getText().trim());
-           pstmt.executeUpdate();
-           pstmt.close();
-           
-           System.out.println("충전성공11111");
-         
-        }catch(ClassNotFoundException eee){
-     	   System.err.println("충전 실패!!!11111");
-        }catch(SQLException e){
-           System.err.println("충전 실패!!!2222222");
-        } 
- 	  
-   }
-	////////////////////////////////////////////////공연별 상세내용 db에서 가져오는 함수
-	public void detshow(){
+	//////////////////////////////// 포인트 충전DB(2017.5.10)
+	public void chargepoint() {
+		if (Integer.parseInt(chargetf.getText().trim()) == 1000) {
+			point1.setText(String.valueOf(Integer.parseInt(point1.getText().trim()) + 1030));
+			chargetf.setText("");
+		}
+
+		else if (Integer.parseInt(chargetf.getText().trim()) == 5000) {
+			point1.setText(String.valueOf(Integer.parseInt(point1.getText().trim()) + 5200));
+			chargetf.setText("");
+		}
+
+		else if (Integer.parseInt(chargetf.getText().trim()) == 10000) {
+			point1.setText(String.valueOf(Integer.parseInt(point1.getText().trim()) + 10500));
+			chargetf.setText("");
+		}
+
+		else if (Integer.parseInt(chargetf.getText().trim()) == 50000) {
+			point1.setText(String.valueOf(Integer.parseInt(point1.getText().trim()) + 53000));
+			chargetf.setText("");
+
+		}
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(url, id, pass);
-			String query = "select * from detshow where sname=?";	
+			String query = "update customer set POINT=? where ID=?";
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, point1.getText().trim());
+			pstmt.setString(2, id2.getText().trim());
+			pstmt.executeUpdate();
+			pstmt.close();
+
+			System.out.println("충전성공11111");
+
+		} catch (ClassNotFoundException eee) {
+			System.err.println("충전 실패!!!11111");
+		} catch (SQLException e) {
+			System.err.println("충전 실패!!!2222222");
+		}
+
+	}
+
+	// 세부 공연 DB로 부터 불러오기
+	public void detshow() {
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			conn = DriverManager.getConnection(url, id, pass);
+
+			// 공연 정보 불러오기
+			String query = "select * from show where sname=?";
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, saveshowname);
-
 			ResultSet rs = pstmt.executeQuery();
-			
-			while(rs.next()) {
-					lbNameDB.setText(rs.getString("SNAME"));
-					lbLocDB.setText(rs.getString("SLOC"));
-					lbPriceDB.setText(rs.getString("SPRICE"));
-					cbDay.addItem(rs.getString("DTDATE"));
-					cbDay.setSelectedItem(rs.getString("DTDATE"));	
+
+			while (rs.next()) {
+				// if (rs.getString("SNAME").equals("특별시민")) {
+				lbNameDB.setText(rs.getString("SNAME"));
+				lbLocDB.setText(rs.getString("SLOC"));
+				lbPriceDB.setText(rs.getString("SPRICE"));
+				showPrice = Integer.parseInt(lbPriceDB.getText());
+
+				// 포스터 이미지 재설정
+				imgPosterLb.setIcon(new ImageIcon(rs.getString("SIMG")));
 			}
+
 			rs.close();
 			pstmt.close();
-		} catch (ClassNotFoundException eee) {
 
+			// 콤보박스 (날짜 불러오기)
+			String dayQuery = "select * from detshow where sid like (select sid from show where sname=?)";
+			PreparedStatement cbpstmt = conn.prepareStatement(dayQuery);
+			cbpstmt.setString(1, saveshowname);
+			ResultSet cbrs = cbpstmt.executeQuery();
+
+			// 날짜 형식 변환하여 저장하기
+			// SimpleDateFormat sdf = new SimpleDateFormat("yyyy년MM월dd일 kk:mm");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd kk:mm");
+
+			cbDay.removeAllItems();
+
+			// DB로부터 날짜 콤보 박스 불러오기
+			while (cbrs.next()) {
+				selectedSid = cbrs.getString("SID");
+				cbDay.addItem(sdf.format(cbrs.getTimestamp("DTDATE")));
+			}
+			cbrs.close();
+			cbpstmt.close();
+		} catch (ClassNotFoundException eee) {
+			System.out.println("세부 공연 불러오기 실패");
 		} catch (SQLException e) {
-			System.err.println("상세내용 보기 실패");
+			System.err.println("세부 공연 불러오기 실패");
 		}
-		/////////////////////
 	}
-	public TotalTicket_sub() {
+
+	public TotalTicket() {
 		super("메인");
 		this.init();
 		this.start();
@@ -620,7 +562,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		this.setLocation((int) (di.getWidth() / 2 - di1.getWidth() / 2),
 				(int) (di.getHeight() / 2 - di1.getHeight() / 2));
 		this.setVisible(true);
-		
+
 	}
 
 	private void start() {
@@ -633,42 +575,44 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		joinok.addActionListener(this);
 		joinx.addActionListener(this);
 		loginok.addActionListener(this);
+		loginplzok.addActionListener(this);
 		loginx.addActionListener(this);
 		joinokbt.addActionListener(this);
 		joinxbt.addActionListener(this);
 		loginokdlgbt.addActionListener(this);
 		loginxdlgbt.addActionListener(this);
 		logoutbt.addActionListener(this);
-		mv1.addMouseListener(this);
-		mv2.addMouseListener(this);
-		mv3.addMouseListener(this);
-		mv4.addMouseListener(this);
-		mv5.addMouseListener(this);
-		mv6.addMouseListener(this);
-		mv7.addMouseListener(this);
-		mv8.addMouseListener(this);
-		mv1c.addMouseListener(this);
-		mv2c.addMouseListener(this);
-		mv3c.addMouseListener(this);
-		mv4c.addMouseListener(this);
-		mv5c.addMouseListener(this);
-		mv6c.addMouseListener(this);
-		mv7c.addMouseListener(this);
-		mv8c.addMouseListener(this);
+		for (int i = 0; i < num; i++) {
+			mv[i].addMouseListener(this);
+			mvc[i].addMouseListener(this);
+		} 
+		
 		btnCancle.addActionListener(this);
 		btnSeatSelect.addActionListener(this);
 		btnFinSeat.addActionListener(this);
 		btnPayDlgCancle.addActionListener(this);
 		cbCount.addActionListener(this);
+		cbDay.addActionListener(this);
 		btnReselect.addActionListener(this);
 		searchtf.addFocusListener(this);
 		searchtf.addMouseListener(this);
 		searchbt.addActionListener(this);
+
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 16; j++) {
 				btnNotSelected[i][j].addActionListener(this);
 			}
 		}
+
+		// 좌석 다이얼로그 종료됐을 때 좌석 초기화시키기
+		sltSeatDlg.addWindowListener(new WindowAdapter() {
+
+			@Override
+			public void windowClosing(WindowEvent e) {
+				// TODO Auto-generated method stub
+				seatClear();
+			}
+		});
 
 		check.addActionListener(this);
 		cancel.addActionListener(this);
@@ -678,10 +622,87 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		canceltk.addActionListener(this);
 		cancelokbt.addActionListener(this);
 		cancelnobt.addActionListener(this);
-		
-		//포인트(2017.5.10)
+
+		// 포인트(2017.5.10)
 		charge.addActionListener(this);
 		chargebt.addActionListener(this);
+	}
+
+	// TODO : 좌석 선택된 좌석은 비활성화 하기
+		public void showSeat(String seat, String time) throws ParseException {
+
+			// String형식의 time을 Timestamp 형식으로 변환
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd kk:mm");
+			Date parsedDate = sdf.parse(time);
+			Timestamp writeDate = new Timestamp(parsedDate.getTime());
+
+			for (int i = 0; i < 6; i++) {
+				for (int j = 0; j < 16; j++) {
+					btnNotSelected[i][j].setEnabled(true);
+					switch (i) {
+					case 0:
+						btnNotSelected[i][j].setText("A" + (j + 1));
+						break;
+					case 1:
+						btnNotSelected[i][j].setText("B" + (j + 1));
+						break;
+					case 2:
+						btnNotSelected[i][j].setText("C" + (j + 1));
+						break;
+					case 3:
+						btnNotSelected[i][j].setText("D" + (j + 1));
+						break;
+					case 4:
+						btnNotSelected[i][j].setText("E" + (j + 1));
+						break;
+					case 5:
+						btnNotSelected[i][j].setText("F" + (j + 1));
+						break;
+					}
+				}
+			}
+
+			try {
+				// 시간 출력 포맷 확인 코드
+				// System.out.println("바뀐 시간 출력 " + sdf.format(parsedDate));
+				Class.forName("oracle.jdbc.driver.OracleDriver");
+				conn = DriverManager.getConnection(url, id, pass);
+				String query = "select seatid from seat where SID = ? and DTDATE = ? ";
+				PreparedStatement pstmt = conn.prepareStatement(query);
+				pstmt.setString(1, seat);
+				pstmt.setTimestamp(2, writeDate);
+				ResultSet rs = pstmt.executeQuery();
+
+				while (rs.next()) {
+					for (int i = 0; i < 6; i++) {
+						for (int j = 0; j < 16; j++) {
+							if (btnNotSelected[i][j].getText().equals(rs.getString("SEATID"))) {
+								btnNotSelected[i][j].setEnabled(false);
+								btnNotSelected[i][j].setText("X");
+							}
+						}
+					}
+				}
+				rs.close();
+				pstmt.close();
+
+			} catch (ClassNotFoundException eee) {
+				System.out.println("Class 오류");
+			} catch (SQLException ee) {
+				System.err.println("SQL 오류");
+			}
+
+		}
+	
+	// 좌석 초기화하기
+	public void seatClear() {
+		for (int i = 0; i < 6; i++) {
+			for (int j = 0; j < 16; j++) {
+				btnNotSelected[i][j].setBackground(null);
+			}
+		}
+		cnt = 0;
+		lbSltSeat.setText(Integer.toString(cnt));
 	}
 
 	private void init() {
@@ -701,86 +722,38 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		lb.setVisible(false);
 		logoutbt.setVisible(false);
 		mp.add("East", sp2);
-		
-		//DB에서 이미지 가져오는것 수정
+
+		for (int i = 0; i < num; i++) {
+			mv[i] = new JLabel();
+			mvc[i] = new JLabel();
+			mvst[i] = null;
+			image[i] = null;
+		}
+
+		// DB에서 이미지 가져오는것 수정
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
-			conn = DriverManager.getConnection(url, id, pass);			
-			Statement stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery("select * from show");			
-			while(rs.next()) {
-				if(rs.getString("SNAME").equals("특별시민")){
-					image1 = new ImageIcon(rs.getString("SIMG"));
-					mv1 = new JLabel(rs.getString("SNAME"), image1, JLabel.CENTER);
-					mv1c = new JLabel(rs.getString("SNAME"), image1, JLabel.CENTER);
-				}
-				if(rs.getString("SNAME").equals("아빠는딸")){
-					image2 = new ImageIcon(rs.getString("SIMG"));
-					mv2 = new JLabel(rs.getString("SNAME"), image2, JLabel.CENTER);
-					mv2c = new JLabel(rs.getString("SNAME"), image2, JLabel.CENTER);
-				}
-				if(rs.getString("SNAME").equals("분노의질주")){
-					image3 = new ImageIcon(rs.getString("SIMG"));
-					mv3 = new JLabel(rs.getString("SNAME"), image3, JLabel.CENTER);
-					mv3c = new JLabel(rs.getString("SNAME"), image3, JLabel.CENTER);
-				}
-				if(rs.getString("SNAME").equals("미녀와야수")){
-					image4 = new ImageIcon(rs.getString("SIMG"));
-					mv4 = new JLabel(rs.getString("SNAME"), image4, JLabel.CENTER);
-					mv4c = new JLabel(rs.getString("SNAME"), image4, JLabel.CENTER);
-				}
-				if(rs.getString("SNAME").equals("스머프")){
-					image5 = new ImageIcon(rs.getString("SIMG"));
-					mv5 = new JLabel(rs.getString("SNAME"), image5, JLabel.CENTER);
-					mv5c = new JLabel(rs.getString("SNAME"), image5, JLabel.CENTER);
-				}
-				if(rs.getString("SNAME").equals("스톰 인사이드")){
-					image6 = new ImageIcon(rs.getString("SIMG"));
-					mv6 = new JLabel(rs.getString("SNAME"), image6, JLabel.CENTER);
-					mv6c = new JLabel(rs.getString("SNAME"), image6, JLabel.CENTER);
-				}
-				if(rs.getString("SNAME").equals("악마는 프라다를 입는다")){
-					image7 = new ImageIcon(rs.getString("SIMG"));
-					mv7 = new JLabel(rs.getString("SNAME"), image7, JLabel.CENTER);
-					mv7c = new JLabel(rs.getString("SNAME"), image7, JLabel.CENTER);
-				}
-				if(rs.getString("SNAME").equals("8마일")){
-					image8 = new ImageIcon(rs.getString("SIMG"));
-					mv8 = new JLabel(rs.getString("SNAME"), image8, JLabel.CENTER);
-					mv8c = new JLabel(rs.getString("SNAME"), image8, JLabel.CENTER);
-				}
-			} 
-			rs.close();
-			stmt.close();
-		} catch (ClassNotFoundException eee) {
+			conn = DriverManager.getConnection(url, id, pass);
+			String query = "select * from show";
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			ResultSet rs = pstmt.executeQuery();
+			int i = 0;
+			while (rs.next()) {
+				image[i] = new ImageIcon(rs.getString("SIMG"));
+				mv[i] = new JLabel(rs.getString("SNAME"), image[i], JLabel.CENTER);
+				mvc[i] = new JLabel(rs.getString("SNAME"), image[i], JLabel.CENTER);
 
+				i++;
+			}
+
+			rs.close();
+			pstmt.close();
+		} catch (ClassNotFoundException eee) {
+			System.err.println("로그인 실패?!!!");
 		} catch (SQLException e) {
-			System.err.println("로그인 실패!!!");
+			System.err.println("로그인 실패?!!!");
 		}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
 		// 메인화면 구성 - 중앙 티켓화면 구성
 		tpmain.setBorder(new BevelBorder(BevelBorder.RAISED));
 
@@ -788,11 +761,16 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		ch1.add("----------");
 		ch1.add("티켓이름");
 		ch1.add("공연날짜");
-		
+
 		search.add("West", ch1);
 		search.add("Center", searchtf);
 		search.add("East", searchbt);
 
+		// 검색 결과창
+		
+		tpmain.add("Center", srchresult);
+		
+				
 		// 인기순, 날짜순(East)
 		tlingi.add("North", lbingi);
 		tlingi.add("Center", ltingi);
@@ -804,52 +782,20 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		// 중앙의 티켓화면 구성(Center)
 		// tp.setBorder(new BevelBorder(BevelBorder.RAISED));
 
-		mv1.setVerticalTextPosition(SwingConstants.BOTTOM);
-		mv1.setHorizontalTextPosition(SwingConstants.CENTER);
-		tp.add(mv1);
-
-		mv2.setVerticalTextPosition(SwingConstants.BOTTOM);
-		mv2.setHorizontalTextPosition(SwingConstants.CENTER);
-		tp.add(mv2);
-
-		mv3.setVerticalTextPosition(JLabel.BOTTOM);
-		mv3.setHorizontalTextPosition(JLabel.CENTER);
-		tp.add(mv3);
-
-		mv4.setVerticalTextPosition(JLabel.BOTTOM);
-		mv4.setHorizontalTextPosition(JLabel.CENTER);
-		tp.add(mv4);
-
-		mv5.setVerticalTextPosition(JLabel.BOTTOM);
-		mv5.setHorizontalTextPosition(JLabel.CENTER);
-		tp.add(mv5);
-
-		mv6.setVerticalTextPosition(JLabel.BOTTOM);
-		mv6.setHorizontalTextPosition(JLabel.CENTER);
-		tp.add(mv6);
-
-		mv7.setVerticalTextPosition(JLabel.BOTTOM);
-		mv7.setHorizontalTextPosition(JLabel.CENTER);
-		tp.add(mv7);
-
-		mv8.setVerticalTextPosition(JLabel.BOTTOM);
-		mv8.setHorizontalTextPosition(JLabel.CENTER);
-		tp.add(mv8);
-
+		for (int i = 0; i < num; i++) {
+			mv[i].setVerticalTextPosition(SwingConstants.BOTTOM);
+			mv[i].setHorizontalTextPosition(SwingConstants.CENTER);
+			tp.add(mv[i]);
+		} 
+		
 		tpmain.add("East", tklistpn);
 		tpmain.add("North", search);
 		tpmain.add("Center", tp);
 		con.add("North", mp);
 		con.add("Center", tpmain);
+
 		
-		//검색 결과창
-		
-		MainP.add(tpmain);
-		MainP.add(srchresult);
-		
-		con.add("North", mp);
-		con.add("Center", MainP);
-		
+
 		// 회원가입 다이얼로그 구성
 		joincon = joindlg.getContentPane();
 		joincon.setLayout(new BorderLayout());
@@ -992,48 +938,42 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 
 		loginxcon.add("Center", loginxp);
 		loginxcon.add("South", loginxbtp);
-		
 
-		//검색창
-		
-		MainP.add(tpmain);
-		MainP.add(srchresult);
-		
-		con.add("North", mp);
-		con.add("Center", MainP);
-
-		
-////////////////////// 구매자 끼리
+		////////////////////// 구매자 끼리
 		tbuy.setLayout(new BoxLayout(tbuy, BoxLayout.Y_AXIS));
-				
+
 		t3lb.setPreferredSize(new Dimension(300, 60));
 
-		JPanel t1in = new JPanel(new BorderLayout(3,3));
+		JPanel t1in = new JPanel(new BorderLayout(3, 3));
 		JPanel t1show = new JPanel(new BorderLayout(3, 3));
-		JPanel t1infop = new JPanel(new GridLayout(2,1));
+		JPanel t1infop = new JPanel(new GridLayout(2, 1));
 		Checkbox buycb = new Checkbox();
-		Label t1name = new Label("특별시민",Label.CENTER);
-		Label t1date = new Label("2017-04-23",Label.CENTER);
+		Label t1name = new Label("특별시민", Label.CENTER);
+		Label t1date = new Label("2017-04-23", Label.CENTER);
 		JPanel t1 = new JPanel();
-		JLabel t1lb = new JLabel(image1);
-		JPanel t2in = new JPanel(new BorderLayout(3,3));
+		JLabel t1lb = new JLabel(image[0]);
+		JPanel t2in = new JPanel(new BorderLayout(3, 3));
 		JPanel t2show = new JPanel(new BorderLayout(3, 3));
-		JPanel t2infop = new JPanel(new GridLayout(2,1));
+		JPanel t2infop = new JPanel(new GridLayout(2, 1));
 		Checkbox buycb1 = new Checkbox();
-		Label t2name = new Label("아빠는딸",Label.CENTER);
-		Label t2date = new Label("2017-04-12",Label.CENTER);
+		Label t2name = new Label("아빠는딸", Label.CENTER);
+		Label t2date = new Label("2017-04-12", Label.CENTER);
 		JPanel t2 = new JPanel();
-		JLabel t2lb = new JLabel(image2);
-						
-		t1infop.add(t1name);t1infop.add(t1date);
-		t1show.add("Center", t1lb); t1show.add("East",t1infop);		
-		t1in.add("Center",t1show);
-		t1in.add("West",buycb);
+		JLabel t2lb = new JLabel(image[1]);
+
+		t1infop.add(t1name);
+		t1infop.add(t1date);
+		t1show.add("Center", t1lb);
+		t1show.add("East", t1infop);
+		t1in.add("Center", t1show);
+		t1in.add("West", buycb);
 		t1.add(t1in);
-		t2infop.add(t2name);t2infop.add(t2date);
-		t2show.add("Center", t2lb); t1show.add("East",t2infop);
-		t2in.add("Center",t2show);
-		t2in.add("West",buycb1);
+		t2infop.add(t2name);
+		t2infop.add(t2date);
+		t2show.add("Center", t2lb);
+		t1show.add("East", t2infop);
+		t2in.add("Center", t2show);
+		t2in.add("West", buycb1);
 		t2.add(t2in);
 		t3ini.add("Center", t3lb);
 		t3in.add(t3ini);
@@ -1041,7 +981,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 
 		tbuy.add(t1);
 		tbuy.add(t2);
-		tbuy.add(t3);		
+		tbuy.add(t3);
 
 		buyer_Top_btp1.add(tupbt);
 		buyer_Top_btp2.add(tbuybt);
@@ -1063,13 +1003,28 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		// 예매 컨테이너 구성
 		rsvCon = rsvDlg.getContentPane();
 		rsvDlg.setLayout(new BorderLayout());
-		rsvDlg.setSize(600, 350);
-		// rsvDlg.setResizable(false);
-
+		rsvDlg.setSize(600, 400);
+		rsvDlg.setResizable(false);
+		
+		
+		// 비로그인시 빠꾸먹이는 컨테이너 구성
+		loginplzCon = loginplzdlg.getContentPane();
+		loginplzdlg.setLayout(new BorderLayout());
+		JPanel loginplzbtpn = new JPanel(new FlowLayout());
+		JPanel loginplzlbpn = new JPanel(new FlowLayout());
+		loginplzdlg.setLocation((int) (di.getWidth() / 2 - di5.getWidth() / 2),
+				(int) (di.getHeight() / 2 - di5.getHeight() / 2));
+		loginplzdlg.setSize(270, 150);
+		loginplzlbpn.add(loginplzlb);
+		loginplzbtpn.add(loginplzok);
+		loginplzCon.add("Center", loginplzlbpn);
+		loginplzCon.add("South", loginplzbtpn);
+		
+		
 		// 좌석 선택 컨테이너 구성
 		sltSeatCon = sltSeatDlg.getContentPane();
 		sltSeatDlg.setLayout(new BorderLayout(50, 50));
-		sltSeatDlg.setSize(880, 450);
+		sltSeatDlg.setSize(1000, 450);
 
 		// 결제 컨테이너 구성
 		payCon = payDlg.getContentPane();
@@ -1176,163 +1131,39 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		JPanel plSection3 = new JPanel(new GridLayout(6, 4));
 		JPanel plSection4 = new JPanel(new GridLayout(6, 4));
 
-		// 첫번째 섹션 그리기
+		// 좌석 섹션 그리기
 		for (int i = 0; i < 6; i++) {
-			for (int j = 0; j < 4; j++) {
+			for (int j = 0; j < 16; j++) {
 				switch (i) {
 				case 0:
 					btnNotSelected[i][j] = new JButton("A" + (j + 1));
-					btnSelected[i][j] = new JButton("A" + (j + 1));
-					btnNotAble[i][j] = new JButton("A" + (j + 1));
 					break;
 				case 1:
 					btnNotSelected[i][j] = new JButton("B" + (j + 1));
-					btnSelected[i][j] = new JButton("B" + (j + 1));
-					btnNotAble[i][j] = new JButton("B" + (j + 1));
 					break;
 				case 2:
 					btnNotSelected[i][j] = new JButton("C" + (j + 1));
-					btnSelected[i][j] = new JButton("C" + (j + 1));
-					btnNotAble[i][j] = new JButton("C" + (j + 1));
 					break;
 				case 3:
 					btnNotSelected[i][j] = new JButton("D" + (j + 1));
-					btnSelected[i][j] = new JButton("D" + (j + 1));
-					btnNotAble[i][j] = new JButton("D" + (j + 1));
 					break;
 				case 4:
 					btnNotSelected[i][j] = new JButton("E" + (j + 1));
-					btnSelected[i][j] = new JButton("E" + (j + 1));
-					btnNotAble[i][j] = new JButton("E" + (j + 1));
 					break;
 				case 5:
 					btnNotSelected[i][j] = new JButton("F" + (j + 1));
-					btnSelected[i][j] = new JButton("F" + (j + 1));
-					btnNotAble[i][j] = new JButton("F" + (j + 1));
 					break;
 				}
 				btnNotSelected[i][j].setSize(50, 50);
-				plSection1.add(btnNotSelected[i][j]);
-			}
-		}
 
-		// 두번째 섹션 그리기
-		for (int i = 0; i < 6; i++) {
-			for (int j = 4; j < 8; j++) {
-				switch (i) {
-				case 0:
-					btnNotSelected[i][j] = new JButton("A" + (j + 1));
-					btnSelected[i][j] = new JButton("A" + (j + 1));
-					btnNotAble[i][j] = new JButton("A" + (j + 1));
-					break;
-				case 1:
-					btnNotSelected[i][j] = new JButton("B" + (j + 1));
-					btnSelected[i][j] = new JButton("B" + (j + 1));
-					btnNotAble[i][j] = new JButton("B" + (j + 1));
-					break;
-				case 2:
-					btnNotSelected[i][j] = new JButton("C" + (j + 1));
-					btnSelected[i][j] = new JButton("C" + (j + 1));
-					btnNotAble[i][j] = new JButton("C" + (j + 1));
-					break;
-				case 3:
-					btnNotSelected[i][j] = new JButton("D" + (j + 1));
-					btnSelected[i][j] = new JButton("D" + (j + 1));
-					btnNotAble[i][j] = new JButton("D" + (j + 1));
-					break;
-				case 4:
-					btnNotSelected[i][j] = new JButton("E" + (j + 1));
-					btnSelected[i][j] = new JButton("E" + (j + 1));
-					btnNotAble[i][j] = new JButton("E" + (j + 1));
-					break;
-				case 5:
-					btnNotSelected[i][j] = new JButton("F" + (j + 1));
-					btnSelected[i][j] = new JButton("F" + (j + 1));
-					btnNotAble[i][j] = new JButton("F" + (j + 1));
-					break;
-				}
-				btnNotSelected[i][j].setSize(50, 50);
-				plSection2.add(btnNotSelected[i][j]);
-			}
-		}
-
-		// 3번째 섹션 그리기
-		for (int i = 0; i < 6; i++) {
-			for (int j = 8; j < 12; j++) {
-				switch (i) {
-				case 0:
-					btnNotSelected[i][j] = new JButton("A" + (j + 1));
-					btnSelected[i][j] = new JButton("A" + (j + 1));
-					btnNotAble[i][j] = new JButton("A" + (j + 1));
-					break;
-				case 1:
-					btnNotSelected[i][j] = new JButton("B" + (j + 1));
-					btnSelected[i][j] = new JButton("B" + (j + 1));
-					btnNotAble[i][j] = new JButton("B" + (j + 1));
-					break;
-				case 2:
-					btnNotSelected[i][j] = new JButton("C" + (j + 1));
-					btnSelected[i][j] = new JButton("C" + (j + 1));
-					btnNotAble[i][j] = new JButton("C" + (j + 1));
-					break;
-				case 3:
-					btnNotSelected[i][j] = new JButton("D" + (j + 1));
-					btnSelected[i][j] = new JButton("D" + (j + 1));
-					btnNotAble[i][j] = new JButton("D" + (j + 1));
-					break;
-				case 4:
-					btnNotSelected[i][j] = new JButton("E" + (j + 1));
-					btnSelected[i][j] = new JButton("E" + (j + 1));
-					btnNotAble[i][j] = new JButton("E" + (j + 1));
-					break;
-				case 5:
-					btnNotSelected[i][j] = new JButton("F" + (j + 1));
-					btnSelected[i][j] = new JButton("F" + (j + 1));
-					btnNotAble[i][j] = new JButton("F" + (j + 1));
-					break;
-				}
-				btnNotSelected[i][j].setSize(50, 50);
-				plSection3.add(btnNotSelected[i][j]);
-			}
-		}
-
-		// 4번째 섹션 그리기
-		for (int i = 0; i < 6; i++) {
-			for (int j = 12; j < 16; j++) {
-				switch (i) {
-				case 0:
-					btnNotSelected[i][j] = new JButton("A" + (j + 1));
-					btnSelected[i][j] = new JButton("A" + (j + 1));
-					btnNotAble[i][j] = new JButton("A" + (j + 1));
-					break;
-				case 1:
-					btnNotSelected[i][j] = new JButton("B" + (j + 1));
-					btnSelected[i][j] = new JButton("B" + (j + 1));
-					btnNotAble[i][j] = new JButton("B" + (j + 1));
-					break;
-				case 2:
-					btnNotSelected[i][j] = new JButton("C" + (j + 1));
-					btnSelected[i][j] = new JButton("C" + (j + 1));
-					btnNotAble[i][j] = new JButton("C" + (j + 1));
-					break;
-				case 3:
-					btnNotSelected[i][j] = new JButton("D" + (j + 1));
-					btnSelected[i][j] = new JButton("D" + (j + 1));
-					btnNotAble[i][j] = new JButton("D" + (j + 1));
-					break;
-				case 4:
-					btnNotSelected[i][j] = new JButton("E" + (j + 1));
-					btnSelected[i][j] = new JButton("E" + (j + 1));
-					btnNotAble[i][j] = new JButton("E" + (j + 1));
-					break;
-				case 5:
-					btnNotSelected[i][j] = new JButton("F" + (j + 1));
-					btnSelected[i][j] = new JButton("F" + (j + 1));
-					btnNotAble[i][j] = new JButton("F" + (j + 1));
-					break;
-				}
-				btnNotSelected[i][j].setSize(50, 50);
-				plSection4.add(btnNotSelected[i][j]);
+				if (j < 4)
+					plSection1.add(btnNotSelected[i][j]);
+				else if (j >= 4 && j < 8)
+					plSection2.add(btnNotSelected[i][j]);
+				else if (j >= 8 && j < 12)
+					plSection3.add(btnNotSelected[i][j]);
+				else if (j >= 12 && j < 16)
+					plSection4.add(btnNotSelected[i][j]);
 			}
 		}
 
@@ -1340,11 +1171,11 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		plAllSection.add(plSection2);
 		plAllSection.add(plSection3);
 		plAllSection.add(plSection4);
-
+				
 		/* 결제 다이얼로그 구성 */
 		JPanel pl12 = new JPanel(new FlowLayout());
 		pl12.add(lbPay);
-		pl12.add(txToPay);
+		pl12.add(lbToPay);
 
 		JPanel pl13 = new JPanel(new FlowLayout());
 		pl13.add(btnPayDlgPay);
@@ -1415,22 +1246,23 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		pointp.add("South", chargeP);
 		pointp.add("Center", pointP1);
 
-		 //////////포인트충전(2017.5.10)
-        chargecon = chargedlg.getContentPane();
-        chargecon.setLayout(new BorderLayout());
-        chargedlg.setSize(300,220);
-        chargedlg.setResizable(false);
-        tk = Toolkit.getDefaultToolkit();
-         di = tk.getScreenSize();
-        di1 = chargedlg.getSize();
-        chargedlg.setLocation((int)(di.getWidth() / 2 - di1.getWidth() / 2),(int)(di.getHeight() / 2 - di1.getHeight() / 2));
-        
-        chargep.add(chargelb);
-        chargep.add(chargetf);
-        chargep.add(chargebt);
-        
-        chargecon.add("Center",chargep);
-        /////////////////////////////////////////
+		////////// 포인트충전(2017.5.10)
+		chargecon = chargedlg.getContentPane();
+		chargecon.setLayout(new BorderLayout());
+		chargedlg.setSize(300, 220);
+		chargedlg.setResizable(false);
+		tk = Toolkit.getDefaultToolkit();
+		di = tk.getScreenSize();
+		di1 = chargedlg.getSize();
+		chargedlg.setLocation((int) (di.getWidth() / 2 - di1.getWidth() / 2),
+				(int) (di.getHeight() / 2 - di1.getHeight() / 2));
+
+		chargep.add(chargelb);
+		chargep.add(chargetf);
+		chargep.add(chargebt);
+
+		chargecon.add("Center", chargep);
+		/////////////////////////////////////////
 		p4_1.add(id1);
 		p4_1.add(id2);
 		p4_2.add(phone1);
@@ -1521,15 +1353,18 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		updateokcon.add("South", updateokbtp);
 
 		tpmain.setVisible(true);
+		
 	}
-
 	int cnt = 0;
-
+	
+	
+	
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
-		// 콤보 박스 예매 인원수 선택 출력
-		String strPersonCnt = cbCount.getSelectedItem().toString();
+
+		// 콤보 박스 예매 인원수
+		strPersonCnt = cbCount.getSelectedItem().toString();
 		lbAllSeat.setText(strPersonCnt);
 
 		if (e.getSource() == Buyer_bt) { // 구매자 끼리
@@ -1537,69 +1372,40 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 			srchresult.setVisible(false);
 			BuyerP.setVisible(true);
 		} // 구매자 끼리
-		
-		if (e.getSource()== tbuybt){
-			if(buycb.getState()==true){
+
+		if (e.getSource() == tbuybt) {
+			if (buycb.getState() == true) {
 				System.out.println("???");
 				t1.setVisible(false);
 			}
 		}
-		//검색버튼
-		else if(e.getSource() == searchbt){
+		
+		// 검색버튼
+		else if (e.getSource() == searchbt) {
+			srchresult.setVisible(true);
 			srchresult.removeAll();
 			String rslt = searchtf.getText().trim();
-			String mvst1 = mv1.getText().trim();
-			String mvst2 = mv2.getText().trim();
-			String mvst3 = mv3.getText().trim();
-			String mvst4 = mv4.getText().trim();
-			String mvst5 = mv5.getText().trim();
-			String mvst6 = mv6.getText().trim();
-			String mvst7 = mv7.getText().trim();
-			String mvst8 = mv8.getText().trim();
-			try{
-
-				if(mvst1.matches(".*"+rslt+".*")){
-					mv1c.setVerticalTextPosition(SwingConstants.BOTTOM);
-					mv1c.setHorizontalTextPosition(SwingConstants.CENTER);
-					srchresult.add(mv1c);}
-				if(mvst2.matches(".*"+rslt+".*")){
-					mv2c.setVerticalTextPosition(SwingConstants.BOTTOM);
-					mv2c.setHorizontalTextPosition(SwingConstants.CENTER);
-					srchresult.add(mv2c);}
-				if(mvst3.matches(".*"+rslt+".*")){
-					mv3c.setVerticalTextPosition(SwingConstants.BOTTOM);
-					mv3c.setHorizontalTextPosition(SwingConstants.CENTER);
-					srchresult.add(mv3c);}
-				if(mvst4.matches(".*"+rslt+".*")){
-					mv4c.setVerticalTextPosition(SwingConstants.BOTTOM);
-					mv4c.setHorizontalTextPosition(SwingConstants.CENTER);
-					srchresult.add(mv4c);}
-				if(mvst5.matches(".*"+rslt+".*")){
-					mv5c.setVerticalTextPosition(SwingConstants.BOTTOM);
-					mv5c.setHorizontalTextPosition(SwingConstants.CENTER);
-					srchresult.add(mv5c);}
-				if(mvst6.matches(".*"+rslt+".*")){
-					mv6c.setVerticalTextPosition(SwingConstants.BOTTOM);
-					mv6c.setHorizontalTextPosition(SwingConstants.CENTER);
-					srchresult.add(mv6c);}
-				if(mvst7.matches(".*"+rslt+".*")){
-					mv7c.setVerticalTextPosition(SwingConstants.BOTTOM);
-					mv7c.setHorizontalTextPosition(SwingConstants.CENTER);
-					srchresult.add(mv7c);}
-				if(mvst8.matches(".*"+rslt+".*")){
-					mv8c.setVerticalTextPosition(SwingConstants.BOTTOM);
-					mv8c.setHorizontalTextPosition(SwingConstants.CENTER);
-					srchresult.add(mv8c);}
-
-			}
-			catch(PatternSyntaxException ee){
+			for (int i = 0; i < num; i++) {
+				mvst[i] = mv[i].getText().trim();
+			} 
+			
+			try {
+				for (int i = 0; i < num; i++) {
+					if (mvst[i].matches(".*" + rslt + ".*")) {
+						mvc[i].setVerticalTextPosition(SwingConstants.BOTTOM);
+						mvc[i].setHorizontalTextPosition(SwingConstants.CENTER);
+						srchresult.add(mvc[i]);
+					}
+				}
+					} catch (PatternSyntaxException ee) {
 				System.err.println(ee);
 			}
+			tp.setVisible(false);
+			tpmain.add("Center",srchresult);
 			searchtf.setText("제목 또는 날짜 검색");
-			tpmain.setVisible(false);
 			srchresult.setVisible(true);
 		}
-		
+
 		else if (e.getSource() == joinbt) { // 회원가입
 			// tp.setVisible(false);
 			joindlg.setVisible(true);
@@ -1616,16 +1422,6 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 				joinxdlg.setVisible(true);
 			} else {
 				joinMember();
-				/*
-				 * TotalTicket_sub1 sss = new TotalTicket_sub1(a1, b1, c1, d1,
-				 * e1, f1); vc.addElement(sss); File file = new
-				 * File("C:\\workspace\\data\\info.txt"); try{ FileOutputStream
-				 * fo = new FileOutputStream(file); BufferedOutputStream bo =
-				 * new BufferedOutputStream(fo); ObjectOutputStream oos = new
-				 * ObjectOutputStream(bo); oos.writeObject(vc); // 반드시 직렬화되어 있어야
-				 * 한다. oos.close(); bo.close(); fo.close(); }catch(Exception
-				 * ee){ System.err.println("Error = " + ee.toString()); }
-				 */
 				joinokidtf.setText(joinidtf.getText().trim());
 				joinidtf.setText("");
 				joinpwtf.setText("");
@@ -1670,25 +1466,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 
 		else if (e.getSource() == loginok) { // 로그인 다이얼로그의 완료
 			loginMember();
-			/*
-			 * File file = new File("C:\\workspace\\data\\info.txt"); try{
-			 * FileInputStream fi = new FileInputStream(file);
-			 * BufferedInputStream bi = new BufferedInputStream(fi);
-			 * ObjectInputStream ois = new ObjectInputStream(bi); vc.clear(); vc
-			 * = (Vector)ois.readObject(); ois.close(); bi.close(); fi.close();
-			 * }catch(Exception ee){ ee.printStackTrace();; } for(int
-			 * i=0;i<vc.size();i++){ TotalTicket_sub1 imsi =
-			 * (TotalTicket_sub1)vc.elementAt(i);
-			 * if(imsi.getId().equals(loginidtf.getText().trim()) &&
-			 * imsi.getPw().equals(new String(loginpwtf.getPassword()))){
-			 * loginokdlglb1.setText(imsi.getId()); id2.setText(imsi.getId());
-			 * nname2.setText(imsi.getNik()); phone2.setText(imsi.getTel());
-			 * email2.setText(imsi.getEmail()); eID1.setText(imsi.getId());
-			 * tphone.setText(imsi.getTel()); tmail.setText(imsi.getEmail());
-			 * tname.setText(imsi.getNik()); loginokdlg.setVisible(true); }
-			 * else{ loginxdlg.setVisible(true); } }
-			 */
-
+			
 		} // 로그인 다이얼로그의 완료
 
 		else if (e.getSource() == loginx) { // 로그인 다이얼로그의 취소
@@ -1717,17 +1495,6 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 			joinbt.setVisible(false);
 			lb.setVisible(true);
 
-			/*
-			 * File file = new File("C:\\workspace\\data\\info.txt"); try{
-			 * FileInputStream fi = new FileInputStream(file);
-			 * BufferedInputStream bi = new BufferedInputStream(fi);
-			 * ObjectInputStream ois = new ObjectInputStream(bi); vc.clear(); vc
-			 * = (Vector)ois.readObject(); ois.close(); bi.close(); fi.close();
-			 * }catch(Exception ee){ ee.printStackTrace();; } for(int
-			 * i=0;i<vc.size();i++){ TotalTicket_sub1 imsi =
-			 * (TotalTicket_sub1)vc.elementAt(i); lb.setText(imsi.getId()); }
-			 */
-
 			logoutbt.setVisible(true);
 			mypagebt.setVisible(true);
 		} // 로그인 성공 다이얼로그 확인버튼
@@ -1754,21 +1521,35 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		else if (e.getSource() == btnCancle) { // 취소 버튼
 			rsvDlg.setVisible(false);
 		} else if (e.getSource() == btnSeatSelect) { // 좌석 선택 부분 눌렀을 때
-			sltSeatDlg.setVisible(true);
+			// 콤보 박스 날짜 선택 값
+			cbSelectedDate = cbDay.getSelectedItem().toString();
+
+			if(loginokdlglb1.getText()==""){
+				loginplzdlg.setVisible(true);
+				return;
+			}else{
+				try { // DB에 있는 좌석 불러오기
+					showSeat(selectedSid, cbSelectedDate);
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}sltSeatDlg.setVisible(true);
+			}
+		} else if (e.getSource() == loginplzok){	//로그인 해달라는 버튼
+			loginplzdlg.setVisible(false);
 		} else if (e.getSource() == btnFinSeat) { // 좌석 선택 완료
+			lbToPay.setText(String.valueOf(Integer.parseInt(strPersonCnt) * showPrice));
 			payDlg.setVisible(true);
 		} else if (e.getSource() == btnPayDlgCancle) {
 			payDlg.setVisible(false);
 		} else if (e.getSource() == btnReselect) { // 좌석 다시 선택
-			for (int i = 0; i < 6; i++) {
-				for (int j = 0; j < 16; j++) {
-					btnNotSelected[i][j].setEnabled(true);
-					btnNotSelected[i][j].setBackground(null);
-				}
+			try {
+				showSeat(selectedSid, cbSelectedDate);
+				seatClear();
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
-			cnt = 0;
-			lbSltSeat.setText(Integer.toString(cnt));
-
 		} else if (e.getSource() == mypagebt) { // 마이페이지
 			tpmain.setVisible(false);
 			srchresult.setVisible(false);
@@ -1792,16 +1573,15 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 
 		} // 수정 완료 다이얼로그 확인버튼
 
+		///////////////////////////////////////////////////////// 포인트
 
-		/////////////////////////////////////////////////////////포인트
-
-		else if(e.getSource()==charge){
+		else if (e.getSource() == charge) {
 			chargedlg.setVisible(true);
-			}//포인트 충전버튼
-		else if(e.getSource()==chargebt){
+		} // 포인트 충전버튼
+		else if (e.getSource() == chargebt) {
 			chargepoint();
 			chargedlg.setVisible(false);
-			}
+		}
 		///////////////////////////////////////////////////// 공연내역 예매취소
 
 		else if (e.getSource() == canceltk) {
@@ -1829,15 +1609,18 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		// 좌석 콤보 박스 수만큼 선택
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 16; j++) {
+				// TODO : 좌석 버튼 활성화 시키기
+				if (cnt == Integer.parseInt(strPersonCnt)) {
+					btnFinSeat.setEnabled(true);
+					break;
+				} else
+					btnFinSeat.setEnabled(false);
+				
 				if (e.getSource() == btnNotSelected[i][j]) {
 					btnNotSelected[i][j].setBackground(Color.RED);
-					btnNotSelected[i][j].setEnabled(false);
 					cnt++;
 					lbSltSeat.setText(Integer.toString(cnt));
 				}
-
-				if (cnt == Integer.parseInt(strPersonCnt))
-					break;
 			}
 		}
 
@@ -1845,7 +1628,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		
+
 	}
 
 	@Override
@@ -1856,113 +1639,30 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		if (e.getSource() == homebt) { // 홈버튼
+			tpmain.add("Center", tp);
+			tp.setVisible(true);
 			tpmain.setVisible(true);
 			srchresult.setVisible(false);
 			BuyerP.setVisible(false);
 			mypagep.setVisible(false);
 			searchtf.setText("제목 또는 날짜 검색");
 		} // 홈버튼
-
-		/////////////////공연포스터 눌렀을 떄 보이는 상세내용(5/12)
-		else if (e.getSource() == mv1){
-			saveshowname =mv1.getText().trim();
-			detshow();
-			rsvDlg.setVisible(true);
-			cbDay.removeAllItems();
+		
+		for (int i = 0; i < num; i++) { // 포스터 이미지 눌렀을 때
+			if (e.getSource() == mv[i]) {
+				saveshowname = mv[i].getText().trim();
+				detshow();
+				rsvDlg.setVisible(true);
+				// cbDay.removeAllItems();
 			}
-		else if (e.getSource() == mv2){
-			saveshowname =mv2.getText().trim();
-		    detshow();
-			rsvDlg.setVisible(true);
-			cbDay.removeAllItems();
-			}
-		else if (e.getSource() == mv3){
-			saveshowname =mv3.getText().trim();
-			detshow();
-			rsvDlg.setVisible(true);
-			cbDay.removeAllItems();
-			}
-		else if (e.getSource() == mv4){
-			saveshowname =mv4.getText().trim();
-			detshow();
-			rsvDlg.setVisible(true);
-			cbDay.removeAllItems();
 		}
-		else if (e.getSource() == mv5){
-			saveshowname =mv5.getText().trim();
-			detshow();
-			rsvDlg.setVisible(true);
-			cbDay.removeAllItems();
-		}
-		else if (e.getSource() == mv6){
-			saveshowname =mv6.getText().trim();			
-			detshow();
-			rsvDlg.setVisible(true);
-			cbDay.removeAllItems();
-						
+		
+		for (int i = 0; i < num; i++) {
+			if (e.getSource() == mvc[i]) {
+				saveshowname = mv[i].getText().trim();
+				detshow();
+				rsvDlg.setVisible(true);
 			}
-		else if (e.getSource() == mv7){
-			saveshowname =mv7.getText().trim();
-			detshow();
-			rsvDlg.setVisible(true);
-			cbDay.removeAllItems();
-			}
-		else if (e.getSource() == mv8){
-			saveshowname =mv8.getText().trim();
-			detshow();
-			rsvDlg.setVisible(true);
-			cbDay.removeAllItems();
-			}
-		else if (e.getSource() == mv1c){
-			saveshowname =mv1c.getText().trim();
-			detshow();
-			rsvDlg.setVisible(true);
-			cbDay.removeAllItems();
-			}
-		else if (e.getSource() == mv2c){
-			saveshowname =mv2c.getText().trim();
-			detshow();
-			rsvDlg.setVisible(true);
-			cbDay.removeAllItems();
-			}
-		else if (e.getSource() == mv3c){
-			saveshowname =mv3c.getText().trim();
-			detshow();
-			rsvDlg.setVisible(true);
-			cbDay.removeAllItems();
-			}
-		else if (e.getSource() == mv4c){
-			saveshowname =mv4c.getText().trim();
-			detshow();
-			rsvDlg.setVisible(true);
-			cbDay.removeAllItems();
-			}
-		else if (e.getSource() == mv5c){
-			saveshowname =mv5c.getText().trim();
-			detshow();
-			rsvDlg.setVisible(true);
-			cbDay.removeAllItems();
-			}
-		else if (e.getSource() == mv6c){
-			saveshowname =mv6c.getText().trim();
-			detshow();
-			rsvDlg.setVisible(true);
-			cbDay.removeAllItems();
-			}
-		else if (e.getSource() == mv7c){
-			saveshowname =mv7c.getText().trim();
-			detshow();
-			rsvDlg.setVisible(true);
-			cbDay.removeAllItems();
-			}
-		else if (e.getSource() == mv8c){
-			saveshowname =mv8c.getText().trim();
-			detshow();
-			rsvDlg.setVisible(true);
-			cbDay.removeAllItems();
-			}
-		else if(e.getSource()==searchtf){
-			searchtf.setText("");
 		}
 
 	}
@@ -1982,7 +1682,7 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 	@Override
 	public void focusGained(FocusEvent e) {
 		// TODO Auto-generated method stub
-		if(e.getSource()==searchtf){
+		if (e.getSource() == searchtf) {
 			searchtf.setText("");
 		}
 	}
@@ -2010,70 +1710,5 @@ class TotalTicket_sub extends JFrame implements ActionListener, MouseListener, K
 		// TODO Auto-generated method stub
 
 	}
+	
 }
-
-/*class TotalTicket_sub1 implements Serializable {
-	private String id;
-	private String pw;
-	private String pwok;
-	private String tel;
-	private String nik;
-	private String email;
-
-	public TotalTicket_sub1(String a, String b, String c, String d, String e, String f) {
-		id = a;
-		pw = b;
-		pwok = c;
-		tel = d;
-		nik = e;
-		email = f;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getPw() {
-		return pw;
-	}
-
-	public void setPw(String pw) {
-		this.pw = pw;
-	}
-
-	public String getPwok() {
-		return pwok;
-	}
-
-	public void setPwok(String pwok) {
-		this.pwok = pwok;
-	}
-
-	public String getTel() {
-		return tel;
-	}
-
-	public void setTel(String tel) {
-		this.tel = tel;
-	}
-
-	public String getNik() {
-		return nik;
-	}
-
-	public void setNik(String nik) {
-		this.nik = nik;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-}*/
