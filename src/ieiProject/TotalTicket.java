@@ -15,13 +15,13 @@ import javax.swing.border.SoftBevelBorder;
 
 //소스수정 170511      
 
-/*public class Test {
+public class TotalTicket {
 	public static void main(String[] ar) {
 		TotalTicket_sub123 ex = new TotalTicket_sub123();
 	}
 }
-*/
-public class TotalTicket extends JFrame implements ActionListener, MouseListener, KeyListener, FocusListener {
+
+class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener, KeyListener, FocusListener {
 	
 	ImageIcon error_image = new ImageIcon("..\\ieiProject\\image\\error.jpg");
 	private String saveshowname = null;
@@ -549,7 +549,7 @@ public class TotalTicket extends JFrame implements ActionListener, MouseListener
 		}
 	}
 
-	public TotalTicket() {
+	public TotalTicket_sub123() {
 		super("메인");
 		this.init();
 		this.start();
