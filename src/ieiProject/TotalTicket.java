@@ -880,7 +880,7 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 		// 로그인 다이얼로그 구성
 		logincon = logindlg.getContentPane();
 		logincon.setLayout(new BorderLayout());
-		logindlg.setSize(300, 120);
+		logindlg.setSize(300, 160);
 		logindlg.setResizable(false);
 		Dimension di2 = logindlg.getSize();
 		logindlg.setLocation((int) (di.getWidth() / 2 - di2.getWidth() / 2),
@@ -1029,7 +1029,7 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 		// 결제 컨테이너 구성
 		payCon = payDlg.getContentPane();
 		payDlg.setLayout(new BorderLayout(40, 40));
-		payDlg.setSize(350, 150);
+		payDlg.setSize(350, 180);
 
 		// 위치 구성
 		Dimension dm1 = Toolkit.getDefaultToolkit().getScreenSize();
