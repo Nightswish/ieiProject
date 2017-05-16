@@ -548,9 +548,9 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 			System.err.println("세부 공연 불러오기 실패");
 		}
 	}
-	
+
 	// 날짜별 순위
-	public void dateshow(){
+	public void dateshow() {
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(url, id, pass);
@@ -565,37 +565,37 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 			}
 			rs.close();
 			pstmt.close();
-			
-		}catch (ClassNotFoundException eee) {
+
+		} catch (ClassNotFoundException eee) {
 			System.out.println("날짜별 순위 불러오기 실패");
 		} catch (SQLException e) {
 			System.err.println("날짜별 순위 불러오기 실패2");
 		}
 	}
-	
+
 	// best 순위
-		public void bestshow(){
-			try {
-				Class.forName("oracle.jdbc.driver.OracleDriver");
-				conn = DriverManager.getConnection(url, id, pass);
+	public void bestshow() {
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			conn = DriverManager.getConnection(url, id, pass);
 
-				String query = "select sname from show, bestview where show.sid = bestview.sid";
-				PreparedStatement pstmt = conn.prepareStatement(query);
-				ResultSet rs = pstmt.executeQuery();
+			String query = "select sname from show, bestview where show.sid = bestview.sid";
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			ResultSet rs = pstmt.executeQuery();
 
-				while (rs.next()) {
-					ltingi.add(rs.getString("SNAME"));
+			while (rs.next()) {
+				ltingi.add(rs.getString("SNAME"));
 
-				}
-				rs.close();
-				pstmt.close();
-				
-			}catch (ClassNotFoundException eee) {
-				System.out.println("날짜별 순위 불러오기 실패");
-			} catch (SQLException e) {
-				System.err.println("날짜별 순위 불러오기 실패2");
 			}
+			rs.close();
+			pstmt.close();
+
+		} catch (ClassNotFoundException eee) {
+			System.out.println("날짜별 순위 불러오기 실패");
+		} catch (SQLException e) {
+			System.err.println("날짜별 순위 불러오기 실패2");
 		}
+	}
 
 	public TotalTicket_sub123() {
 		super("메인");
@@ -681,6 +681,15 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 		btnPayDlgCancle.addActionListener(this);
 	}
 
+	public void btnSelectedNull() {
+		// 버튼 초기화
+		for (int i = 0; i < 6; i++) {
+			for (int j = 0; j < 16; j++) {
+				btnSelected[i][j].setText(null);
+			}
+		}
+	}
+
 	// 결제 완료되면 티켓 정보 DB에 넣기
 	public void addTicket(String showId, String SDate) throws ParseException {
 
@@ -696,12 +705,28 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(url, id, pass);
+
+			// TICKET 테이블에 티켓 추가
 			String query = "insert into TICKET values (? + ticket_num_seq.nextval,?,?,?)";
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, today + 100000);
 			pstmt.setString(2, showId);
 			pstmt.setTimestamp(3, writeDate);
 			ResultSet rs = null;
+
+			// TICKET 테이블에 있는 TNUM 찾는 쿼리문
+			String findTicketQuery = "select * from TICKET where SEATID = ? and DTDATE = ? and SID = ?";
+			PreparedStatement pstmt2 = conn.prepareStatement(findTicketQuery);
+			pstmt2.setTimestamp(2, writeDate);
+			pstmt2.setString(3, showId);
+			ResultSet rs2 = null;
+			;
+
+			// RERSERVATION 테이블에 추가하기
+			String addRsvQuery = "insert into RESERVATION values (?,?)";
+			PreparedStatement pstmt3 = conn.prepareStatement(addRsvQuery);
+			pstmt3.setString(1, loginokdlglb1.getText());
+			ResultSet rs3 = null;
 
 			for (int i = 0; i < 6; i++) {
 				for (int j = 0; j < 16; j++) {
@@ -709,38 +734,65 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 						System.out.println("출력출력출력 : " + btnSelected[i][j].getText());
 						pstmt.setString(4, btnSelected[i][j].getText());
 						rs = pstmt.executeQuery();
+
+						// TODO : 좌석에 해당하는 TNUM 받기
+						pstmt2.setString(1, btnSelected[i][j].getText());
+						rs2 = pstmt2.executeQuery();
+						while (rs2.next()) {
+							System.out.println("티켓 번호를 출력해보자 " + rs2.getString("TNUM"));
+							// TODO : 예약 테이블에 넣기
+							pstmt3.setString(2, rs2.getString("TNUM"));
+							rs3 = pstmt3.executeQuery();
+						}
+
 					}
 				}
 			}
 
 			// 버튼 초기화
-			for (int i = 0; i < 6; i++) {
-				for (int j = 0; j < 16; j++) {
-					btnSelected[i][j].setText(null);
-				}
-			}
+			btnSelectedNull();
 
 			rs.close();
 			pstmt.close();
 
-	/*	try {
-			String ticketNum;
-			
+			rs2.close();
+			pstmt2.close();
+
+			rs3.close();
+			pstmt3.close();
+
+		} catch (ClassNotFoundException eee) {
+			System.out.println("예약 테이블 추가 오류");
+		} catch (SQLException ee) {
+			System.err.println("예약 테이블 추가 SQL 오류");
+		}
+
+	}
+
+	// TODO : seat 테이블에 추가하기
+	public void addSeat(String SId, String SDate) throws ParseException {
+
+		// String형식의 time을 Timestamp 형식으로 변환
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd kk:mm");
+		Date parsedDate = sdf.parse(SDate);
+		Timestamp writeDate = new Timestamp(parsedDate.getTime());
+
+		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(url, id, pass);
-			String query = "insert into TICKET values (? + ticket_num_seq.nextval,?,?,?)";
+
+			String query = "insert into SEAT values (?,?,?)";
 			PreparedStatement pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, today + 100000);
-			pstmt.setString(2, showId);
+			pstmt.setString(2, SId);
 			pstmt.setTimestamp(3, writeDate);
 			ResultSet rs = null;
 
 			for (int i = 0; i < 6; i++) {
 				for (int j = 0; j < 16; j++) {
-					if (btnSelected[i][j].getText() != "") {
-						pstmt.setString(4, btnSelected[i][j].getText());
+					if (btnSelected[i][j].getText() != null) {
+						System.out.println("좌석 추가염 " + btnSelected[i][j].getText());
+						pstmt.setString(1, btnSelected[i][j].getText());
 						rs = pstmt.executeQuery();
-						rs.getString("TNUM");
 					}
 				}
 			}
@@ -748,32 +800,10 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 			rs.close();
 			pstmt.close();
 
-			// Reservation 테이블에 추가
-			String addRsvQuery = "select * from detshow where sid like (select sid from show where sname=?)";
-			PreparedStatement pstmt2 = conn.prepareStatement(addRsvQuery);
-			pstmt2.setString(1, loginokdlglb1.getText());
-			pstmt2.setString(2, saveshowname);
-			ResultSet rs2 = pstmt2.executeQuery();
-
-			// DB로부터 날짜 콤보 박스 불러오기
-			while (cbrs.next()) {
-				selectedSid = cbrs.getString("SID");
-				cbDay.addItem(sdf.format(cbrs.getTimestamp("DTDATE")));
-			}
-			rs2.close();
-			pstmt2.close();
-			
-			// btnSelected 버튼 초기화
-			for (int i = 0; i < 6; i++) {
-				for (int j = 0; j < 16; j++) {
-					btnSelected[i][j].setText(null);
-				}
-			}*/
-
 		} catch (ClassNotFoundException eee) {
-			System.out.println("예약 테이블 추가 오류");
+			System.out.println("좌석 추가 오류");
 		} catch (SQLException ee) {
-			System.err.println("예약 테이블 추가 SQL 오류");
+			System.err.println("좌석 추가 SQL 오류");
 		}
 
 	}
@@ -1732,7 +1762,7 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 		else if (e.getSource() == charge) {
 			chargedlg.setVisible(true);
 		} // 포인트 충전버튼
-		
+
 		else if (e.getSource() == chargebt) {
 			chargepoint();
 			chargedlg.setVisible(false);
@@ -1744,8 +1774,8 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 				canceldlg.setSize(200, 200);
 				canceldlg.setVisible(true);
 			}
-		} 
-		
+		}
+
 		else if (e.getSource() == cancelokbt) {
 			if (cancelcb.getState() == true) {
 				t11.setVisible(false);
@@ -1759,12 +1789,13 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 				t31.setVisible(false);
 				canceldlg.setVisible(false);
 			}
-		} 
-		
+		}
+
 		else if (e.getSource() == cancelnobt) {
 			canceldlg.setVisible(false);
 		} else if (e.getSource() == btnPayDlgPay) { // 티켓들 결제 완료시
 			try {
+				addSeat(selectedSid, cbSelectedDate);
 				addTicket(selectedSid, cbSelectedDate);
 			} catch (ParseException e1) {
 				e1.printStackTrace();
@@ -1776,104 +1807,96 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 			payDlg.setVisible(false);
 			sltSeatDlg.setVisible(false);
 		}
-		
-		else if (e.getSource() == ltdate){ // 날짜별 순위 리스트
+
+		else if (e.getSource() == ltdate) { // 날짜별 순위 리스트
 			if (ltdate.getSelectedItem().equals("김선욱and드레스덴 필하모닉")) {
 				saveshowname = mv[0].getText().trim();
 				detshow();
 				rsvDlg.setVisible(true);
 			}
-			
+
 			if (ltdate.getSelectedItem().equals("LA LA LAND IN CONCERT WORLD TOUR")) {
 				saveshowname = mv[1].getText().trim();
 				detshow();
 				rsvDlg.setVisible(true);
 			}
-			
+
 			if (ltdate.getSelectedItem().equals("뮤지컬 드림걸즈 최초 내한")) {
 				saveshowname = mv[2].getText().trim();
 				detshow();
 				rsvDlg.setVisible(true);
 			}
-			
+
 			if (ltdate.getSelectedItem().equals("2017 지산 밸리록 뮤직앤드아츠 페스티벌")) {
 				saveshowname = mv[3].getText().trim();
 				detshow();
 				rsvDlg.setVisible(true);
 			}
-			
+
 			if (ltdate.getSelectedItem().equals("연극[하늘로 가지못한 선녀씨이야기]")) {
 				saveshowname = mv[4].getText().trim();
 				detshow();
 				rsvDlg.setVisible(true);
 			}
-			
+
 			if (ltdate.getSelectedItem().equals("영화[마차 타고 고래고래] OST콘서트")) {
 				saveshowname = mv[5].getText().trim();
 				detshow();
 				rsvDlg.setVisible(true);
 			}
-			
-			
-			/*for (int i = 0; i < num; i++) {
-				if (e.getSource() == mvc[i]) {
-					saveshowname = mv[i].getText().trim();
-					detshow();
-					rsvDlg.setVisible(true);
-				}
-			}*/
-			
+
+			/*
+			 * for (int i = 0; i < num; i++) { if (e.getSource() == mvc[i]) {
+			 * saveshowname = mv[i].getText().trim(); detshow();
+			 * rsvDlg.setVisible(true); } }
+			 */
+
 		} // 날짜별 순위 리스트
-		
-		else if (e.getSource() == ltingi){ // best 순위 리스트
+
+		else if (e.getSource() == ltingi) { // best 순위 리스트
 			if (ltingi.getSelectedItem().equals("김선욱and드레스덴 필하모닉")) {
 				saveshowname = mv[0].getText().trim();
 				detshow();
 				rsvDlg.setVisible(true);
 			}
-			
+
 			if (ltingi.getSelectedItem().equals("LA LA LAND IN CONCERT WORLD TOUR")) {
 				saveshowname = mv[1].getText().trim();
 				detshow();
 				rsvDlg.setVisible(true);
 			}
-			
+
 			if (ltingi.getSelectedItem().equals("뮤지컬 드림걸즈 최초 내한")) {
 				saveshowname = mv[2].getText().trim();
 				detshow();
 				rsvDlg.setVisible(true);
 			}
-			
+
 			if (ltingi.getSelectedItem().equals("2017 지산 밸리록 뮤직앤드아츠 페스티벌")) {
 				saveshowname = mv[3].getText().trim();
 				detshow();
 				rsvDlg.setVisible(true);
 			}
-			
+
 			if (ltingi.getSelectedItem().equals("연극[하늘로 가지못한 선녀씨이야기]")) {
 				saveshowname = mv[4].getText().trim();
 				detshow();
 				rsvDlg.setVisible(true);
 			}
-			
+
 			if (ltingi.getSelectedItem().equals("영화[마차 타고 고래고래] OST콘서트")) {
 				saveshowname = mv[5].getText().trim();
 				detshow();
 				rsvDlg.setVisible(true);
 			}
-			
-			
-			/*for (int i = 0; i < num; i++) {
-				if (e.getSource() == mvc[i]) {
-					saveshowname = mv[i].getText().trim();
-					detshow();
-					rsvDlg.setVisible(true);
-				}
-			}*/
-			
+
+			/*
+			 * for (int i = 0; i < num; i++) { if (e.getSource() == mvc[i]) {
+			 * saveshowname = mv[i].getText().trim(); detshow();
+			 * rsvDlg.setVisible(true); } }
+			 */
+
 		} // best 순위 리스트
-		
-		
 
 		// 좌석 콤보 박스 수만큼 선택
 		for (int i = 0; i < 6; i++) {
