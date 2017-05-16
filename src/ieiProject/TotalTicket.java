@@ -643,8 +643,61 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 		// 오늘 날짜 출력
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd", Locale.KOREA);
 		String today = formatter.format(new Date());
-
+		
 		try {
+			String ticketNum;
+			
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			conn = DriverManager.getConnection(url, id, pass);
+			
+			//Ticket 테이블에 추가 
+			String query = "insert into TICKET values (? + ticket_num_seq.nextval,?,?,?)";
+			
+			// Reservation 테이블에 아이디, 티켓넘버 추가
+			String addRsvQuery = "insert into Reservation values (?,?)";
+			
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			PreparedStatement pstmt2 = conn.prepareStatement(addRsvQuery);
+			
+			pstmt.setString(1, today + 100000);
+			pstmt.setString(2, showId);
+			pstmt.setTimestamp(3, writeDate);
+			ResultSet rs = null;
+			ResultSet rs2 = null;
+			
+			pstmt2.setString(1, loginokdlglb1.getText());
+
+			for (int i = 0; i < 6; i++) {
+				for (int j = 0; j < 16; j++) {
+					if (btnSelected[i][j].getText() != "") {
+						pstmt.setString(4, btnSelected[i][j].getText());
+						rs = pstmt.executeQuery();
+						
+						//Reservation에 티켓 넘버 추가하기 
+						ticketNum = rs.getString("TNUM");
+						pstmt2.setString(2, ticketNum);
+						rs2 = pstmt2.executeQuery();
+					}
+				}
+			}
+
+			rs.close();
+			pstmt.close();
+
+			rs2.close();
+			pstmt2.close();
+			
+			// btnSelected 버튼 초기화
+			for (int i = 0; i < 6; i++) {
+				for (int j = 0; j < 16; j++) {
+					btnSelected[i][j].setText(null);
+				}
+			}
+		
+
+	/*	try {
+			String ticketNum;
+			
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(url, id, pass);
 			String query = "insert into TICKET values (? + ticket_num_seq.nextval,?,?,?)";
@@ -659,24 +712,40 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 					if (btnSelected[i][j].getText() != "") {
 						pstmt.setString(4, btnSelected[i][j].getText());
 						rs = pstmt.executeQuery();
+						rs.getString("TNUM");
 					}
-				}
-			}
-
-			// 버튼 초기화
-			for (int i = 0; i < 6; i++) {
-				for (int j = 0; j < 16; j++) {
-					btnSelected[i][j].setText(null);
 				}
 			}
 
 			rs.close();
 			pstmt.close();
 
+			// Reservation 테이블에 추가
+			String addRsvQuery = "select * from detshow where sid like (select sid from show where sname=?)";
+			PreparedStatement pstmt2 = conn.prepareStatement(addRsvQuery);
+			pstmt2.setString(1, loginokdlglb1.getText());
+			pstmt2.setString(2, saveshowname);
+			ResultSet rs2 = pstmt2.executeQuery();
+
+			// DB로부터 날짜 콤보 박스 불러오기
+			while (cbrs.next()) {
+				selectedSid = cbrs.getString("SID");
+				cbDay.addItem(sdf.format(cbrs.getTimestamp("DTDATE")));
+			}
+			rs2.close();
+			pstmt2.close();
+			
+			// btnSelected 버튼 초기화
+			for (int i = 0; i < 6; i++) {
+				for (int j = 0; j < 16; j++) {
+					btnSelected[i][j].setText(null);
+				}
+			}*/
+
 		} catch (ClassNotFoundException eee) {
-			System.out.println("결제 오류");
+			System.out.println("예약 테이블 추가 오류");
 		} catch (SQLException ee) {
-			System.err.println("결제 SQL 오류");
+			System.err.println("예약 테이블 추가 SQL 오류");
 		}
 
 	}
