@@ -319,31 +319,46 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 	private Button chargebt = new Button("충전");
 	////////////////////////////////////// 공연내역창
 
-	// private BoxLayout box = new BoxLayout();
-
-	// private JScrollPane showfpsc = new JScrollPane(show);
-
-	private JPanel showtkp = new JPanel();
-	private JPanel t1in1 = new JPanel(new GridLayout(1, 1));//
-	private JPanel t1ini1 = new JPanel(new BorderLayout(3, 3));//
 	private JPanel t11 = new JPanel();
-	private Checkbox cancelcb = new Checkbox();
-	private JLabel t1lb1 = new JLabel(new ImageIcon("..\\ieiProject\\image\\desert.jpg"));
-	private JButton tbuybt1 = new JButton("상세보기1");
+	private JScrollPane showfpsc = new JScrollPane(t11);
+	private JPanel showtkp = new JPanel();
 
-	private JPanel t2in1 = new JPanel(new GridLayout(1, 1));//
-	private JPanel t2ini1 = new JPanel(new BorderLayout(3, 3));//
-	private JPanel t21 = new JPanel();
-	private Checkbox cancelcb2 = new Checkbox();
-	private JLabel t2lb1 = new JLabel(new ImageIcon("..\\ieiProject\\image\\desert.jpg"));
-	private JButton tbuybt21 = new JButton("상세보기2");
+	private int numb = 5;
 
-	private JPanel t3in1 = new JPanel(new GridLayout(1, 1));//
-	private JPanel t3ini1 = new JPanel(new BorderLayout(3, 3));//
-	private JPanel t31 = new JPanel();
-	private Checkbox cancelcb3 = new Checkbox();
-	private JLabel t3lb1 = new JLabel(new ImageIcon("..\\ieiProject\\image\\desert.jpg"));
-	private JButton tbuybt31 = new JButton("상세보기3");
+	private JPanel[] mytkp = new JPanel[numb];// (new BorderLayout(3, 3));
+	private JPanel[] tkall = new JPanel[numb];// (new FlowLayout());
+	private Checkbox[] cancelcb = new Checkbox[numb];
+
+	private Panel[] mytkinfp = new Panel[numb];// (new GridLayout(5,1));
+	private Panel[] tknump = new Panel[numb];// (new
+												// FlowLayout(FlowLayout.LEFT));
+	private JLabel[] mytknum = new JLabel[numb];// ("티켓번호: ");
+	private JLabel[] mytknum1 = new JLabel[numb];
+
+	private Panel[] tknamep = new Panel[numb];// (new
+												// FlowLayout(FlowLayout.LEFT));
+	private JLabel[] mytkname = new JLabel[numb];// ("공연이름: ");
+	private JLabel[] mytkname1 = new JLabel[numb];
+
+	private Panel[] tklocp = new Panel[numb];// (new
+												// FlowLayout(FlowLayout.LEFT));
+	private JLabel[] mytkloc = new JLabel[numb];// ("공연장소: ");
+	private JLabel[] mytkloc1 = new JLabel[numb];// ();
+
+	private Panel[] tkdatep = new Panel[numb];// (new
+												// FlowLayout(FlowLayout.LEFT));
+	private JLabel[] mytkdate = new JLabel[numb];// ("공연날짜: ");
+	private JLabel[] mytkdate1 = new JLabel[numb];// ();
+
+	private Panel[] tkseatp = new Panel[numb];// (new
+												// FlowLayout(FlowLayout.LEFT));
+	private JLabel[] mytkseat = new JLabel[numb];// ("좌석: ");
+	private JLabel[] mytkseat1 = new JLabel[numb];// ();
+
+	ImageIcon[] img = new ImageIcon[numb];// ("..\\ieiProject\\image\\드레스덴.jpg");
+	Image[] cimg = new Image[numb]; // img.getImage().getScaledInstance(100,150,
+									// Image.SCALE_SMOOTH);
+	private JLabel[] mytkimg = new JLabel[numb];// (img);
 
 	private Button canceltk = new Button("예매취소");
 	/////////////////// 예매취소 다이아로그
@@ -353,7 +368,21 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 	private Panel canceldlgp = new Panel(new FlowLayout());
 	private Button cancelokbt = new Button("확인");
 	private Button cancelnobt = new Button("취소");
+	////////////////////////////////////////////// 결제누르면 티켓보이기dialog(5/15)
 
+	private JDialog tkdlg = new JDialog(this, "티켓", true);
+	private JPanel tkin = new JPanel(new BorderLayout(3, 3));
+	private JPanel tkshow = new JPanel(new BorderLayout(3, 3));
+	private JPanel tkinfop = new JPanel(new GridLayout(4, 1));
+	private JPanel tkp = new JPanel();
+
+	private Label tkname = new Label();
+	private Label tkloc = new Label();
+	private Label tkdate = new Label();
+	private Label tkseat = new Label("A1", Label.CENTER);
+	private ImageIcon tkimg = new ImageIcon();
+	private JLabel tklb = new JLabel(tkimg);
+	///////////////////////////////////////////////////////////
 	// DB 연결
 	Connection conn;
 	String url = "jdbc:oracle:thin:@localhost:1521:orcl";
@@ -589,6 +618,38 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 			System.out.println("날짜별 순위 불러오기 실패");
 		} catch (SQLException e) {
 			System.err.println("날짜별 순위 불러오기 실패2");
+		}
+	}
+
+	public void myTicket() {// 결제누르면 티켓정보 보이기(5/15)
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			conn = DriverManager.getConnection(url, id, pass);
+			String query = "select * from detshow,show where show.sid=detshow.sid and show.sname =? and detshow.dtdate=?";
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd kk:mm");
+			pstmt.setString(1, lbNameDB.getText().trim());
+			String time = cbDay.getSelectedItem().toString().trim();
+			Date parseDate = sdf.parse(time);
+			Timestamp day = new Timestamp(parseDate.getTime());
+			pstmt.setTimestamp(2, day);
+			ResultSet rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				tkname.setText(rs.getString("SNAME"));
+				tkdate.setText(sdf.format(rs.getTimestamp("DTDATE")));
+				tkloc.setText(rs.getString("SLOC"));
+				tklb.setIcon(new ImageIcon(rs.getString("SIMG")));
+
+			}
+			rs.close();
+			pstmt.close();
+		} catch (ClassNotFoundException eee) {
+			System.out.println("Class 오류");
+		} catch (SQLException ee) {
+			System.err.println("SQL 오류" + ee.toString());
+		} catch (ParseException eee) {
+			System.err.println("오류11111111" + eee.toString());
 		}
 	}
 
@@ -945,8 +1006,7 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 
 		tpmain.add("Center", srchresult);
 
-		//??????????????????????
-
+		// 인기순, 날짜순(East)
 		tlingi.add("North", lbingi);
 		tlingi.add("Center", ltingi);
 		tklistpn.add(tlingi);
@@ -1446,34 +1506,90 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 		p5.add("West", p4);
 
 		///////////////////////////////// 공연내역
+		for (int i = 0; i < numb; i++) {
 
+			mytkp[i] = new JPanel();
+			tkall[i] = new JPanel();
+			mytkinfp[i] = new Panel();
+
+			tknump[i] = new Panel();
+			mytknum[i] = new JLabel();
+			mytknum1[i] = new JLabel();
+
+			tknamep[i] = new Panel();
+			mytkname[i] = new JLabel();
+			mytkname1[i] = new JLabel();
+
+			tklocp[i] = new Panel();
+			mytkloc[i] = new JLabel();
+			mytkloc1[i] = new JLabel();
+
+			tkdatep[i] = new Panel();
+			mytkdate[i] = new JLabel();
+			mytkdate1[i] = new JLabel();
+
+			tkseatp[i] = new Panel();
+			mytkseat[i] = new JLabel();
+			mytkseat1[i] = new JLabel();
+
+			cancelcb[i] = new Checkbox();
+			mytkimg[i] = new JLabel();
+
+		}
 		showtkp.setLayout(new BoxLayout(showtkp, BoxLayout.Y_AXIS));
-		t1lb1.setPreferredSize(new Dimension(300, 60));
-		t1ini1.add("West", cancelcb);
-		t1ini1.add("Center", t1lb1);
-		t1ini1.add("East", tbuybt1);
-		t1in1.add(t1ini1);
-		t11.add(t1in1);
 
-		t2lb1.setPreferredSize(new Dimension(300, 60));
-		t2ini1.add("West", cancelcb2);
-		t2ini1.add("Center", t2lb1);
-		t2ini1.add("East", tbuybt21);
-		t2in1.add(t2ini1);
-		t21.add(t2in1);
+		for (int i = 0; i < numb; i++) {
 
-		t3lb1.setPreferredSize(new Dimension(300, 60));
-		t3ini1.add("West", cancelcb3);
-		t3ini1.add("Center", t3lb1);
-		t3ini1.add("East", tbuybt31);
-		t3in1.add(t3ini1);
-		t31.add(t3in1);
+			mytkp[i].setLayout(new BorderLayout(3, 3));
+			mytkp[i].setBorder(new BevelBorder(BevelBorder.RAISED));
 
-		showtkp.add(t11);
-		showtkp.add(t21);
-		showtkp.add(t31);
+			tkall[i].setLayout(new FlowLayout());
+			mytkinfp[i].setLayout((new GridLayout(5, 1)));
+			tknump[i].setLayout((new FlowLayout(FlowLayout.LEFT)));
+			mytknum[i].setText("티켓번호: ");
+			tknamep[i].setLayout((new FlowLayout(FlowLayout.LEFT)));
+			mytkname[i].setText("공연이름: ");
+			tklocp[i].setLayout((new FlowLayout(FlowLayout.LEFT)));
+			mytkloc[i].setText("장소: ");
+			tkdatep[i].setLayout((new FlowLayout(FlowLayout.LEFT)));
+			mytkdate[i].setText("날짜: ");
+			tkseatp[i].setLayout((new FlowLayout(FlowLayout.LEFT)));
+			mytkseat[i].setText("좌석: ");
+
+			img[i] = new ImageIcon("..\\ieiProject\\image\\8마일.jpg");
+			cimg[i] = img[i].getImage().getScaledInstance(100, 150, Image.SCALE_SMOOTH);
+			img[i].setImage(cimg[i]);
+			System.out.println(img[i]);
+			mytkimg[i] = new JLabel(img[i]);
+
+			tknump[i].add(mytknum[i]);
+			tknump[i].add(mytknum1[i]);
+			tknamep[i].add(mytkname[i]);
+			tknamep[i].add(mytkname1[i]);
+			tklocp[i].add(mytkloc[i]);
+			tklocp[i].add(mytkloc1[i]);
+			tkdatep[i].add(mytkdate[i]);
+			tkdatep[i].add(mytkdate1[i]);
+			tkseatp[i].add(mytkseat[i]);
+			tkseatp[i].add(mytkseat1[i]);
+
+			mytkinfp[i].add(tknump[i]);
+			mytkinfp[i].add(tknamep[i]);
+			mytkinfp[i].add(tklocp[i]);
+			mytkinfp[i].add(tkdatep[i]);
+			mytkinfp[i].add(tkseatp[i]);
+
+			mytkp[i].add("Center", mytkimg[i]);
+			mytkp[i].add("East", mytkinfp[i]);
+
+			tkall[i].add(cancelcb[i]);
+			tkall[i].add(mytkp[i]);
+			showtkp.add(tkall[i]);
+		}
+
+		t11.add(showtkp);
 		show.add("North", canceltk);
-		show.add("Center", showtkp);
+		show.add("Center", showfpsc);
 		//////////////////////////////////// 예매취소다이어로그
 
 		canceldlgp.add(cancelokbt);
@@ -1547,7 +1663,7 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 		// 검색버튼
 		else if (e.getSource() == searchbt) {
 			srchresult.removeAll();
-			lbct=0;
+			lbct = 0;
 			if (ch1.getSelectedItem() == "----------") { // 네루미가 -----상태일때
 				String rslt = searchtf.getText().trim();
 				for (int i = 0; i < num; i++) {
@@ -1626,7 +1742,7 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 				for (int i = 0; i < toColumnNm.length; i++) {
 					list.add(toColumnNm[i]);
 				}
-				
+
 				try {
 					Class.forName("oracle.jdbc.driver.OracleDriver");
 					conn = DriverManager.getConnection(url, id, pass);
@@ -1657,17 +1773,17 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 			searchtf.setText("제목 또는 날짜(예 : 7월 4일 => 07/04 또는 7/04) 입력");
 			srchresult.setVisible(true);
 			System.out.println(lbct);
-			
-			if (lbct == 0 || lbct ==num) {
+
+			if (lbct == 0 || lbct == num) {
 				srchresult.removeAll();
 				JOptionPane.showMessageDialog(null, "검색 결과가 없습니다!", "검색 결과 없음", JOptionPane.ERROR_MESSAGE);
 				tpmain.add("Center", tp);
 				tp.setVisible(true);
 				srchresult.setVisible(false);
-				
+
 			}
 
-		} 
+		}
 
 		else if (e.getSource() == joinbt) { // 회원가입
 			// tp.setVisible(false);
@@ -1788,7 +1904,7 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 		} else if (e.getSource() == btnSeatSelect) { // 좌석 선택 부분 눌렀을 때
 			// 콤보 박스 날짜 선택 값
 			cbSelectedDate = cbDay.getSelectedItem().toString();
-
+			// 로그인 해달라는 에러창, 로그인창 띄우기
 			if (loginokdlglb1.getText() == "") {
 				JOptionPane.showMessageDialog(null, "로그인을 해주세요!", "비로그인 상태", JOptionPane.WARNING_MESSAGE);
 				logindlg.setVisible(true);
@@ -1849,44 +1965,43 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 			chargedlg.setVisible(false);
 		}
 		///////////////////////////////////////////////////// 공연내역 예매취소
-
-		else if (e.getSource() == canceltk) {
-			if (cancelcb.getState() == true) {
+/*수정중
+		else if (e.getSource() == canceltk) {/// 수정해야함
+			if (cancelcb[1].getState() == true) {
 				canceldlg.setSize(200, 200);
 				canceldlg.setVisible(true);
 			}
 		}
 
 		else if (e.getSource() == cancelokbt) {
-			if (cancelcb.getState() == true) {
-				t11.setVisible(false);
+			if (cancelcb[1].getState() == true) {
+				tkall[1].setVisible(false);
 				canceldlg.setVisible(false);
 			}
-			if (cancelcb2.getState() == true) {
-				t21.setVisible(false);
-				canceldlg.setVisible(false);
-			}
-			if (cancelcb3.getState() == true) {
-				t31.setVisible(false);
-				canceldlg.setVisible(false);
-			}
+			
+			 * if (cancelcb2.getState() == true) { t21.setVisible(false);
+			 * canceldlg.setVisible(false); } if (cancelcb3.getState() == true)
+			 * { t31.setVisible(false); canceldlg.setVisible(false); }
+			 
 		}
 
 		else if (e.getSource() == cancelnobt) {
 			canceldlg.setVisible(false);
-		} else if (e.getSource() == btnPayDlgPay) { // 티켓들 결제 완료시
-			try {
-				addSeat(selectedSid, cbSelectedDate);
-				addTicket(selectedSid, cbSelectedDate);
-			} catch (ParseException e1) {
-				e1.printStackTrace();
-			}
-			payDlg.setVisible(false);
-			sltSeatDlg.setVisible(false);
-			rsvDlg.setVisible(false);
-		} else if (e.getSource() == btnPayDlgCancle) {
-			payDlg.setVisible(false);
-			sltSeatDlg.setVisible(false);
+		}*/ else if (e.getSource() == btnPayDlgPay) { // (5/15) 결제눌면 티켓정보
+
+			myTicket();
+
+			tkinfop.add(tkname);
+			tkinfop.add(tkloc);
+			tkinfop.add(tkdate);
+			tkinfop.add(tkseat);
+			tkshow.add("Center", tklb);
+			tkshow.add("East", tkinfop);
+			tkp.add(tkshow);
+			tkdlg.add(tkp);
+
+			tkdlg.setSize(500, 500);
+			tkdlg.setVisible(true);
 		}
 
 		else if (e.getSource() == ltdate) { // 날짜별 순위 리스트
