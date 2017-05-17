@@ -1544,7 +1544,7 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 			}
 		}
 
-		// 검색버튼
+		// 검색버튼 17.05.17 수정
 		else if (e.getSource() == searchbt) {
 			srchresult.removeAll();
 			lbct=0;
