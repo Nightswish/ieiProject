@@ -5,6 +5,7 @@ import java.awt.event.*;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Vector;
@@ -50,6 +51,10 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 
 	// 검색 결과
 	JPanel srchresult = new JPanel(new GridLayout(2, 4, 3, 3));
+	JPanel srchnonresult = new JPanel(new BorderLayout());
+	JLabel srchnonlb = new JLabel("검색결과가 없습니다!(제목, 날짜(6월20일 => 6/20) 확인!)", error_image, JLabel.CENTER);
+	JButton srchnonok = new JButton("홈으로");
+	int lbct = 0;
 
 	// 인기순, 날짜순
 	JPanel tklistpn = new JPanel(new GridLayout(2, 1, 5, 5));
@@ -645,6 +650,7 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 		searchtf.addFocusListener(this);
 		searchtf.addMouseListener(this);
 		searchbt.addActionListener(this);
+		srchnonok.addActionListener(this);
 		ltdate.addActionListener(this);
 		ltingi.addActionListener(this);
 
@@ -950,6 +956,14 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 		// 검색 결과창
 
 		tpmain.add("Center", srchresult);
+
+		// 검색 결과가 아무것도 없을 때
+
+		srchnonresult.setSize(270, 150);
+		srchnonresult.add("Center", srchnonlb);
+		srchnonresult.add("South", srchnonok);
+		tpmain.add("Center", srchnonresult);
+		srchnonresult.setVisible(false);
 
 		// 인기순, 날짜순(East)
 		tlingi.add("North", lbingi);
@@ -1563,26 +1577,149 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 		}
 
 		// 검색버튼
+		// 검색버튼
 		else if (e.getSource() == searchbt) {
-			srchresult.setVisible(true);
 			srchresult.removeAll();
-			String rslt = searchtf.getText().trim();
-			for (int i = 0; i < num; i++) {
-				mvst[i] = mv[i].getText().trim();
-			}
 
-			try {
+			if (ch1.getSelectedItem() == "----------") { // 네루미가 -----상태일때
+				String rslt = searchtf.getText().trim();
 				for (int i = 0; i < num; i++) {
-					if (mvst[i].matches(".*" + rslt + ".*")) {
-						mvc[i].setVerticalTextPosition(SwingConstants.BOTTOM);
-						mvc[i].setHorizontalTextPosition(SwingConstants.CENTER);
-						srchresult.add(mvc[i]);
-					}
+					mvst[i] = mv[i].getText().trim();
 				}
-			} catch (PatternSyntaxException ee) {
-				System.err.println(ee);
+				ArrayList<String> list = new ArrayList<String>();
+				String[] toColumnNm = rslt.split("\\s");
+				for (int i = 0; i < toColumnNm.length; i++) {
+					list.add(toColumnNm[i]);
+				}
+				try {
+					Class.forName("oracle.jdbc.driver.OracleDriver");
+					conn = DriverManager.getConnection(url, id, pass);
+					for (String srchlist : list) {
+						String query = "select distinct sname from show natural join detshow where sname like '%' || ? || '%' or dtdate like '%' || ? || '%'";
+						PreparedStatement pstmt = conn.prepareStatement(query);
+						pstmt.setString(1, srchlist);
+						pstmt.setString(2, srchlist);
+						ResultSet rs = pstmt.executeQuery();
+
+						while (rs.next()) {
+							for (int i = 0; i < num; i++) {
+								if (mvst[i].matches(rs.getString("SNAME"))) {
+									mvc[i].setVerticalTextPosition(SwingConstants.BOTTOM);
+									mvc[i].setHorizontalTextPosition(SwingConstants.CENTER);
+									srchresult.add(mvc[i]);
+									++lbct;
+								}
+							}
+						}
+					}
+				} catch (Exception ee) {
+					System.out.println("검색 결과창 띄우기 실패");
+				}
+			} else if (ch1.getSelectedItem() == "공연이름") { // 네루미가 공연이름 상태일때
+				String rslt = searchtf.getText().trim();
+				for (int i = 0; i < num; i++) {
+					mvst[i] = mv[i].getText().trim();
+				}
+
+				ArrayList<String> list = new ArrayList<String>();
+				String[] toColumnNm = rslt.split("\\s");
+				for (int i = 0; i < toColumnNm.length; i++) {
+					list.add(toColumnNm[i]);
+				}
+				try {
+					Class.forName("oracle.jdbc.driver.OracleDriver");
+					conn = DriverManager.getConnection(url, id, pass);
+					for (String srchlist : list) {
+						String query = "select distinct sname from show where sname like '%' || ? || '%'";
+						PreparedStatement pstmt = conn.prepareStatement(query);
+						pstmt.setString(1, srchlist);
+						ResultSet rs = pstmt.executeQuery();
+
+						while (rs.next()) {
+							for (int i = 0; i < num; i++) {
+								if (mvst[i].matches(rs.getString("SNAME"))) {
+									mvc[i].setVerticalTextPosition(SwingConstants.BOTTOM);
+									mvc[i].setHorizontalTextPosition(SwingConstants.CENTER);
+									srchresult.add(mvc[i]);
+									++lbct;
+								}
+							}
+						}
+					}
+				} catch (Exception ee) {
+					System.out.println("검색 결과창 띄우기 실패");
+				}
+			} else if (ch1.getSelectedItem() == "공연날짜") { // 네루미가 공연날짜 상태일떄
+				String rslt = searchtf.getText().trim();
+				for (int i = 0; i < num; i++) {
+					mvst[i] = mv[i].getText().trim();
+				}
+
+				ArrayList<String> list = new ArrayList<String>();
+				String[] toColumnNm = rslt.split("\\s");
+				for (int i = 0; i < toColumnNm.length; i++) {
+					list.add(toColumnNm[i]);
+				}
+
+				try {
+					Class.forName("oracle.jdbc.driver.OracleDriver");
+					conn = DriverManager.getConnection(url, id, pass);
+					for (String srchlist : list) {
+						String query = "select distinct sname from show natural join detshow where dtdate like '%' || ? || '%'";
+						PreparedStatement pstmt = conn.prepareStatement(query);
+						pstmt.setString(1, srchlist);
+						ResultSet rs = pstmt.executeQuery();
+
+						while (rs.next()) {
+							for (int i = 0; i < num; i++) {
+								if (mvst[i].matches(rs.getString("SNAME"))) {
+									mvc[i].setVerticalTextPosition(SwingConstants.BOTTOM);
+									mvc[i].setHorizontalTextPosition(SwingConstants.CENTER);
+									srchresult.add(mvc[i]);
+									++lbct;
+								}
+							}
+						}
+					}
+				} catch (Exception ee) {
+					System.out.println("검색 결과창 띄우기 실패");
+				}
+
 			}
 			tp.setVisible(false);
+			tpmain.add("Center", srchresult);
+			searchtf.setText("제목 또는 날짜(예 : 6월 20일 => 06/20 또는 6/20) 입력");
+			srchresult.setVisible(true);
+			if (lbct == 0) {
+				tp.setVisible(false);
+				tpmain.add("Center", srchnonresult);
+				searchtf.setText("제목 또는 날짜(예 : 6월 20일 => 06/20 또는 6/20) 입력");
+				srchnonresult.setVisible(true);
+			}
+
+			/*
+			 * srchresult.setVisible(true); srchresult.removeAll(); String rslt
+			 * = searchtf.getText().trim(); for (int i = 0; i < num; i++) {
+			 * mvst[i] = mv[i].getText().trim(); }
+			 * 
+			 * try { for (int i = 0; i < num; i++) { if (mvst[i].matches(".*" +
+			 * rslt + ".*")) {
+			 * mvc[i].setVerticalTextPosition(SwingConstants.BOTTOM);
+			 * mvc[i].setHorizontalTextPosition(SwingConstants.CENTER);
+			 * srchresult.add(mvc[i]); } } } catch (PatternSyntaxException ee) {
+			 * System.err.println(ee); } tp.setVisible(false); <<<<<<< HEAD
+			 * tpmain.add("Center",srchresult);
+			 * searchtf.setText("제목 또는 날짜(예 : 6월 20일 => 06/20 또는 6/20) 입력");
+			 * srchresult.setVisible(true);
+			 */
+		} else if (e.getSource() == srchnonok) { // 검색결과가 없습니다. ok 버튼 > 홈버튼과
+													// 동일하게
+			tpmain.add("Center", tp);
+			tp.setVisible(true);
+			tpmain.setVisible(true);
+			srchresult.setVisible(false);
+			srchnonresult.setVisible(false);
+			searchtf.setText("제목 또는 날짜(예 : 6월 20일 => 06/20 또는 6/20) 입력");
 			tpmain.add("Center", srchresult);
 			searchtf.setText("제목 또는 날짜 검색");
 			srchresult.setVisible(true);
@@ -1940,6 +2077,7 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 			srchresult.setVisible(false);
 			BuyerP.setVisible(false);
 			mypagep.setVisible(false);
+			srchnonresult.setVisible(false);
 			searchtf.setText("제목 또는 날짜 검색");
 		} // 홈버튼
 
