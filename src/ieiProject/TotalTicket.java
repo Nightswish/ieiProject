@@ -325,39 +325,39 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 	// private JScrollPane showfpsc = new JScrollPane(show);
 
 	private JPanel showtkp = new JPanel();
-	//private JScrollPane showscroll = new JScrollPane(showtkp);
+	
 	private JPanel t11 = new JPanel();
 	
-	private int numb =2;
+	private int numb =1;
 	//private JPanel[] mytkp = new JPanel;
 	private JPanel[]  mytkp= new JPanel[numb];//(new BorderLayout(3, 3));
 	private JPanel[] tkall = new JPanel[numb];//(new FlowLayout());
 	private Checkbox[] cancelcb = new Checkbox[numb];
 	
-	private Panel[] mytkinfp = new Panel[numb];
-	private Panel[] tknump = new Panel[numb];
-	private JLabel[] mytknum = new JLabel[numb];
+	private Panel[] mytkinfp = new Panel[numb];//(new GridLayout(5,1));
+	private Panel[] tknump = new Panel[numb];//(new FlowLayout(FlowLayout.LEFT));
+	private JLabel[] mytknum = new JLabel[numb];//("티켓번호: "); 
 	private JLabel[] mytknum1 = new JLabel[numb]; 
 	
-	private Panel[] tknamep = new Panel[numb];
-	private JLabel[] mytkname = new JLabel[numb];
+	private Panel[] tknamep = new Panel[numb];//(new FlowLayout(FlowLayout.LEFT));
+	private JLabel[] mytkname = new JLabel[numb];//("공연이름: "); 
 	private JLabel[] mytkname1 = new JLabel[numb];
 	
-	private Panel[] tklocp = new Panel[numb];
-	private JLabel[] mytkloc = new JLabel[numb];
-	private JLabel[] mytkloc1 = new JLabel[numb];
+	private Panel[] tklocp = new Panel[numb];//(new FlowLayout(FlowLayout.LEFT));
+	private JLabel[] mytkloc = new JLabel[numb];//("공연장소: "); 
+	private JLabel[] mytkloc1 = new JLabel[numb];//(); 
 	
-	private Panel[] tkdatep = new Panel[numb];
-	private JLabel[] mytkdate = new JLabel[numb];
-	private JLabel[] mytkdate1 = new JLabel[numb];
+	private Panel[] tkdatep = new Panel[numb];//(new FlowLayout(FlowLayout.LEFT));
+	private JLabel[] mytkdate = new JLabel[numb];//("공연날짜: "); 
+	private JLabel[] mytkdate1 = new JLabel[numb];//();
 	
-	private Panel[] tkseatp = new Panel[numb];
-	private JLabel[] mytkseat = new JLabel[numb];
-	private JLabel[] mytkseat1 = new JLabel[numb];
+	private Panel[] tkseatp = new Panel[numb];//(new FlowLayout(FlowLayout.LEFT));
+	private JLabel[] mytkseat = new JLabel[numb];//("좌석: "); 
+	private JLabel[] mytkseat1 = new JLabel[numb];//(); 
 
-    ImageIcon[] img = new ImageIcon[numb];
-    Image[] cimg = new Image[numb];
-    private JLabel[] mytkimg = new JLabel[numb];
+    ImageIcon[] img = new ImageIcon[numb];//("..\\ieiProject\\image\\드레스덴.jpg");
+    Image[] cimg = new Image[numb]; //img.getImage().getScaledInstance(100,150, Image.SCALE_SMOOTH);
+    private JLabel[] mytkimg = new JLabel[numb];//(img); 
 
 	private Button canceltk = new Button("예매취소");
 	/////////////////// 예매취소 다이아로그
@@ -1421,10 +1421,10 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 			mytkimg[i] = new JLabel();
 			
 		}
-		
 		showtkp.setLayout(new BoxLayout(showtkp, BoxLayout.Y_AXIS));
-		showtkp.add(showtkp);
-		for(int i=0;i<numb;i++){		
+		
+		for(int i=0;i<numb;i++){
+		
 		mytkp[i].setLayout(new BorderLayout(3,3));
 		mytkp[i].setBorder(new BevelBorder(BevelBorder.RAISED));
 		
@@ -1464,7 +1464,6 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 		t11.add(tkall[i]);
 		}
 
-		
 		showtkp.add(t11);
 		show.add("North", canceltk);
 		show.add("Center", showtkp);
