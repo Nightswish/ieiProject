@@ -15,8 +15,6 @@ import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
 
-//소스수정 170511      
-
 public class TotalTicket {
 	public static void main(String[] ar) {
 		TotalTicket_sub123 ex = new TotalTicket_sub123();
@@ -114,13 +112,6 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 
 	private JButton joinokbt = new JButton("완료");
 
-	// 회원가입 취소 다이얼로그
-	private Container joinxcon;
-	private JDialog joinxdlg = new JDialog(joindlg, "비밀번호 오류", true);
-
-	private JLabel joinxlb = new JLabel("비밀번호를 똑같이 입력하세요");
-	private JButton joinxbt = new JButton("확인");
-
 	// 로그인 다이얼로그
 	private Container logincon;
 	private JDialog logindlg = new JDialog(this, "로그인", true);
@@ -142,12 +133,6 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 	private JLabel loginokdlglb1 = new JLabel("");
 	private JLabel loginokdlglb2 = new JLabel("님 환영합니다.");
 	private JButton loginokdlgbt = new JButton("확인");
-
-	// 로그인 실패 다이얼로그
-	private Container loginxcon;
-	private JDialog loginxdlg = new JDialog(logindlg, "로그인 실패", true);
-	private JLabel loginxdlglb = new JLabel("아이디나 비밀번호가 틀립니다!!!!");
-	private JButton loginxdlgbt = new JButton("이전화면");
 
 	// 구매자 끼리
 	private JPanel BuyerP = new JPanel(new BorderLayout(5, 5));
@@ -236,7 +221,7 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 	protected Panel pointp = new Panel(new BorderLayout());
 	protected Panel show = new Panel(new BorderLayout());
 
-	/////////////////////////////// 마이페이지창
+	/////////////////////////////// 마이페이지 텝팬
 	private Panel p4 = new Panel(new GridLayout(5, 1));
 	private Panel p5 = new Panel(new GridLayout(5, 1));
 	private Panel p4_1 = new Panel(new GridLayout(1, 2));
@@ -256,12 +241,29 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 	private Label level2 = new Label();
 
 	//////////////////////////////// 수정창
+	//수정시 비밀번호 묻는 다이얼로그
+	private Container pwrightCon;
+	private JDialog pwrightdlg = new JDialog(this, "비밀번호 확인", true);
+	private JPanel pwrightlbpn = new JPanel(new GridLayout(1,2));
+	private JPanel pwrightlbpn1 = new JPanel(new FlowLayout());
+	private JPanel pwrightbt = new JPanel(new FlowLayout());
+	private JPanel pwrightbtpn = new JPanel(new FlowLayout());
+	
+	private JLabel pwrightlb = new JLabel("비밀번호 입력 : ");
+	private JTextField pwrighttf = new JTextField(10);
+	private JButton pwrightok = new JButton("확인");
+	private JButton pwrightcl = new JButton("취소");
+	
+	//수정 창
 	private Panel p22_2 = new Panel();
-	private Panel p22 = new Panel(new GridLayout(5, 1));
+	private Panel p22 = new Panel(new GridLayout(6, 1));
 	private Panel p2_1 = new Panel(new GridLayout(1, 2));
 	private Label eID = new Label("아이디 ");
 	private Label eID1 = new Label();
 	private Panel p2_2 = new Panel(new GridLayout(1, 2));
+	private Label ePW = new Label("비밀번호 ");
+	private TextField ePW1 = new TextField(10);
+	private Panel p2_7 = new Panel(new GridLayout(1, 2));
 	private Label ephone = new Label("전화번호 ");
 	private TextField tphone = new TextField(10);
 	private Panel p2_3 = new Panel(new GridLayout(1, 2));
@@ -289,6 +291,7 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 	private JLabel updateokemaillb = new JLabel("이메일 : ", JLabel.RIGHT);
 
 	private JLabel updateokidtf = new JLabel("", JLabel.LEFT);
+	private JLabel updateokpwtf = new JLabel("", JLabel.LEFT);
 	private JLabel updateokteltf = new JLabel("", JLabel.LEFT);
 	private JLabel updateokniktf = new JLabel("", JLabel.LEFT);
 	private JLabel updateokemailtf = new JLabel("", JLabel.LEFT);
@@ -423,7 +426,7 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 
 			ResultSet rs = pstmt.executeQuery();
 			if (!rs.next()) {
-				loginxdlg.setVisible(true);
+				JOptionPane.showMessageDialog(null, "아이디 또는 비밀번호가 틀렸습니다!", "로그인 오류", JOptionPane.WARNING_MESSAGE);
 				rs.close();
 				pstmt.close();
 			} else {
@@ -433,6 +436,7 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 				phone2.setText(rs.getString("tel"));
 				email2.setText(rs.getString("email"));
 				eID1.setText(rs.getString("id"));
+				ePW1.setText(rs.getString("pw"));
 				tphone.setText(rs.getString("tel"));
 				tmail.setText(rs.getString("email"));
 				tname.setText(rs.getString("nik"));
@@ -455,13 +459,15 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(url, id, pass);
-			String query = "update customer set tel=?, nik=?, email=? where id=?";
+			String query = "update customer set pw=?, tel=?, nik=?, email=? where id=?";
 			PreparedStatement pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, tphone.getText().trim());
-			pstmt.setString(2, tname.getText().trim());
-			pstmt.setString(3, tmail.getText().trim());
-			pstmt.setString(4, id2.getText().trim());
+			pstmt.setString(1, ePW1.getText().trim());
+			pstmt.setString(2, tphone.getText().trim());
+			pstmt.setString(3, tname.getText().trim());
+			pstmt.setString(4, tmail.getText().trim());
+			pstmt.setString(5, id2.getText().trim());
 			updateokidtf.setText(eID1.getText().trim());
+			updateokpwtf.setText(ePW1.getText().trim());
 			updateokteltf.setText(tphone.getText().trim());
 			updateokniktf.setText(tname.getText().trim());
 			updateokemailtf.setText(tmail.getText().trim());
@@ -681,15 +687,15 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 		loginok.addActionListener(this);
 		loginx.addActionListener(this);
 		joinokbt.addActionListener(this);
-		joinxbt.addActionListener(this);
 		loginokdlgbt.addActionListener(this);
-		loginxdlgbt.addActionListener(this);
 		logoutbt.addActionListener(this);
 		for (int i = 0; i < num; i++) {
 			mv[i].addMouseListener(this);
 			mvc[i].addMouseListener(this);
 		}
-
+		edit.addMouseListener(this);
+		pwrightok.addActionListener(this);
+		pwrightcl.addActionListener(this);
 		btnCancle.addActionListener(this);
 		btnSeatSelect.addActionListener(this);
 		btnFinSeat.addActionListener(this);
@@ -1092,24 +1098,6 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 		joinokcon.add("Center", joinok);
 		joinokcon.add("South", joinokbtp);
 
-		// 회원가입 실패 다이얼로그 구성
-		joinxcon = joinxdlg.getContentPane();
-		joinxcon.setLayout(new BorderLayout());
-		joinxdlg.setSize(230, 100);
-		joinxdlg.setResizable(false);
-		Dimension di4 = joinxdlg.getSize();
-		joinxdlg.setLocation((int) (di.getWidth() / 2 - di4.getWidth() / 2),
-				(int) (di.getHeight() / 2 - di4.getHeight() / 2));
-
-		JPanel joinxlbp = new JPanel(new FlowLayout());
-		joinxlbp.add(joinxlb);
-
-		JPanel joinxbtp = new JPanel(new FlowLayout());
-		joinxbtp.add(joinxbt);
-
-		joinxcon.add("Center", joinxlbp);
-		joinxcon.add("South", joinxbtp);
-
 		// 로그인 다이얼로그 구성
 		logincon = logindlg.getContentPane();
 		logincon.setLayout(new BorderLayout());
@@ -1153,24 +1141,6 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 
 		loginokcon.add("Center", loginokp);
 		loginokcon.add("South", loginokbtp);
-
-		// 로그인 실패 다이얼로그 구성
-		loginxcon = loginxdlg.getContentPane();
-		loginxcon.setLayout(new BorderLayout());
-		loginxdlg.setSize(300, 100);
-		loginxdlg.setResizable(false);
-		Dimension di5 = loginxdlg.getSize();
-		loginxdlg.setLocation((int) (di.getWidth() / 2 - di5.getWidth() / 2),
-				(int) (di.getHeight() / 2 - di5.getHeight() / 2));
-
-		JPanel loginxp = new JPanel(new FlowLayout());
-		loginxp.add(loginxdlglb);
-
-		JPanel loginxbtp = new JPanel(new FlowLayout());
-		loginxbtp.add(loginxdlgbt);
-
-		loginxcon.add("Center", loginxp);
-		loginxcon.add("South", loginxbtp);
 
 		////////////////////// 구매자 끼리
 		tbuy.setLayout(new BoxLayout(tbuy, BoxLayout.Y_AXIS));
@@ -1427,6 +1397,8 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 
 		p2_1.add(eID);
 		p2_1.add(eID1);
+		p2_7.add(ePW);
+		p2_7.add(ePW1);
 		p2_2.add(ephone);
 		p2_2.add(tphone);
 		p2_3.add(ename);
@@ -1437,8 +1409,28 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 		p2_5.add(elevel1);
 		p2_6.add(check);
 		p2_6.add(cancel);
-
+		
+		pwrightCon = pwrightdlg.getContentPane();
+		pwrightCon.setLayout(new BorderLayout());
+		pwrightdlg.setSize(300, 100);
+		pwrightdlg.setResizable(false);
+		Dimension dimen = pwrightdlg.getSize();
+		pwrightdlg.setLocation((int) (di.getWidth() / 2 - dimen.getWidth() / 2),
+				(int) (di.getHeight() / 2 - dimen.getHeight() / 2));
+		
+		pwrightlbpn1.add(pwrightlb);
+		pwrightlbpn.add(pwrightlbpn1);
+		pwrightbt.add(pwrighttf);
+		pwrightlbpn.add(pwrightbt);
+		pwrightCon.add("Center", pwrightlbpn);
+		
+		pwrightbtpn.add(pwrightok);
+		pwrightbtpn.add(pwrightcl);
+		pwrightCon.add("South", pwrightbtpn);
+		
+		
 		p22.add(p2_1);
+		p22.add(p2_7);
 		p22.add(p2_2);
 		p22.add(p2_3);
 		p22.add(p2_4);
@@ -1559,7 +1551,7 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 			img[i] = new ImageIcon("..\\ieiProject\\image\\8마일.jpg");
 			cimg[i] = img[i].getImage().getScaledInstance(100, 150, Image.SCALE_SMOOTH);
 			img[i].setImage(cimg[i]);
-			System.out.println(img[i]);
+			//System.out.println(img[i]);
 			mytkimg[i] = new JLabel(img[i]);
 
 			tknump[i].add(mytknum[i]);
@@ -1798,7 +1790,7 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 			String e1 = joinniktf.getText().trim();
 			String f1 = joinemailtf.getText().trim();
 			if (!b1.equals(c1)) {
-				joinxdlg.setVisible(true);
+				JOptionPane.showMessageDialog(null, "비밀번호를 똑같이 입력해 주세요.", "비밀번호 오류", JOptionPane.WARNING_MESSAGE);
 			} else {
 				joinMember();
 				joinokidtf.setText(joinidtf.getText().trim());
@@ -1856,13 +1848,6 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 
 		} // 로그인 다이얼로그의 취소
 
-		else if (e.getSource() == joinxbt) { // 회원가입 실패다이얼로그 확인버튼
-			joinxdlg.setVisible(false);
-			joinpwtf.setText("");
-			joinpwoktf.setText(" ");
-			joinpwoktf.setText("");
-		} // 회원가입 실패다이얼로그 확인버튼
-
 		else if (e.getSource() == loginokdlgbt) { // 로그인 성공 다이얼로그 확인버튼
 			loginidtf.setText("");
 			loginpwtf.setText(" ");
@@ -1877,13 +1862,6 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 			logoutbt.setVisible(true);
 			mypagebt.setVisible(true);
 		} // 로그인 성공 다이얼로그 확인버튼
-
-		else if (e.getSource() == loginxdlgbt) { // 로그인 실패 다이얼로그 확인버튼
-			loginidtf.setText("");
-			loginpwtf.setText(" ");
-			loginpwtf.setText("");
-			loginxdlg.setVisible(false);
-		} // 로그인 실패 다이얼로그 확인버튼
 
 		else if (e.getSource() == logoutbt) { // 로그아웃 버튼
 			lb.setVisible(false);
@@ -1932,11 +1910,20 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 				e1.printStackTrace();
 			}
 		} else if (e.getSource() == mypagebt) { // 마이페이지
+			tPane.setSelectedIndex(0);
 			tpmain.setVisible(false);
 			srchresult.setVisible(false);
 			BuyerP.setVisible(false);
 			mypagep.setVisible(true);
 		} // 마이페이지
+		else if (e.getSource() == pwrightok){
+			
+		}
+		else if(e.getSource() == pwrightcl){
+			pwrightdlg.setVisible(false);
+			tPane.setSelectedIndex(0);
+		}
+		
 		else if (e.getSource() == check) { // 마이페이지 수정 확인버튼
 			updateMember();
 			updateokdlg.setVisible(true);
@@ -2148,12 +2135,14 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 			}
 		}
 
-		for (int i = 0; i < num; i++) {
+		for (int i = 0; i < num; i++) {	//카피 포스터 이미지 눌렀을 때
 			if (e.getSource() == mvc[i]) {
 				saveshowname = mv[i].getText().trim();
 				detshow();
 				rsvDlg.setVisible(true);
 			}
+		}if(e.getSource() == edit){
+			pwrightdlg.setVisible(true);
 		}
 
 	}
