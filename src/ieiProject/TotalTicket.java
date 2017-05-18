@@ -2,6 +2,7 @@ package ieiProject;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.PrintStream;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,6 +13,9 @@ import java.util.regex.PatternSyntaxException;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
+import javax.swing.table.DefaultTableModel;
+
+import javafx.scene.control.TableView;
 
 //소스수정 170511      
 
@@ -38,6 +42,88 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 
 	private JLabel lb = new JLabel("");
 	private JButton logoutbt = new JButton("로그아웃");
+	private JButton adminbt = new JButton("관리자 모드");
+	
+	//관리자 모드
+	private Container admincon;
+	private JDialog admindlg = new JDialog(this, "관리자 모드", true);
+	protected JTabbedPane adminPane = new JTabbedPane();
+	protected Panel customerP = new Panel(new BorderLayout());
+	protected Panel showP = new Panel(new BorderLayout());
+	
+	//관리자 모드 고객관리 
+	int updatecustomerRow;
+	int updateshowRow;
+	DefaultTableModel customerdatamodel;
+	JTable customertableView;
+	JScrollPane customerscrollList;
+	
+	String customercolName[] = { "ID", "PW", "TEL", "NIK", "EMAIL", "GRADE", "POINT" };
+	Vector<Vector<String>> customerdata;
+	Vector<String> customercolNames;
+	
+	JPanel cp = new JPanel(new FlowLayout());
+	JLabel clb1 = new JLabel("ID", JLabel.CENTER);
+	JLabel clb2 = new JLabel("PW", JLabel.CENTER);
+	JLabel clb3 = new JLabel("TEL", JLabel.CENTER);
+	JLabel clb4 = new JLabel("NIK", JLabel.CENTER);
+	JLabel clb5 = new JLabel("EMAIL", JLabel.CENTER);
+	JLabel clb6 = new JLabel("GRADE", JLabel.CENTER);
+	JLabel clb7 = new JLabel("POINT", JLabel.CENTER);
+	JTextField ctf1 = new JTextField(10);
+	JTextField ctf2 = new JTextField(10);
+	JTextField ctf3 = new JTextField(10);
+	JTextField ctf4 = new JTextField(10);
+	JTextField ctf5 = new JTextField(10);
+	JTextField ctf6 = new JTextField(10);
+	JTextField ctf7 = new JTextField(10);
+	JPanel cp1 = new JPanel(new GridLayout(2,1));
+	JPanel cp2 = new JPanel(new GridLayout(2,1));
+	JPanel cp3 = new JPanel(new GridLayout(2,1));
+	JPanel cp4 = new JPanel(new GridLayout(2,1));
+	JPanel cp5 = new JPanel(new GridLayout(2,1));
+	JPanel cp6 = new JPanel(new GridLayout(2,1));
+	JPanel cp7 = new JPanel(new GridLayout(2,1));
+	JPanel cus = new JPanel(new FlowLayout());
+	JButton customerinbt = new JButton("추가");
+	JButton customerupbt = new JButton("수정");
+	JButton customerdebt = new JButton("삭제");
+	
+	//관리자 모드 공연 관리
+	DefaultTableModel showdatamodel;
+	JTable showtableView;
+	JScrollPane showscrollList;
+	
+	String showcolName[] = { "SID", "SNAME", "SLOC", "SPRICE", "SIMG", "DTDATE",};
+	Vector<Vector<String>> showdata;
+	Vector<String> showcolNames;
+	
+	JPanel ssp = new JPanel(new FlowLayout());
+	JLabel sslb1 = new JLabel("SID", JLabel.CENTER);
+	JLabel sslb2 = new JLabel("SNAME", JLabel.CENTER);
+	JLabel sslb3 = new JLabel("SLOC", JLabel.CENTER);
+	JLabel sslb4 = new JLabel("SPRICE", JLabel.CENTER);
+	JLabel sslb5 = new JLabel("SIMG", JLabel.CENTER);
+	JLabel sslb6 = new JLabel("DTDATE", JLabel.CENTER);
+	JTextField sstf1 = new JTextField(10);
+	JTextField sstf2 = new JTextField(10);
+	JTextField sstf3 = new JTextField(10);
+	JTextField sstf4 = new JTextField(10);
+	JTextField sstf5 = new JTextField(10);
+	JTextField sstf6 = new JTextField(10);
+	
+	JPanel ssp1 = new JPanel(new GridLayout(2,1));
+	JPanel ssp2 = new JPanel(new GridLayout(2,1));
+	JPanel ssp3 = new JPanel(new GridLayout(2,1));
+	JPanel ssp4 = new JPanel(new GridLayout(2,1));
+	JPanel ssp5 = new JPanel(new GridLayout(2,1));
+	JPanel ssp6 = new JPanel(new GridLayout(2,1));
+	
+	JPanel sho = new JPanel(new FlowLayout());
+	JButton shoinbt = new JButton("추가");
+	JButton shoupbt = new JButton("수정");
+	JButton shodebt = new JButton("삭제");
+
 
 	// 검색창
 	Choice ch1 = new Choice();
@@ -66,16 +152,21 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 	JPanel mp = new JPanel(new BorderLayout(3, 3));
 
 	ImageIcon home = new ImageIcon("..\\ieiProject\\image\\home2.jpg");
-	private int num = 6;
+	private int num = 7;
+	private int num1 = 6;
 	ImageIcon[] image = new ImageIcon[num];
+	ImageIcon[] image1 = new ImageIcon[num1];
 
 	private JLabel homebt = new JLabel(home);
 	// 원본 라벨
 	private JLabel[] mv = new JLabel[num];
+	private JLabel[] mv1 = new JLabel[num1];
 	// copy 라벨
 	private JLabel[] mvc = new JLabel[num];
+	private JLabel[] mvc1 = new JLabel[num1];
 
 	String[] mvst = new String[num];
+	String[] mvst1 = new String[num1];
 	// 회원가입 다이얼로그
 	private Container joincon;
 	private JDialog joindlg = new JDialog(this, "회원가입", true);
@@ -368,7 +459,7 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(url, id, pass);
-			String query = "insert into customer(ID,PW,TEL,NIK,EMAIL) values(?,?,?,?,?)";
+			String query = "insert into customer(ID,PW,TEL,NIK,EMAIL,GRADE) values(?,?,?,?,?,?)";
 			// member에 point추가해서 쿼리문 바꿨습니다(2017.5.10)
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, joinidtf.getText().trim());
@@ -376,6 +467,7 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 			pstmt.setString(3, jointeltf.getText().trim());
 			pstmt.setString(4, joinniktf.getText().trim());
 			pstmt.setString(5, joinemailtf.getText().trim());
+			pstmt.setString(6, "새끼"); // 새끼, 약지, 중지, 검지, 엄지 순으로 엄지가 제일 높음 새끼가 기본임
 			pstmt.executeUpdate();
 			pstmt.close();
 		} catch (ClassNotFoundException eee) {
@@ -400,7 +492,31 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 				loginxdlg.setVisible(true);
 				rs.close();
 				pstmt.close();
-			} else {
+			}
+			
+			else if (rs.getString("ID").equals("asd") && rs.getString("PW").equals("1")){
+				loginokdlglb1.setText("관리자");
+				id2.setText(rs.getString("id"));
+				nname2.setText(rs.getString("nik"));
+				phone2.setText(rs.getString("tel"));
+				email2.setText(rs.getString("email"));
+				eID1.setText(rs.getString("id"));
+				tphone.setText(rs.getString("tel"));
+				tmail.setText(rs.getString("email"));
+				tname.setText(rs.getString("nik"));
+				point1.setText(rs.getString("POINT"));// 포인트 추가(2017.5.10)
+				lb.setText("관리자" + " 님 ");
+				loginokdlg.setVisible(true);
+				adminbt.setVisible(true);
+				mypagebt.setVisible(false);
+				viewcustomer();
+				viewshow();
+
+				rs.close();
+				pstmt.close();
+			}
+			
+			else {
 				loginokdlglb1.setText(rs.getString("id"));
 				id2.setText(rs.getString("id"));
 				nname2.setText(rs.getString("nik"));
@@ -421,6 +537,15 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 
 		} catch (SQLException e) {
 			System.err.println("로그인 실패!!!");
+		}
+	}
+	
+	// 로그아웃 (DB연결 끊기)
+	public void logoutMember(){
+		try{
+			conn.close();
+		}catch(SQLException e){
+			System.out.println("로그아웃 실패");
 		}
 	}
 
@@ -572,28 +697,357 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 	}
 	
 	// best 순위
-		public void bestshow(){
+	public void bestshow(){
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			conn = DriverManager.getConnection(url, id, pass);
+
+			String query = "select sname from show, bestview where show.sid = bestview.sid";
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			ResultSet rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				ltingi.add(rs.getString("SNAME"));
+
+			}
+			rs.close();
+			pstmt.close();
+				
+		}catch (ClassNotFoundException eee) {
+			System.out.println("날짜별 순위 불러오기 실패");
+		} catch (SQLException e) {
+			System.err.println("날짜별 순위 불러오기 실패2");
+		}
+	}
+		
+	// 고객 보기
+	public void viewcustomer(){
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			conn = DriverManager.getConnection(url, id, pass);
+
+			String query = "select * from customer";
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			ResultSet rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				Vector<String> vector = new Vector<String>();
+				vector.add(rs.getString("ID"));
+				vector.add(rs.getString("PW"));
+				vector.add(rs.getString("TEL"));
+				vector.add(rs.getString("NIK"));
+				vector.add(rs.getString("EMAIL"));
+				vector.add(rs.getString("GRADE"));
+				vector.add(rs.getString("POINT"));
+				customerdata.addElement(vector);
+			}
+			rs.close();
+			pstmt.close();
+				
+		}catch (ClassNotFoundException eee) {
+			System.out.println("고객 불러오기 실패");
+		} catch (SQLException e) {
+			System.err.println("고객 불러오기 실패2");
+		}
+	}
+	
+	// 고객 추가
+	public void addcustomer(){
+		Vector<String> vector = new Vector<String>();
+		vector.add(ctf1.getText());
+		vector.add(ctf2.getText());
+		vector.add(ctf3.getText());
+		vector.add(ctf4.getText());
+		vector.add(ctf5.getText());
+		vector.add(ctf6.getText());
+		vector.add(ctf7.getText());
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			conn = DriverManager.getConnection(url, id, pass);
+			String query = "insert into customer(ID,PW,TEL,NIK,EMAIL,POINT) values(?,?,?,?,?,?)";
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, ctf1.getText());
+			pstmt.setString(2, ctf2.getText());
+			pstmt.setString(3, ctf3.getText());
+			pstmt.setString(4, ctf4.getText());
+			pstmt.setString(5, ctf5.getText());
+			pstmt.setString(6, "0");
+			pstmt.executeUpdate();
+			pstmt.close();
+		} catch (ClassNotFoundException eee) {
+
+		} catch (SQLException ee) {
+			System.err.println("고객 추가 실패!!!");
+		}
+		ctf1.setText(null);
+		ctf2.setText(null);
+		ctf3.setText(null);
+		ctf4.setText(null);
+		ctf5.setText(null);
+		ctf6.setText(null);
+		ctf7.setText(null);
+		ctf1.requestFocus();
+		customerdata.addElement(vector);
+		customerdatamodel.fireTableDataChanged();
+	}
+	
+	// 고객 수정
+	public void updatecustomer(){
+		updatecustomerRow = customertableView.getSelectedRow();
+		customertableView.setValueAt(ctf1.getText(), updatecustomerRow, 0);
+		customertableView.setValueAt(ctf2.getText(), updatecustomerRow, 1);
+		customertableView.setValueAt(ctf3.getText(), updatecustomerRow, 2);
+		customertableView.setValueAt(ctf4.getText(), updatecustomerRow, 3);
+		customertableView.setValueAt(ctf5.getText(), updatecustomerRow, 4);
+		customertableView.setValueAt(ctf6.getText(), updatecustomerRow, 5);
+		customertableView.setValueAt(ctf7.getText(), updatecustomerRow, 6);
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			conn = DriverManager.getConnection(url, id, pass);
+			String query = "update customer set pw=?, tel=?, nik=?, email=?, grade=?, point=? where id=?";
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, ctf2.getText());
+			pstmt.setString(2, ctf3.getText());
+			pstmt.setString(3, ctf4.getText());
+			pstmt.setString(4, ctf5.getText());
+			pstmt.setString(5, ctf6.getText());
+			pstmt.setInt(6, Integer.parseInt(ctf7.getText()));
+			pstmt.setString(7, ctf1.getText());
+			pstmt.executeUpdate();
+			pstmt.close();
+		} catch (ClassNotFoundException eee) {
+
+		} catch (SQLException ee) {
+			System.err.println(ee.toString());
+		}
+		ctf1.setText(null);
+		ctf2.setText(null);
+		ctf3.setText(null);
+		ctf4.setText(null);
+		ctf5.setText(null);
+		ctf6.setText(null);
+		ctf7.setText(null);
+		ctf1.requestFocus();
+	}
+	
+	// 고객 삭제
+	public void deletecustomer(){
+		JTable tb = customertableView;
+		int deleteRow = tb.getSelectedRow(); // 행을 선택하지 않았을경우 -1을 리턴한다.
+		if (deleteRow == -1) {
+			return;
+		}
+		DefaultTableModel model = (DefaultTableModel) tb.getModel();
+		model.removeRow(deleteRow);
+		
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			conn = DriverManager.getConnection(url, id, pass);
+			String query = "delete from customer where id=?";
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, ctf1.getText());
+			pstmt.executeUpdate();
+			pstmt.close();
+		} catch (ClassNotFoundException eee) {
+
+		} catch (SQLException ee) {
+			System.err.println(ee.toString());
+		}
+		ctf1.setText(null);
+		ctf2.setText(null);
+		ctf3.setText(null);
+		ctf4.setText(null);
+		ctf5.setText(null);
+		ctf6.setText(null);
+		ctf7.setText(null);
+		ctf1.requestFocus();
+		
+	}
+	
+	// 공연 보기
+	public void viewshow(){
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			conn = DriverManager.getConnection(url, id, pass);
+
+			String query = "select show.sid, sname, sloc, sprice, simg, dtdate from show, detshow where show.sid=detshow.sid";
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			ResultSet rs = pstmt.executeQuery();
+
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd kk:mm");
+			
+			while (rs.next()) {
+				
+				Vector<String> vector = new Vector<String>();
+				vector.add(rs.getString("SID"));
+				vector.add(rs.getString("SNAME"));
+				vector.add(rs.getString("SLOC"));
+				vector.add(rs.getString("SPRICE"));
+				vector.add(rs.getString("SIMG"));
+				vector.add(sdf.format(rs.getTimestamp("DTDATE")));
+				showdata.addElement(vector);
+			}
+			rs.close();
+			pstmt.close();
+				
+		}catch (ClassNotFoundException eee) {
+			System.out.println("공연 불러오기 실패");
+		} catch (SQLException e) {
+			System.err.println("공연 불러오기 실패2");
+		}
+	}
+	
+	// 공연  추가
+		public void addshow() throws ParseException{
+			Vector<String> vector = new Vector<String>();
+			vector.add(sstf1.getText());
+			vector.add(sstf2.getText());
+			vector.add(sstf3.getText());
+			vector.add(sstf4.getText());
+			vector.add(sstf5.getText());
+			vector.add(sstf6.getText());
 			try {
 				Class.forName("oracle.jdbc.driver.OracleDriver");
 				conn = DriverManager.getConnection(url, id, pass);
-
-				String query = "select sname from show, bestview where show.sid = bestview.sid";
+				String query = "insert into show values(?,?,?,?,?)";
 				PreparedStatement pstmt = conn.prepareStatement(query);
-				ResultSet rs = pstmt.executeQuery();
-
-				while (rs.next()) {
-					ltingi.add(rs.getString("SNAME"));
-
-				}
-				rs.close();
+				pstmt.setInt(1, Integer.parseInt(sstf1.getText()));
+				pstmt.setString(2, sstf2.getText());
+				pstmt.setString(3, sstf3.getText());
+				pstmt.setInt(4, Integer.parseInt(sstf4.getText()));
+				pstmt.setString(5, sstf5.getText());
+				pstmt.executeUpdate();
 				pstmt.close();
-				
-			}catch (ClassNotFoundException eee) {
-				System.out.println("날짜별 순위 불러오기 실패");
-			} catch (SQLException e) {
-				System.err.println("날짜별 순위 불러오기 실패2");
+			} catch (ClassNotFoundException eee) {
+
+			} catch (SQLException ee) {
+				System.err.println("공연 추가 실패!!!");
 			}
+			try {
+				Class.forName("oracle.jdbc.driver.OracleDriver");
+				conn = DriverManager.getConnection(url, id, pass);
+				String query = "insert into detshow(sid, dtdate) values(?,?)";
+				PreparedStatement pstmt = conn.prepareStatement(query);
+				
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd kk:mm");
+				String time = sstf6.getText().trim();
+				Date parsedDate = sdf.parse(time);
+				Timestamp writeDate = new Timestamp(parsedDate.getTime());
+				
+				pstmt.setInt(1, Integer.parseInt(sstf1.getText()));
+				pstmt.setTimestamp(2, writeDate);
+				pstmt.executeUpdate();
+				pstmt.close();
+			} catch (ClassNotFoundException eee) {
+
+			} catch (SQLException ee) {
+				System.err.println("공연 추가 실패!!!");
+			}
+			sstf1.setText(null);
+			sstf2.setText(null);
+			sstf3.setText(null);
+			sstf4.setText(null);
+			sstf5.setText(null);
+			sstf6.setText(null);
+			sstf1.requestFocus();
+			showdata.addElement(vector);
+			showdatamodel.fireTableDataChanged();
 		}
+		
+		// 공연 수정
+		public void updateshow() throws ParseException{
+			updateshowRow = showtableView.getSelectedRow();
+			showtableView.setValueAt(sstf1.getText(), updateshowRow, 0);
+			showtableView.setValueAt(sstf2.getText(), updateshowRow, 1);
+			showtableView.setValueAt(sstf3.getText(), updateshowRow, 2);
+			showtableView.setValueAt(sstf4.getText(), updateshowRow, 3);
+			showtableView.setValueAt(sstf5.getText(), updateshowRow, 4);
+			showtableView.setValueAt(sstf6.getText(), updateshowRow, 5);
+			try {
+				Class.forName("oracle.jdbc.driver.OracleDriver");
+				conn = DriverManager.getConnection(url, id, pass);
+				String query = "update show set sname=?, sloc=?, sprice=?, simg=? where sid=?";
+				PreparedStatement pstmt = conn.prepareStatement(query);
+				pstmt.setString(1, sstf2.getText());
+				pstmt.setString(2, sstf3.getText());
+				pstmt.setInt(3, Integer.parseInt(sstf4.getText()));
+				pstmt.setString(4, sstf5.getText());
+				pstmt.setInt(5, Integer.parseInt(sstf1.getText()));
+				pstmt.executeUpdate();
+				pstmt.close();
+			} catch (ClassNotFoundException eee) {
+
+			} catch (SQLException ee) {
+				System.err.println(ee.toString());
+			}
+			try {
+				Class.forName("oracle.jdbc.driver.OracleDriver");
+				conn = DriverManager.getConnection(url, id, pass);
+				String query = "update detshow set dtdate=? where sid=?";
+				PreparedStatement pstmt = conn.prepareStatement(query);
+				
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd kk:mm");
+				String time = sstf6.getText().trim();
+				Date parsedDate = sdf.parse(time);
+				Timestamp writeDate = new Timestamp(parsedDate.getTime());
+				
+				pstmt.setTimestamp(1, writeDate);
+				pstmt.setInt(2, Integer.parseInt(sstf1.getText()));
+				pstmt.executeUpdate();
+				pstmt.close();
+			} catch (ClassNotFoundException eee) {
+
+			} catch (SQLException ee) {
+				System.err.println("공연 수정 실패!!!");
+			}
+			sstf1.setText(null);
+			sstf2.setText(null);
+			sstf3.setText(null);
+			sstf4.setText(null);
+			sstf5.setText(null);
+			sstf6.setText(null);
+			sstf1.requestFocus();
+		}
+		
+		// 공연 삭제
+		public void deleteshow() throws ParseException{
+			JTable tb = showtableView;
+			int deleteRow = tb.getSelectedRow(); // 행을 선택하지 않았을경우 -1을 리턴한다.
+			if (deleteRow == -1) {
+				return;
+			}
+			DefaultTableModel model = (DefaultTableModel) tb.getModel();
+			model.removeRow(deleteRow);
+			
+			try {
+				Class.forName("oracle.jdbc.driver.OracleDriver");
+				conn = DriverManager.getConnection(url, id, pass);
+				String query = "delete from detshow where dtdate=?";
+				PreparedStatement pstmt = conn.prepareStatement(query);
+				
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd kk:mm");
+				String time = sstf6.getText().trim();
+				Date parsedDate = sdf.parse(time);
+				Timestamp writeDate = new Timestamp(parsedDate.getTime());
+				
+				pstmt.setTimestamp(1, writeDate);
+				pstmt.executeUpdate();
+				pstmt.close();
+			} catch (ClassNotFoundException eee) {
+
+			} catch (SQLException ee) {
+				System.err.println(ee.toString());
+			}
+			sstf1.setText(null);
+			sstf2.setText(null);
+			sstf3.setText(null);
+			sstf4.setText(null);
+			sstf5.setText(null);
+			sstf6.setText(null);
+			sstf1.requestFocus();
+			
+		}
+		
 
 	public TotalTicket_sub123() {
 		super("메인");
@@ -645,6 +1099,16 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 		searchbt.addActionListener(this);
 		ltdate.addActionListener(this);
 		ltingi.addActionListener(this);
+		adminbt.addActionListener(this);
+		customerinbt.addActionListener(this);
+		customerupbt.addActionListener(this);
+		customerdebt.addActionListener(this);
+		shoinbt.addActionListener(this);
+		shoupbt.addActionListener(this);
+		shodebt.addActionListener(this);
+		customertableView.addMouseListener(this);
+		showtableView.addMouseListener(this);
+
 
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 16; j++) {
@@ -738,7 +1202,7 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 				System.out.println("Class 오류");
 			} catch (SQLException ee) {
 				System.err.println("SQL 오류");
-			}
+			} 
 
 		}
 	
@@ -766,9 +1230,11 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 		sp2.add(joinbt);
 		sp2.add(loginbt);
 		sp2.add(mypagebt);
+		sp2.add(adminbt);
 		mypagebt.setVisible(false);
 		lb.setVisible(false);
 		logoutbt.setVisible(false);
+		adminbt.setVisible(false);
 		mp.add("East", sp2);
 
 		for (int i = 0; i < num; i++) {
@@ -1048,6 +1514,88 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 		con.add("North", mp); // 메인
 		con.add("Center", MainP);
 
+		// 관리자 모드 다이얼로그 구성
+		admincon = admindlg.getContentPane();
+		admindlg.setLayout(new FlowLayout());
+		admindlg.setSize(1200, 600);
+		Dimension di8 = admindlg.getSize();
+		admindlg.setLocation((int) (di.getWidth() / 2 - di8.getWidth() / 2),
+				(int) (di.getHeight() / 2 - di8.getHeight() / 2));
+		adminPane.setPreferredSize(new Dimension(1000, 550));
+		adminPane.add("고객 관리", customerP);
+		adminPane.add("공연 관리", showP);
+		adminPane.setTabPlacement(JTabbedPane.LEFT);
+		
+		// 관리자 모드 고객 관리 구성
+		
+		
+		customerdata = new Vector<Vector<String>>();
+		customercolNames = new Vector<String>();
+		
+		for (int i = 0; i < customercolName.length; i++) {
+			customercolNames.add(customercolName[i]);
+		}
+		customerdatamodel = new DefaultTableModel(customerdata, customercolNames);
+		customertableView = new JTable(customerdatamodel);
+		customerscrollList = new JScrollPane(customertableView);
+		
+		customerP.add("North", customerscrollList);
+		
+		cp1.add(clb1); cp1.add(ctf1);
+		cp2.add(clb2); cp2.add(ctf2);
+		cp3.add(clb3); cp3.add(ctf3);
+		cp4.add(clb4); cp4.add(ctf4);
+		cp5.add(clb5); cp5.add(ctf5);
+		cp6.add(clb6); cp6.add(ctf6);
+		cp7.add(clb7); cp7.add(ctf7);
+		
+		cp.add(cp1); cp.add(cp2); cp.add(cp3); cp.add(cp4); cp.add(cp5); cp.add(cp6); cp.add(cp7);
+		
+		customerP.add("Center", cp);
+		
+		cus.add(customerinbt);
+		cus.add(customerupbt);
+		cus.add(customerdebt);
+		
+		customerP.add("South", cus);
+		
+		
+		// 관리자 모드 공연 관리 구성
+		
+		
+		showdata = new Vector<Vector<String>>();
+		showcolNames = new Vector<String>();
+		
+		for (int i = 0; i < showcolName.length; i++) {
+			showcolNames.add(showcolName[i]);
+		}
+		
+		showdatamodel = new DefaultTableModel(showdata, showcolNames);
+		showtableView = new JTable(showdatamodel);
+		showscrollList = new JScrollPane(showtableView);
+		
+		showP.add("North", showscrollList);
+		
+		ssp1.add(sslb1); ssp1.add(sstf1);
+		ssp2.add(sslb2); ssp2.add(sstf2);
+		ssp3.add(sslb3); ssp3.add(sstf3);
+		ssp4.add(sslb4); ssp4.add(sstf4);
+		ssp5.add(sslb5); ssp5.add(sstf5);
+		ssp6.add(sslb6); ssp6.add(sstf6);
+		
+		ssp.add(ssp1); ssp.add(ssp2); ssp.add(ssp3); ssp.add(ssp4); ssp.add(ssp5); ssp.add(ssp6);
+		
+		showP.add("Center", ssp);
+		
+		
+		sho.add(shoinbt);
+		sho.add(shoupbt);
+		sho.add(shodebt);
+		
+		showP.add("South", sho);
+		
+		admincon.add(adminPane);
+		
 		// 예매 컨테이너 구성
 		rsvCon = rsvDlg.getContentPane();
 		rsvDlg.setLayout(new BorderLayout());
@@ -1437,7 +1985,6 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 			for (int i = 0; i < num; i++) {
 				mvst[i] = mv[i].getText().trim();
 			} 
-			
 			try {
 				for (int i = 0; i < num; i++) {
 					if (mvst[i].matches(".*" + rslt + ".*")) {
@@ -1534,6 +2081,7 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 		} // 회원가입 실패다이얼로그 확인버튼
 
 		else if (e.getSource() == loginokdlgbt) { // 로그인 성공 다이얼로그 확인버튼
+					
 			loginidtf.setText("");
 			loginpwtf.setText(" ");
 			loginpwtf.setText("");
@@ -1565,11 +2113,17 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 			loginbt.setVisible(true);
 			joinbt.setVisible(true);
 			mypagep.setVisible(false);
+			loginokdlglb1.setText(" ");
+			loginokdlglb1.setText("");
+			adminbt.setVisible(false);
+			logoutMember();
 		} // 로그아웃 버튼
 
 		else if (e.getSource() == btnCancle) { // 취소 버튼
 			rsvDlg.setVisible(false);
-		} else if (e.getSource() == btnSeatSelect) { // 좌석 선택 부분 눌렀을 때
+		} 
+		
+		else if (e.getSource() == btnSeatSelect) { // 좌석 선택 부분 눌렀을 때
 			// 콤보 박스 날짜 선택 값
 			cbSelectedDate = cbDay.getSelectedItem().toString();
 
@@ -1584,14 +2138,22 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 					e1.printStackTrace();
 				}sltSeatDlg.setVisible(true);
 			}
-		} else if (e.getSource() == loginplzok){	//로그인 해달라는 버튼
+		} 
+		
+		else if (e.getSource() == loginplzok){	//로그인 해달라는 버튼
 			loginplzdlg.setVisible(false);
-		} else if (e.getSource() == btnFinSeat) { // 좌석 선택 완료
+		} 
+		
+		else if (e.getSource() == btnFinSeat) { // 좌석 선택 완료
 			lbToPay.setText(String.valueOf(Integer.parseInt(strPersonCnt) * showPrice));
 			payDlg.setVisible(true);
-		} else if (e.getSource() == btnPayDlgCancle) {
+		} 
+		
+		else if (e.getSource() == btnPayDlgCancle) {
 			payDlg.setVisible(false);
-		} else if (e.getSource() == btnReselect) { // 좌석 다시 선택
+		} 
+		
+		else if (e.getSource() == btnReselect) { // 좌석 다시 선택
 			try {
 				showSeat(selectedSid, cbSelectedDate);
 				seatClear();
@@ -1599,12 +2161,16 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-		} else if (e.getSource() == mypagebt) { // 마이페이지
+		} 
+		
+		else if (e.getSource() == mypagebt) { // 마이페이지
 			tpmain.setVisible(false);
 			srchresult.setVisible(false);
 			BuyerP.setVisible(false);
 			mypagep.setVisible(true);
 		} // 마이페이지
+		
+		
 		else if (e.getSource() == check) { // 마이페이지 수정 확인버튼
 			updateMember();
 			updateokdlg.setVisible(true);
@@ -1756,6 +2322,50 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 			
 		} // best 순위 리스트
 		
+		else if(e.getSource() == adminbt){ // 관리자 모드
+			admindlg.setVisible(true);
+			
+		} // 관리자 모드
+		
+		else if(e.getSource() == customerinbt){ // 고객관리 추가 버튼
+			addcustomer();
+		} // 고객관리 추가 버튼
+		
+		else if(e.getSource() == customerupbt){ // 고객관리 수정 버튼
+			updatecustomer();
+		} // 고객관리 수정 버튼
+		
+		else if(e.getSource() == customerdebt){ // 고객관리 삭제 버튼
+			deletecustomer();
+		} // 고객관리 삭제 버튼
+		
+		else if(e.getSource() == shoinbt){ // 공연관리 추가 버튼
+			try {
+				addshow();
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		} // 공연관리 추가 버튼
+		
+		else if(e.getSource() == shoupbt){ // 공연관리 수정 버튼
+			try {
+				updateshow();
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		} // 공연관리 수정 버튼
+		
+		else if(e.getSource() == shodebt){ // 공연관리 삭제 버튼
+			try {
+				deleteshow();
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		} // 공연관리 삭제 버튼
+		
 		
 
 		// 좌석 콤보 박스 수만큼 선택
@@ -1780,6 +2390,26 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
+		if(e.getSource() == customertableView){
+			updatecustomerRow = customertableView.getSelectedRow();
+			ctf1.setText((String) customertableView.getValueAt(updatecustomerRow, 0));
+			ctf2.setText((String) customertableView.getValueAt(updatecustomerRow, 1));
+			ctf3.setText((String) customertableView.getValueAt(updatecustomerRow, 2));
+			ctf4.setText((String) customertableView.getValueAt(updatecustomerRow, 3));
+			ctf5.setText((String) customertableView.getValueAt(updatecustomerRow, 4));
+			ctf6.setText((String) customertableView.getValueAt(updatecustomerRow, 5));
+			ctf7.setText((String) customertableView.getValueAt(updatecustomerRow, 6));
+		}
+		
+		else if(e.getSource() == showtableView){
+			updateshowRow = showtableView.getSelectedRow();
+			sstf1.setText((String) showtableView.getValueAt(updateshowRow, 0));
+			sstf2.setText((String) showtableView.getValueAt(updateshowRow, 1));
+			sstf3.setText((String) showtableView.getValueAt(updateshowRow, 2));
+			sstf4.setText((String) showtableView.getValueAt(updateshowRow, 3));
+			sstf5.setText((String) showtableView.getValueAt(updateshowRow, 4));
+			sstf6.setText((String) showtableView.getValueAt(updateshowRow, 5));
+		}
 
 	}
 
