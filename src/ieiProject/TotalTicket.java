@@ -17,11 +17,11 @@ import javax.swing.border.SoftBevelBorder;
 
 public class TotalTicket {
 	public static void main(String[] ar) {
-		TotalTicket_su1 ex = new TotalTicket_su1();
+		TotalTicket_su123 ex = new TotalTicket_su123();
 	}
 }
 
-class TotalTicket_su1 extends JFrame implements ActionListener, MouseListener, KeyListener, FocusListener {
+class TotalTicket_su123 extends JFrame implements ActionListener, MouseListener, KeyListener, FocusListener {
 
 	private String saveshowname = null;
 	private Container con;
@@ -821,7 +821,7 @@ class TotalTicket_su1 extends JFrame implements ActionListener, MouseListener, K
 		}
 	}*/
 
-	public TotalTicket_su1() {
+	public TotalTicket_su123() {
 		super("∏ﬁ¿Œ");
 		this.init();
 		this.start();
