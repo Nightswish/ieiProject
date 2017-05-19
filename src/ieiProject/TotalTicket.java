@@ -17,11 +17,11 @@ import javax.swing.border.SoftBevelBorder;
 
 public class TotalTicket {
 	public static void main(String[] ar) {
-		TotalTicket_sub123 ex = new TotalTicket_sub123();
+		TotalTicket_su1 ex = new TotalTicket_su1();
 	}
 }
 
-class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener, KeyListener, FocusListener {
+class TotalTicket_su1 extends JFrame implements ActionListener, MouseListener, KeyListener, FocusListener {
 
 	private String saveshowname = null;
 	private Container con;
@@ -139,6 +139,42 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 	private JDialog loginxdlg = new JDialog(logindlg, "로그인 실패", true);
 	private JLabel loginxdlglb = new JLabel("아이디나 비밀번호가 틀립니다!!!!");
 	private JButton loginxdlgbt = new JButton("이전화면");
+	
+///////////////아이디 및 비밀번호 찾기
+	private Container Findcon;
+	private JDialog Finddlg = new JDialog(this, "찾기", true);
+
+	private JPanel Findidp = new JPanel(new BorderLayout(5,5));
+	private JPanel Findidbtp = new JPanel(new FlowLayout());
+	
+	private JPanel Findpwp = new JPanel(new GridLayout(2,1));
+	private JPanel Findbtp = new JPanel(new FlowLayout());	
+	private JButton Findid = new JButton("아이디찾기");
+	private JButton Findpw = new JButton("비밀번호찾기");
+	private JButton Findid_fid = new JButton("찾기");
+	private JButton Findid_fpw = new JButton("비밀번호 찾기");
+	
+	private Container Finderrcon;
+	private JDialog Finderrdlg = new JDialog(this, "오류", true);
+	private JPanel Finderrp = new JPanel(new BorderLayout(5,5));
+	private JLabel Finderrimgib = new JLabel(new ImageIcon("..\\ieiProject\\image\\error.jpg"));
+	private JLabel Finderrlb = new JLabel("잘못 입력하였습니다.");
+	private JButton Finddlgbt = new JButton("확인");
+	
+	private JButton Findpwbt = new JButton("비밀번호찾기");
+	private JButton Findpokbt = new JButton("확인");
+	private JButton Findippclbt = new JButton("취소");
+	private JButton FindShowIDpclbt = new JButton("취소");
+	private JButton FindShowPWpcokt = new JButton("확인");
+	
+	private JPanel FindShowIDp = new JPanel(new GridLayout(3,1));
+	private JPanel FindShowPWp = new JPanel(new GridLayout(2,1));
+	
+	private JDialog Findiddlg = new JDialog (this,"아이디찾기", false);
+	private TextField Findidtf = new TextField(20);	
+	private TextField Findpwtf = new TextField(20);
+	private JLabel FindShowid = new JLabel();
+	private JLabel FindShowpw = new JLabel();
 
 	//170517 이유미 수정 포인트 충전 권유 다이얼로그
 	private Container addPointcon;
@@ -146,7 +182,7 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 	private JLabel lbaddPoint = new JLabel("포인트가 부족합니다.", JLabel.CENTER);
 	private JButton btnAddPoint = new JButton("충전 하기");
 
-	// 구매자 끼리
+	/*// 구매자 끼리
 	private JPanel BuyerP = new JPanel(new BorderLayout(5, 5));
 
 	private Label Buyerlb = new Label("구매자끼리 티켓매매");
@@ -170,7 +206,7 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 	private JPanel t3ini = new JPanel(new BorderLayout(3, 3));
 	private JPanel t3 = new JPanel();
 	private JLabel t3lb = new JLabel(new ImageIcon("..\\ieiProject\\image\\ticket.png"));
-
+*/
 	// 공연 아이디
 	String selectedSid;
 
@@ -400,7 +436,51 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 	private Label tkseat = new Label("A1", Label.CENTER);
 	private ImageIcon tkimg = new ImageIcon();
 	private JLabel tklb = new JLabel(tkimg);*/
-	///////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////]
+	
+	public void FindidDB(){//DB에서 ID 찾기
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl", "scott", "tiger");
+			String query = "select distinct ID from customer where email=? or tel=?";
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, Findidtf.getText().trim());
+			pstmt.setString(2, Findidtf.getText().trim());
+			ResultSet rs = pstmt.executeQuery();
+						
+			if(rs.next()){
+			FindShowid.setText(rs.getString("ID"));
+			}
+			
+			rs.close();
+			pstmt.close();
+		} catch (Exception e) {
+			System.err.println("Error : "+e.toString());
+		}
+		
+	}//DB에서 ID 찾기
+	
+	public void FindpwDB(){ //DB에서 PW 찾기
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl", "scott", "tiger");
+			String query = "select distinct pw from customer where ID=? ";
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, Findidtf.getText().trim());
+			
+			ResultSet rs = pstmt.executeQuery();
+						
+			if(rs.next()){
+				FindShowpw.setText(rs.getString("PW"));
+			}
+			
+			rs.close();
+			pstmt.close();
+		} catch (Exception e) {
+			System.err.println("Error : "+e.toString());
+		}
+		
+	}//DB에서 PW 찾기
 	
 	// DB 연결
 	Connection conn;
@@ -681,7 +761,7 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 		} catch (ClassNotFoundException eee) {
 			System.out.println("날짜별 순위 불러오기 실패");
 		} catch (SQLException e) {
-			System.err.println("날짜별 순위 불러오기 실패2");
+			System.err.println("Error : " +e.toString());
 		}
 	}
 
@@ -741,7 +821,7 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 		}
 	}*/
 
-	public TotalTicket_sub123() {
+	public TotalTicket_su1() {
 		super("메인");
 		this.init();
 		this.start();
@@ -791,6 +871,27 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 		ltdate.addActionListener(this);
 		ltingi.addActionListener(this);
 		btnAddPoint.addActionListener(this);
+		
+///////////////아이디및 비밀번호 찾기
+		Findid.addActionListener(this);
+		Findpw.addActionListener(this);
+		
+		Findidtf.addMouseListener(this);
+		Findpwtf.addMouseListener(this);
+		Findidtf.addFocusListener(this);
+		Findpwtf.addFocusListener(this);
+		
+		Findid_fid.addActionListener(this);
+		Findid_fpw.addActionListener(this);
+		Findpwbt.addActionListener(this);
+		Findpokbt.addActionListener(this);
+		Findippclbt.addActionListener(this);
+		FindShowIDpclbt.addActionListener(this);
+		FindShowPWpcokt.addActionListener(this);
+		Finddlgbt.addActionListener(this);
+		Findidtf.addFocusListener(this);
+		Findpwtf.addFocusListener(this);
+///////////////////////////////////////////
 
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 16; j++) {
@@ -1179,6 +1280,38 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 
 		joinokcon.add("Center", joinok);
 		joinokcon.add("South", joinokbtp);
+		
+//////////////아이디 및 비밀번호 찾기 화면구성
+		Findbtp.add(Findid); Findbtp.add(Findpw);		
+		
+		Findcon = Finddlg.getContentPane();
+		Findcon.setLayout(new CardLayout());
+		Finddlg.setSize(200, 100);
+		;
+		Dimension diFinddlg = Finddlg.getSize();
+		Finddlg.setLocation((int) (di.getWidth() / 2 - diFinddlg.getWidth() / 2),
+				(int) (di.getHeight() / 2 - diFinddlg.getHeight() / 2));
+		
+		Findidbtp.add(Findid_fid); Findidbtp.add(Findippclbt);
+		Findidp.add("North", Findidtf);Findidp.add("South",Findidbtp); 
+		
+		Findpwp.add(Findpwtf);Findpwp.add(Findpwbt);
+							
+		FindShowIDp.add(FindShowid); FindShowIDp.add(Findid_fpw); FindShowIDp.add(FindShowIDpclbt);
+		FindShowPWp.add(FindShowpw); FindShowPWp.add(FindShowPWpcokt);
+		
+		Findidp.setVisible(false); Findpwp.setVisible(false);
+		
+		Finddlg.add(Findidp); Finddlg.add(Findpwp); Finddlg.add(FindShowIDp); Finddlg.add(FindShowPWp);
+		
+		Finderrcon = Finderrdlg.getContentPane();
+		Finderrcon.setLayout(new BorderLayout(5,5));
+		Finderrdlg.setSize(250, 100);
+		Finderrdlg.add("West", Finderrimgib); Finderrdlg.add("Center", Finderrlb); Finderrdlg.add("South", Finddlgbt);
+				
+		Findbtp.setVisible(true);
+		
+/////////////////////
 
 		// 로그인 다이얼로그 구성
 		logincon = logindlg.getContentPane();
@@ -1198,9 +1331,12 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 		JPanel login = new JPanel(new FlowLayout());
 		login.add(loginp);
 
-		JPanel loginbtp = new JPanel(new FlowLayout());
-		loginbtp.add(loginok);
-		loginbtp.add(loginx);
+		JPanel loginbtp = new JPanel(new BorderLayout());
+		JPanel loginbtp_s_p = new JPanel(new FlowLayout());
+		loginbtp_s_p.add(loginok);
+		loginbtp_s_p.add(loginx);
+		
+		loginbtp.add("South", loginbtp_s_p);  loginbtp.add("North", Findbtp);
 
 		logincon.add("Center", login);
 		logincon.add("South", loginbtp);
@@ -1214,7 +1350,7 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 		loginokdlg.setLocation((int) (di.getWidth() / 2 - di6.getWidth() / 2),
 				(int) (di.getHeight() / 2 - di6.getHeight() / 2));
 
-		JPanel loginokp = new JPanel(new FlowLayout());
+		JPanel loginokp = new JPanel(new FlowLayout()); 
 		loginokp.add(loginokdlglb1);
 		loginokp.add(loginokdlglb2);
 
@@ -1224,7 +1360,7 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 		loginokcon.add("Center", loginokp);
 		loginokcon.add("South", loginokbtp);
 
-		////////////////////// 구매자 끼리
+		/*////////////////////// 구매자 끼리
 		tbuy.setLayout(new BoxLayout(tbuy, BoxLayout.Y_AXIS));
 
 		t3lb.setPreferredSize(new Dimension(300, 60));
@@ -1284,7 +1420,7 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 
 		con.add("North", mp); // 메인
 		con.add("Center", MainP);
-
+*/
 		//170517 이유미 수정  포인트 충전 컨테이너 구성
 		addPointcon = addPointDlg.getContentPane();
 		addPointDlg.setLayout(new BorderLayout());
@@ -1752,12 +1888,111 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		
+/////////////아이디 및 비밀번호 찾기
+		if(e.getSource()==Findid){
+			Finddlg.setVisible(true);	
+			Findidtf.setText("사용하신 E-mail이나 전화번호를 입력하세요");			 
+			Findpwp.setVisible(false);
+			FindShowIDp.setVisible(false);
+			FindShowPWp.setVisible(false);
+			
+		}
+		if(e.getSource()==Findpw){
+			Finddlg.setVisible(true);
+			Findpwtf.setText("사용하신ID를 입력하세요");
+			Findidp.setVisible(false); 
+			Findpwp.setVisible(true);
+			FindShowIDp.setVisible(false);
+			FindShowPWp.setVisible(false);
+			
+		}
+		
+		if(e.getSource()==Findid_fid){
+			if(!Findidtf.getText().trim().equals("")){
+				 
+				Findidp.setVisible(false); 
+				Findpwp.setVisible(false);
+				FindShowIDp.setVisible(true);
+				FindShowPWp.setVisible(false);
+				FindidDB();	
+			}else if(Findidtf.getText().trim().equals("")){	
+				Toolkit tk = Toolkit.getDefaultToolkit();
+				Dimension di = tk.getScreenSize();
+				Dimension di1 = Finderrdlg.getSize();
+				Finderrdlg.setLocation((int) (di.getWidth() / 2 - di1.getWidth() / 2),
+						(int) (di.getHeight() / 2 - di1.getHeight() / 2));
+				Finderrdlg.setVisible(true);
+			}
+						
+		}
+		
+		if(e.getSource()==Findid_fpw){
+			
+			Findidp.setVisible(false); 
+			Findpwp.setVisible(true);
+			FindShowIDp.setVisible(false);
+			FindShowPWp.setVisible(false);
+			Findpwtf.setText("사용하신ID를 입력하세요");				
+		}
+		
+		if(e.getSource()==Findpwbt){
+			if(!Findpwtf.getText().trim().equals("")){
+				
+				Findidp.setVisible(false); 
+				Findpwp.setVisible(false);
+				FindShowIDp.setVisible(false);
+				FindShowPWp.setVisible(true);			
+				FindpwDB();
+			}else if(Findpwtf.getText().trim().equals("")){	
+				Toolkit tk = Toolkit.getDefaultToolkit();
+				Dimension di = tk.getScreenSize();
+				Dimension di1 = Finderrdlg.getSize();
+				Finderrdlg.setLocation((int) (di.getWidth() / 2 - di1.getWidth() / 2),
+						(int) (di.getHeight() / 2 - di1.getHeight() / 2));
+				Finderrdlg.setVisible(true);
+			}
+			
+		}
+		
+		if(e.getSource()==Findpokbt){
+			 
+			Findidp.setVisible(false); 
+			Findpwp.setVisible(false);
+			FindShowIDp.setVisible(false);			
+			FindShowPWp.setVisible(false);
+		}
+		
+		if(e.getSource()==Findippclbt){		
+			Finddlg.setVisible(false);;
+		}
+		
+		if(e.getSource()==FindShowIDpclbt){
+			Finddlg.setVisible(false);; 
+			/*Findidp.setVisible(false); 
+			Findpwp.setVisible(false);
+			FindShowIDp.setVisible(false);			
+			FindShowPWp.setVisible(false);*/
+		}
+		
+		if(e.getSource()==FindShowPWpcokt){
+			Finddlg.setVisible(false);;
+			/*Findidp.setVisible(false); 
+			Findpwp.setVisible(false);
+			FindShowIDp.setVisible(false);			
+			FindShowPWp.setVisible(false);*/
+		}
+		
+		if(e.getSource()==Finddlgbt){
+			Finderrdlg.setVisible(false);
+		}
+////////////////////////////////////////////
 
 		// 콤보 박스 예매 인원수
 		strPersonCnt = cbCount.getSelectedItem().toString();
 		lbAllSeat.setText(strPersonCnt);
 
-		if (e.getSource() == Buyer_bt) { // 구매자 끼리
+		/*if (e.getSource() == Buyer_bt) { // 구매자 끼리
 			tpmain.setVisible(false);
 			srchresult.setVisible(false);
 			BuyerP.setVisible(true);
@@ -1768,10 +2003,10 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 				System.out.println("???");
 				t1.setVisible(false);
 			}
-		}
+		}*/
 
 		// 검색버튼
-		else if (e.getSource() == searchbt) {
+		 if (e.getSource() == searchbt) {
 			srchresult.removeAll();
 			lbct = 0;
 			if (ch1.getSelectedItem() == "----------") { // 네루미가 -----상태일때
@@ -2033,7 +2268,7 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 			tPane.setSelectedIndex(0);
 			tpmain.setVisible(false);
 			srchresult.setVisible(false);
-			BuyerP.setVisible(false);
+//			BuyerP.setVisible(false);
 			mypagep.setVisible(true);
 		} // 마이페이지
 		else if (e.getSource() == pwrightok){
@@ -2277,7 +2512,7 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 			tp.setVisible(true);
 			tpmain.setVisible(true);
 			srchresult.setVisible(false);
-			BuyerP.setVisible(false);
+			//BuyerP.setVisible(false);
 			mypagep.setVisible(false);
 			searchtf.setText("제목 또는 날짜(예 : 7월 4일 => 07/04 또는 7/04) 입력");
 		} // 홈버튼
@@ -2300,6 +2535,13 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 		}if(e.getSource() == edit){
 			pwrightdlg.setVisible(true);
 		}
+/////////////아이디 및 비밀번호찾기
+		if(e.getSource()==Findidtf){
+			Findidtf.setText("");
+		}
+		if(e.getSource()==Findpwtf){
+			Findpwtf.setText("");		
+		}
 
 	}
 
@@ -2319,8 +2561,17 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 	public void focusGained(FocusEvent e) {
 		// TODO Auto-generated method stub
 		if (e.getSource() == searchtf) {
+			searchtf.setText(null);
 			searchtf.setText("");
 		}
+//////////아이디및 비밀번호 찾기
+		if(e.getSource()==Findidtf){
+			Findidtf.setText("사용하신 E-mail이나 전화번호를 입력하세요");
+		}
+		if(e.getSource()==Findpwtf){
+			Findpwtf.setText("사용하신ID를 입력하세요");		
+		}
+//////////////////////////
 	}
 
 	@Override
@@ -2348,3 +2599,4 @@ class TotalTicket_sub123 extends JFrame implements ActionListener, MouseListener
 	}
 
 }
+
