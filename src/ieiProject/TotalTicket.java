@@ -1909,9 +1909,9 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 			rs.close();
 			pstmt.close();
 		} catch (ClassNotFoundException eee) {
-			System.err.println("로그인 실패?!!!");
+			System.err.println("Error : "+eee.toString());
 		} catch (SQLException e) {
-			System.err.println("로그인 실패?!!!");
+			System.err.println("Error : "+e.toString());
 		}
 
 		tp = new JPanel[mok + 1];
