@@ -1,21 +1,85 @@
 package ieiProject;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.sql.*;
+import java.awt.BorderLayout;
+import java.awt.Button;
+import java.awt.CardLayout;
+import java.awt.Checkbox;
+import java.awt.Choice;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Label;
+import java.awt.List;
+import java.awt.Panel;
+import java.awt.TextField;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Vector;
 import java.util.regex.PatternSyntaxException;
 
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+
+
+//소스수정 170511      
 
 public class TotalTicket {
 	public static void main(String[] ar) {
@@ -25,7 +89,8 @@ public class TotalTicket {
 
 class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListener, KeyListener, FocusListener {
 
-	ImageIcon home = new ImageIcon("..\\ieiProject\\image\\home2.jpg");
+	//FreeBoard_Sub es;
+	ImageIcon error_image = new ImageIcon("..\\ieiProject\\image\\error.jpg");
 	private int imgcount = 0;
 	private int mok = 0;
 	private int mok2 = 0;
@@ -45,10 +110,9 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 	JPanel sp1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 	JPanel sp2 = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-	private JLabel lb = new JLabel("");
+	JLabel lb = new JLabel("");
 	private JButton logoutbt = new JButton("로그아웃");
 	private JButton adminbt = new JButton("관리자 모드");
-	private String userId;
 
 	// 관리자 모드
 	private Container admincon;
@@ -135,12 +199,11 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 	JPanel tpmain = new JPanel(new BorderLayout(3, 3));
 	JPanel search = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-	private TextField searchtf = new TextField("제목 또는 날짜(예 : 7월 4일 => 07/04 또는 7/04) 입력", 80);
+	private TextField searchtf = new TextField("제목 또는 날짜 입력", 80);
 	private JButton searchbt = new JButton("검색");
 
 	// 검색 결과
 	JPanel srchresult = new JPanel(new GridLayout(2, 4, 3, 3));
-	int lbct = 0;
 
 	// 인기순, 날짜순
 	JPanel tklistpn = new JPanel(new GridLayout(2, 1, 5, 5));
@@ -157,31 +220,15 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 
 	JPanel mp = new JPanel(new BorderLayout(3, 3));
 
+	ImageIcon home = new ImageIcon("..\\ieiProject\\image\\home2.jpg");
 	private int num = 6;
 	ImageIcon[] image;// = new ImageIcon[num];
 
 	private JLabel homebt = new JLabel(home);
 	// 원본 라벨
 	private JLabel[] mv;// = new JLabel[num];
-
 	// copy 라벨
 	private JLabel[] mvc;// = new JLabel[num];
-
-	// 이벤트 다이얼로그
-	Container eventCon;
-	JDialog eventdlg = new JDialog(this, "이벤트", false);
-	JPanel eventpn = new JPanel(new BorderLayout());
-	JPanel eventpn2 = new JPanel(new GridLayout(4, 1));
-	JPanel eventlbpn = new JPanel(new FlowLayout());
-	JPanel eventlbpn2 = new JPanel(new FlowLayout());
-	JPanel eventlbpn3 = new JPanel(new FlowLayout());
-	JPanel eventbtpn = new JPanel(new FlowLayout());
-	JLabel eventlb6m = new JLabel(new ImageIcon("..\\ieiProject\\image\\호국보훈의달.png"));
-	JLabel eventalarm = new JLabel("호국보훈의 달을 맞이하여 추가 포인트 증정!");
-	JLabel eventguid = new JLabel("(마이페이지) => (쿠폰입력)의 쿠폰창에 쿠폰번호를 입력해 주세요. ");
-	JLabel eventcoupon = new JLabel("0000-0000-0000-0001");
-	JButton eventlgbt = new JButton("로그인");
-	JButton eventclbt = new JButton("닫기");
 
 	String[] mvst;// = new String[num];
 	// 회원가입 다이얼로그
@@ -254,41 +301,6 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 	private JDialog loginxdlg = new JDialog(logindlg, "로그인 실패", true);
 	private JLabel loginxdlglb = new JLabel("아이디나 비밀번호가 틀립니다!!!!");
 	private JButton loginxdlgbt = new JButton("이전화면");
-///////////////아이디 및 비밀번호 찾기
-	private Container Findcon;
-	private JDialog Finddlg = new JDialog(this, "찾기", true);
-	
-	private JPanel Findidp = new JPanel(new BorderLayout(5,5));
-	private JPanel Findidbtp = new JPanel(new FlowLayout());
-	
-	private JPanel Findpwp = new JPanel(new GridLayout(2,1));
-	private JPanel Findbtp = new JPanel(new FlowLayout());	
-	private JButton Findid = new JButton("아이디찾기");
-	private JButton Findpw = new JButton("비밀번호찾기");
-	private JButton Findid_fid = new JButton("찾기");
-	private JButton Findid_fpw = new JButton("비밀번호 찾기");
-	
-	private Container Finderrcon;
-	private JDialog Finderrdlg = new JDialog(this, "오류", true);
-	private JPanel Finderrp = new JPanel(new BorderLayout(5,5));
-	private JLabel Finderrimgib = new JLabel(new ImageIcon("..\\ieiProject\\image\\error.jpg"));
-	private JLabel Finderrlb = new JLabel("잘못 입력하였습니다.");
-	private JButton Finddlgbt = new JButton("확인");
-	
-	private JButton Findpwbt = new JButton("비밀번호찾기");
-	private JButton Findpokbt = new JButton("확인");
-	private JButton Findippclbt = new JButton("취소");
-	private JButton FindShowIDpclbt = new JButton("취소");
-	private JButton FindShowPWpcokt = new JButton("확인");
-	
-	private JPanel FindShowIDp = new JPanel(new GridLayout(3,1));
-	private JPanel FindShowPWp = new JPanel(new GridLayout(2,1));
-	
-	private JDialog Findiddlg = new JDialog (this,"아이디찾기", false);
-	private TextField Findidtf = new TextField(20);	
-	private TextField Findpwtf = new TextField(20);
-	private JLabel FindShowid = new JLabel();
-	private JLabel FindShowpw = new JLabel();
 
 	// 1:1문의 다이얼로그
 	private JButton btnFAQ = new JButton("1:1 문의하기");
@@ -369,6 +381,12 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 	private JButton btnFinSeat = new JButton("선택 완료");
 	private JButton btnReselect = new JButton("다시 선택");
 
+	// 좌석 선택할 때 비로그인시 로그인하라고 하는 다이얼로그
+	private Container loginplzCon;
+	private JDialog loginplzdlg = new JDialog(this, "로그인 필요", true);
+	private JLabel loginplzlb = new JLabel("로그인이 필요한 기능입니다.", error_image, JLabel.CENTER);
+	private JButton loginplzok = new JButton("확인");
+
 	// 좌석 버튼
 	private JButton btnNotSelected[][] = new JButton[6][16];
 	private JButton btnSelected[][] = new JButton[6][16];
@@ -392,7 +410,6 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 	protected Panel edit = new Panel(new BorderLayout());
 	protected Panel pointp = new Panel(new BorderLayout());
 	protected Panel show = new Panel(new BorderLayout());
-	protected Panel coupon = new Panel(new BorderLayout());
 
 	/////////////////////////////// 마이페이지창
 	private Panel p4 = new Panel(new GridLayout(5, 1));
@@ -482,7 +499,7 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 	private JScrollPane showfpsc = new JScrollPane(t11);
 	private JPanel showtkp = new JPanel();
 
-	private int numb;
+	private int numb=0;
 
 	private JPanel[] mytkp;// = new JPanel[numb];//(new BorderLayout(3, 3));
 	private JPanel[] tkall;// = new JPanel[numb];//(new FlowLayout());
@@ -527,64 +544,44 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 	private Panel canceldlgp = new Panel(new FlowLayout());
 	private Button cancelokbt = new Button("확인");
 	private Button cancelnobt = new Button("취소");
-
-	// 쿠폰 입력 텝팬
-	JPanel couponlbpn = new JPanel(new FlowLayout());
-	JPanel coupontfpn = new JPanel(new FlowLayout());
-	JPanel couponbtpn = new JPanel(new FlowLayout());
-	JLabel couponlb = new JLabel("쿠폰 번호를 입력해 주세요");
-	JTextField coupon1 = new JTextField(5);
-	JLabel coupon11 = new JLabel(" - ");
-	JTextField coupon2 = new JTextField(5);
-	JLabel coupon22 = new JLabel(" - ");
-	JTextField coupon3 = new JTextField(5);
-	JLabel coupon33 = new JLabel(" - ");
-	JTextField coupon4 = new JTextField(5);
-	JButton couponok = new JButton("확인");
 	
-	public void FindidDB(){//DB에서 ID 찾기
-		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl", "scott", "tiger");
-			String query = "select distinct ID from customer where email=? or tel=?";
-			PreparedStatement pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, Findidtf.getText().trim());
-			pstmt.setString(2, Findidtf.getText().trim());
-			ResultSet rs = pstmt.executeQuery();
-						
-			if(rs.next()){
-			FindShowid.setText(rs.getString("ID"));
-			}
-			
-			rs.close();
-			pstmt.close();
-		} catch (Exception e) {
-			System.err.println("Error : "+e.toString());
-		}
-		
-	}//DB에서 ID 찾기
+	FlowLayout fl = new FlowLayout();
+	JButton bt = new JButton("후기 보기");
+	JButton btnReview = new JButton("후기 작성");
 	
-	public void FindpwDB(){ //DB에서 PW 찾기
-		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl", "scott", "tiger");
-			String query = "select distinct pw from customer where ID=? ";
-			PreparedStatement pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, Findidtf.getText().trim());
-			
-			ResultSet rs = pstmt.executeQuery();
-						
-			if(rs.next()){
-				FindShowpw.setText(rs.getString("PW"));
-			}
-			
-			rs.close();
-			pstmt.close();
-		} catch (Exception e) {
-			System.err.println("Error : "+e.toString());
-		}
-		
-	}//DB에서 PW 찾기
+	JDialog jdlg = new JDialog(this, "글쓰기", true);
+	Container dlgcon;
+	JLabel dlglb = new JLabel("작성자 : ", JLabel.RIGHT);
+	JLabel dlglb1 = new JLabel("제목 : ", JLabel.RIGHT);
+	JLabel dlglb2 = new JLabel("비밀번호 : ", JLabel.RIGHT);
+	JLabel dlgtf = new JLabel();
+	JTextField dlgtf1 = new JTextField();
+	JPasswordField dlgtf2 = new JPasswordField();
+	JTextArea dlgta = new JTextArea();
+	JScrollPane dlgjsp = new JScrollPane(dlgta);
+	JButton dlgbt = new JButton("저장");
+	JButton dlgbt1 = new JButton("취소");
+	
+	//작성글 목록
+	private JDialog adlg = new JDialog(this, "리스트목록", true);
+	private Container adlgcon;
+	private JLabel adlglb = new JLabel("리스트목록", JLabel.CENTER);
+	private Vector adlgvc = new Vector();
+	private JList adlgli = new JList();
+	private JScrollPane adlgjsp = new JScrollPane(adlgli);
+	private JButton adlgbt = new JButton("선택항목보기");
+	private JButton adlgbt1 = new JButton("닫기");
+	
+	//선택된 글의 전체 내용 보기
+	private JDialog bdlg = new JDialog(this, "글보기", true);
+	private Container bdlgcon;
+	private JLabel bdlglb = new JLabel("제목 : ", JLabel.RIGHT);
+	private JLabel bdlglb1 = new JLabel("작성자 : ", JLabel.RIGHT);
+	private JLabel bdlgtf = new JLabel();
+	private JLabel bdlgtf1 = new JLabel();
+	private JTextArea bdlgta = new JTextArea();
+	private JScrollPane bdlgjsp = new JScrollPane(bdlgta);
+	private JButton bdlgbt = new JButton("확인");
 
 	// DB 연결
 	Connection conn;
@@ -649,7 +646,7 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 
 			ResultSet rs = pstmt.executeQuery();
 			if (!rs.next()) {
-				JOptionPane.showMessageDialog(null, "아이디 또는 비밀번호가 틀렸습니다!", "로그인 오류", JOptionPane.WARNING_MESSAGE);
+				loginxdlg.setVisible(true);
 				rs.close();
 				pstmt.close();
 			}
@@ -688,8 +685,9 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 				tname.setText(rs.getString("nik"));
 				point1.setText(rs.getString("POINT"));// 포인트 추가(2017.5.10)
 				lb.setText(rs.getString("id") + " 님 ");
+				dlgtf.setText(rs.getString("id"));
 				loginokdlg.setVisible(true);
-				userId = rs.getString("id");
+				btnReview.setVisible(true);
 
 				rs.close();
 				pstmt.close();
@@ -700,6 +698,7 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 			System.err.println("로그인 실패!!!");
 		}
 	}
+	
 
 	// 로그아웃 (DB연결 끊기)
 	public void logoutMember() {
@@ -965,119 +964,6 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 			System.out.println("날짜별 순위 불러오기 실패");
 		} catch (SQLException e) {
 			System.err.println("날짜별 순위 불러오기 실패2");
-		}
-	}
-
-	// coupon 입력
-	public void coupon() { // 중복 불가능(문화상품권)
-		String couponNumber = coupon1.getText().trim() + coupon2.getText().trim() + coupon3.getText().trim()
-				+ coupon4.getText().trim();
-		int nowpoint = Integer.parseInt(point1.getText());
-		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			conn = DriverManager.getConnection(url, id, pass);
-			String query = "select * from COUPON where COUPONNM=? and ROF=0 and ID is null";
-			PreparedStatement pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, couponNumber);
-			ResultSet rs = pstmt.executeQuery();
-			if (!rs.next()) {
-				coupon2();
-			} else {
-				coupon1.setText("");
-				coupon2.setText("");
-				coupon3.setText("");
-				coupon4.setText("");
-
-				String value = rs.getString("COUPONVALUE");
-				System.out.println(value);
-
-				String query2 = "update customer set POINT=? where ID=?";
-				PreparedStatement pstmt2 = conn.prepareStatement(query2);
-				int addPrice = nowpoint + Integer.parseInt(value);
-				pstmt2.setString(1, String.valueOf(addPrice));
-				pstmt2.setString(2, id2.getText().trim());
-				pstmt2.executeUpdate();
-				pstmt2.close();
-				readPoint();
-
-				String usercousql = "update COUPON set ID = ? where COUPONNM=?";
-				PreparedStatement pstmt3 = conn.prepareStatement(usercousql);
-				pstmt3.setString(1, userId);
-				pstmt3.setString(2, couponNumber);
-				pstmt3.executeUpdate();
-				System.out.println("충전 성공");
-				JOptionPane.showMessageDialog(null, "쿠폰입력 완료! 현재 포인트 : " + point1.getText(), "쿠폰 입력 완료",
-						JOptionPane.INFORMATION_MESSAGE);
-
-			}
-			rs.close();
-			pstmt.executeUpdate();
-			pstmt.close();
-			conn.close();
-
-		} catch (Exception ee) {
-			System.err.println("쿠폰 입력 오류");
-		}
-	}
-
-	public void coupon2() { // 중복 가능(이벤트 - 포인트 뿌리기)
-		String couponNumber = coupon1.getText().trim() + coupon2.getText().trim() + coupon3.getText().trim()
-				+ coupon4.getText().trim();
-		int nowpoint = Integer.parseInt(point1.getText());
-		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			conn = DriverManager.getConnection(url, id, pass);
-			String query = "select * from COUPON where ROF=1 and COUPONNM=?";
-			PreparedStatement pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, couponNumber);
-			ResultSet rs = pstmt.executeQuery();
-			if (!rs.next()) {
-				JOptionPane.showMessageDialog(null, "사용할 수 없는 쿠폰 번호입니다!", "쿠폰번호 오류", JOptionPane.WARNING_MESSAGE);
-			} else {
-				String query2 = "select * from COUPONCHECK where ID=? and COUPONNM=?";
-				PreparedStatement pstmt2 = conn.prepareStatement(query2);
-				pstmt2.setString(1, userId);
-				pstmt2.setString(2, couponNumber);
-				ResultSet rs2 = pstmt2.executeQuery();
-				if (!rs2.next()) {
-					coupon1.setText("");
-					coupon2.setText("");
-					coupon3.setText("");
-					coupon4.setText("");
-					String value = rs.getString("COUPONVALUE");
-					System.out.println(value + "-2");
-					String query3 = "update customer set POINT=? where ID=?";
-					PreparedStatement pstmt3 = conn.prepareStatement(query3);
-					int addPrice = nowpoint + Integer.parseInt(value);
-					pstmt3.setString(1, String.valueOf(addPrice));
-					pstmt3.setString(2, userId);
-					pstmt3.executeUpdate();
-					pstmt3.close();
-
-					String query4 = "insert into COUPONCHECK VALUES (?,?)";
-					PreparedStatement pstmt4 = conn.prepareStatement(query4);
-					pstmt4.setString(1, couponNumber);
-					pstmt4.setString(2, userId);
-					pstmt4.executeUpdate();
-					pstmt4.close();
-
-					readPoint();
-					System.out.println("충전 성공");
-					JOptionPane.showMessageDialog(null, "쿠폰입력 완료! 현재 포인트 : " + point1.getText(), "쿠폰 입력 완료",
-							JOptionPane.INFORMATION_MESSAGE);
-				} else {
-					JOptionPane.showMessageDialog(null, "이미 사용한 쿠폰 번호입니다!", "쿠폰번호 오류", JOptionPane.WARNING_MESSAGE);
-				}
-				rs2.close();
-				pstmt2.executeUpdate();
-				pstmt2.close();
-			}
-			pstmt.executeUpdate();
-			pstmt.close();
-			rs.close();
-			conn.close();
-		} catch (Exception e) {
-			System.out.println("쿠폰 입력 오류(2)");
 		}
 	}
 
@@ -1412,14 +1298,12 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 	public void ShowMyTicket() {
 		// id 가 1인 reservation 의 티켓번호 - ticket의 티켓번호 이어줌 ticket의 공연이름- show의
 		// 공연이름
-
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(url, id, pass);
 			String query = "select * from show inner join ticket on show.sid = ticket.sid inner join reservation on ticket.tnum=reservation.tnum where reservation.id=?";
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, id2.getText().trim());
-
 			ResultSet rs = pstmt.executeQuery();
 
 			numb = 0;
@@ -1430,10 +1314,7 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 				mytkdate1[numb].setText(rs.getString("DTDATE"));
 				mytkseat1[numb].setText(rs.getString("SEATID"));
 				numb++;
-				System.out.println("numb= " + numb);
-
 			}
-
 			rs.close();
 			pstmt.close();
 		} catch (ClassNotFoundException eee) {
@@ -1451,13 +1332,10 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 			String query = "select count(*) cccnt from show inner join ticket on show.sid = ticket.sid inner join reservation on ticket.tnum=reservation.tnum where reservation.id=?";
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, id2.getText().trim());
-
-			System.out.println("id2= " + id2.getText().trim());
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
 				numb = rs.getInt(1);
 			}
-			System.out.println("numb= " + numb);
 			rs.close();
 			pstmt.close();
 		} catch (ClassNotFoundException eee) {
@@ -1507,36 +1385,11 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 		this.setLocation((int) (di.getWidth() / 2 - di1.getWidth() / 2),
 				(int) (di.getHeight() / 2 - di1.getHeight() / 2));
 		this.setVisible(true);
-		Calendar cal = Calendar.getInstance();
-		int today = cal.get(Calendar.DATE);
-		if (today == 18 || today == 19 || today == today) // 이벤트 하고싶은 날짜
-			eventdlg.setVisible(true);
 
 	}
 
 	private void start() {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-///////////////아이디및 비밀번호 찾기
-		Findid.addActionListener(this);
-		Findpw.addActionListener(this);
-		
-		Findidtf.addMouseListener(this);
-		Findpwtf.addMouseListener(this);
-		Findidtf.addFocusListener(this);
-		Findpwtf.addFocusListener(this);
-		
-		Findid_fid.addActionListener(this);
-		Findid_fpw.addActionListener(this);
-		Findpwbt.addActionListener(this);
-		Findpokbt.addActionListener(this);
-		Findippclbt.addActionListener(this);
-		FindShowIDpclbt.addActionListener(this);
-		FindShowPWpcokt.addActionListener(this);
-		Finddlgbt.addActionListener(this);
-		Findidtf.addFocusListener(this);
-		Findpwtf.addFocusListener(this);
-///////////////////////////////////////////
-
 		// 170518 이유미 수정
 		btnFAQ.addActionListener(this);
 		rightbt.addActionListener(this);
@@ -1547,20 +1400,19 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 		homebt.addMouseListener(this);
 		joinok.addActionListener(this);
 		joinx.addActionListener(this);
-		couponok.addActionListener(this);
-		eventlgbt.addActionListener(this);
-		eventclbt.addActionListener(this);
 		loginok.addActionListener(this);
+		loginplzok.addActionListener(this);
 		loginx.addActionListener(this);
 		joinokbt.addActionListener(this);
 		joinxbt.addActionListener(this);
 		loginokdlgbt.addActionListener(this);
+		loginxdlgbt.addActionListener(this);
 		logoutbt.addActionListener(this);
 		for (int i = 0; i < imgcount; i++) {
 			mv[i].addMouseListener(this);
 			mvc[i].addMouseListener(this);
 		}
-
+		
 		btnCancle.addActionListener(this);
 		btnSeatSelect.addActionListener(this);
 		btnFinSeat.addActionListener(this);
@@ -1584,12 +1436,22 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 		shodebt.addActionListener(this);
 		customertableView.addMouseListener(this);
 		showtableView.addMouseListener(this);
+		
+		btnReview.addActionListener(this);//글쓰기버튼...
+		dlgbt.addActionListener(this);//글쓰기 다이얼로그의 저장버튼...
+		dlgbt1.addActionListener(this);//글쓰기 다이얼로그의 취소버튼...
+		bt.addActionListener(this);//리스트목록 버튼..
+		adlgbt1.addActionListener(this);//리스트목록 다이얼로그의 닫기버튼...
+		adlgli.addMouseListener(this);//리스트목록 다이얼로그의 리스트목록...
+		adlgbt.addActionListener(this);//리스트목록 다이얼로그의 선택목록보기 버튼...
+		bdlgbt.addActionListener(this);//글보기 다이얼로그의 확인버튼...
 
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 16; j++) {
 				btnNotSelected[i][j].addActionListener(this);
 			}
 		}
+		
 
 		// 좌석 다이얼로그 종료됐을 때 좌석 초기화시키기
 		sltSeatDlg.addWindowListener(new WindowAdapter() {
@@ -1838,10 +1700,13 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 		// 메인화면 구성 - 상단 메뉴바
 		con = this.getContentPane();
 		con.setLayout(bl);
-		// 170518 이유미 수정
+		//170518 이유미 수정 
 		sp1.add(btnFAQ);
+		sp1.add(bt);
+		sp1.add(btnReview);
+		btnReview.setVisible(false);
 		mp.add("West", sp1);
-
+		
 		// DB에 있는 공연 갯수 카운트
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -1859,10 +1724,10 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 		} catch (SQLException e) {
 			System.err.println("");
 		}
-		mv = new JLabel[12];
-		mvc = new JLabel[12];
-		mvst = new String[12];
-		image = new ImageIcon[12];
+		mv = new JLabel[imgcount];
+		mvc = new JLabel[imgcount];
+		mvst = new String[imgcount];
+		image = new ImageIcon[imgcount];
 
 		for (int i = 0; i < imgcount; i++) {
 			mv[i] = new JLabel();
@@ -1909,9 +1774,9 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 			rs.close();
 			pstmt.close();
 		} catch (ClassNotFoundException eee) {
-			System.err.println("Error : "+eee.toString());
+			System.err.println("로그인 실패?!!!");
 		} catch (SQLException e) {
-			System.err.println("Error : "+e.toString());
+			System.err.println("로그인 실패?!!!");
 		}
 
 		tp = new JPanel[mok + 1];
@@ -1965,25 +1830,6 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 		con.add("North", mp);
 		con.add("Center", tpmain);
 
-		// 이벤트 다이얼로그
-		eventCon = eventdlg.getContentPane();
-		eventCon.setLayout(new BorderLayout());
-		eventdlg.setSize(500, 500);
-		eventdlg.setResizable(false);
-		eventpn.add("Center", eventlb6m);
-		eventlbpn.add(eventalarm);
-		eventlbpn2.add(eventguid);
-		eventlbpn3.add(eventcoupon);
-		eventbtpn.add(eventlgbt);
-		eventbtpn.add(eventclbt);
-		eventpn2.add(eventlbpn);
-		eventpn2.add(eventlbpn2);
-		eventpn2.add(eventlbpn3);
-		eventpn2.add(eventbtpn);
-
-		eventCon.add("Center", eventpn);
-		eventCon.add("South", eventpn2);
-
 		// 회원가입 다이얼로그 구성
 		joincon = joindlg.getContentPane();
 		joincon.setLayout(new BorderLayout());
@@ -2018,36 +1864,7 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 
 		joincon.add("Center", join);
 		joincon.add("South", joinbtp);
-//////////////아이디 및 비밀번호 찾기 화면구성
-		Findbtp.add(Findid); Findbtp.add(Findpw);		
-		
-		Findcon = Finddlg.getContentPane();
-		Findcon.setLayout(new CardLayout());
-		Finddlg.setSize(200, 100);
-		;
-		Dimension diFinddlg = Finddlg.getSize();
-		Finddlg.setLocation((int) (di.getWidth() / 2 - diFinddlg.getWidth() / 2),
-				(int) (di.getHeight() / 2 - diFinddlg.getHeight() / 2));
-		
-		Findidbtp.add(Findid_fid); Findidbtp.add(Findippclbt);
-		Findidp.add("North", Findidtf);Findidp.add("South",Findidbtp); 
-		
-		Findpwp.add(Findpwtf);Findpwp.add(Findpwbt);
-							
-		FindShowIDp.add(FindShowid); FindShowIDp.add(Findid_fpw); FindShowIDp.add(FindShowIDpclbt);
-		FindShowPWp.add(FindShowpw); FindShowPWp.add(FindShowPWpcokt);
-		
-		Findidp.setVisible(false); Findpwp.setVisible(false);
-		
-		Finddlg.add(Findidp); Finddlg.add(Findpwp); Finddlg.add(FindShowIDp); Finddlg.add(FindShowPWp);
-		
-		Finderrcon = Finderrdlg.getContentPane();
-		Finderrcon.setLayout(new BorderLayout(5,5));
-		Finderrdlg.setSize(250, 100);
-		Finderrdlg.add("West", Finderrimgib); Finderrdlg.add("Center", Finderrlb); Finderrdlg.add("South", Finddlgbt);
-				
-		Findbtp.setVisible(true);
-		
+
 		// 회원가입 완료 다이얼로그 구성
 		joinokcon = joinokdlg.getContentPane();
 		joinokcon.setLayout(new BorderLayout());
@@ -2076,6 +1893,24 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 		joinokcon.add("Center", joinok);
 		joinokcon.add("South", joinokbtp);
 
+		// 회원가입 실패 다이얼로그 구성
+		joinxcon = joinxdlg.getContentPane();
+		joinxcon.setLayout(new BorderLayout());
+		joinxdlg.setSize(230, 100);
+		joinxdlg.setResizable(false);
+		Dimension di4 = joinxdlg.getSize();
+		joinxdlg.setLocation((int) (di.getWidth() / 2 - di4.getWidth() / 2),
+				(int) (di.getHeight() / 2 - di4.getHeight() / 2));
+
+		JPanel joinxlbp = new JPanel(new FlowLayout());
+		joinxlbp.add(joinxlb);
+
+		JPanel joinxbtp = new JPanel(new FlowLayout());
+		joinxbtp.add(joinxbt);
+
+		joinxcon.add("Center", joinxlbp);
+		joinxcon.add("South", joinxbtp);
+
 		// 로그인 다이얼로그 구성
 		logincon = logindlg.getContentPane();
 		logincon.setLayout(new BorderLayout());
@@ -2090,17 +1925,13 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 		loginp.add(loginidtf);
 		loginp.add(loginpwlb);
 		loginp.add(loginpwtf);
-//// 아이디 및 비밀번호 찾기 위해 변경
+
 		JPanel login = new JPanel(new FlowLayout());
 		login.add(loginp);
 
-		JPanel loginbtp = new JPanel(new BorderLayout());
-		JPanel loginbtp_s_p = new JPanel(new FlowLayout());
-		loginbtp_s_p.add(loginok);
-		loginbtp_s_p.add(loginx);
-
-		loginbtp.add("South", loginbtp_s_p);
-		loginbtp.add("North", Findbtp);
+		JPanel loginbtp = new JPanel(new FlowLayout());
+		loginbtp.add(loginok);
+		loginbtp.add(loginx);
 
 		logincon.add("Center", login);
 		logincon.add("South", loginbtp);
@@ -2123,6 +1954,24 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 
 		loginokcon.add("Center", loginokp);
 		loginokcon.add("South", loginokbtp);
+
+		// 로그인 실패 다이얼로그 구성
+		loginxcon = loginxdlg.getContentPane();
+		loginxcon.setLayout(new BorderLayout());
+		loginxdlg.setSize(300, 100);
+		loginxdlg.setResizable(false);
+		Dimension di5 = loginxdlg.getSize();
+		loginxdlg.setLocation((int) (di.getWidth() / 2 - di5.getWidth() / 2),
+				(int) (di.getHeight() / 2 - di5.getHeight() / 2));
+
+		JPanel loginxp = new JPanel(new FlowLayout());
+		loginxp.add(loginxdlglb);
+
+		JPanel loginxbtp = new JPanel(new FlowLayout());
+		loginxbtp.add(loginxdlgbt);
+
+		loginxcon.add("Center", loginxp);
+		loginxcon.add("South", loginxbtp);
 
 		////////////////////// 구매자 끼리
 		tbuy.setLayout(new BoxLayout(tbuy, BoxLayout.Y_AXIS));
@@ -2295,7 +2144,6 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 
 		JPanel plPoint1 = new JPanel(new FlowLayout());
 		JPanel plPoint2 = new JPanel(new FlowLayout());
-
 		plPoint1.add(lbaddPoint);
 		plPoint2.add(btnAddPoint);
 
@@ -2307,6 +2155,19 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 		rsvDlg.setLayout(new BorderLayout());
 		rsvDlg.setSize(600, 400);
 		rsvDlg.setResizable(false);
+
+		// 비로그인시 빠꾸먹이는 컨테이너 구성
+		loginplzCon = loginplzdlg.getContentPane();
+		loginplzdlg.setLayout(new BorderLayout());
+		JPanel loginplzbtpn = new JPanel(new FlowLayout());
+		JPanel loginplzlbpn = new JPanel(new FlowLayout());
+		loginplzdlg.setLocation((int) (di.getWidth() / 2 - di5.getWidth() / 2),
+				(int) (di.getHeight() / 2 - di5.getHeight() / 2));
+		loginplzdlg.setSize(300, 180);
+		loginplzlbpn.add(loginplzlb);
+		loginplzbtpn.add(loginplzok);
+		loginplzCon.add("Center", loginplzlbpn);
+		loginplzCon.add("South", loginplzbtpn);
 
 		// 좌석 선택 컨테이너 구성
 		sltSeatCon = sltSeatDlg.getContentPane();
@@ -2505,10 +2366,8 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 		tPane.add("수정", edit);
 		tPane.add("포인트", pointp);
 		tPane.add("공연내역", show);
-		tPane.add("쿠폰입력", coupon);
 		tPane.setTabPlacement(JTabbedPane.LEFT);
 
-		//////////// 수정 텝팬
 		p2_1.add(eID);
 		p2_1.add(eID1);
 		p2_2.add(ephone);
@@ -2535,7 +2394,6 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 		pointP1.setLayout(gridb);
 		constraint.fill = GridBagConstraints.BOTH;
 
-		//////////////////////// 포인트 충전 텝팬
 		constraint.gridx = 0;
 		constraint.gridy = 0;
 		pointP1.add(point2, constraint);
@@ -2573,12 +2431,12 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 				(int) (di.getHeight() / 2 - di1.getHeight() / 2));
 
 		chargep.add(chargelb);
-		// 170518 이유미 수정
+		//170518 이유미 수정
 		chargep.add(cbChargePoint);
 		chargep.add(chargebt);
 
 		chargecon.add("Center", chargep);
-		///////////////////////////////////////// 포인트 충전 끝, 공연내역 시작
+		/////////////////////////////////////////
 		p4_1.add(id1);
 		p4_1.add(id2);
 		p4_2.add(phone1);
@@ -2671,21 +2529,7 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 		realcancelp.add("Center", canceldlgp);
 		canceldlg.add(realcancelp);
 
-		// 쿠폰입력 탭팬
-		couponlbpn.add(couponlb);
-		coupontfpn.add(coupon1);
-		coupontfpn.add(coupon11);
-		coupontfpn.add(coupon2);
-		coupontfpn.add(coupon22);
-		coupontfpn.add(coupon3);
-		coupontfpn.add(coupon33);
-		coupontfpn.add(coupon4);
-		couponbtpn.add(couponok);
-		coupon.add("North", couponlbpn);
-		coupon.add("Center", coupontfpn);
-		coupon.add("South", couponbtpn);
-
-		/////////////////////////////////////////////////// ????
+		///////////////////////////////////////////////////
 
 		myP.add("Center", p5);
 		mypagep.add(tPane);
@@ -2718,7 +2562,88 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 
 		updateokcon.add("Center", updateok);
 		updateokcon.add("South", updateokbtp);
-
+		
+		//글쓰기 다이얼로그를 구성합니다.
+		dlgcon = jdlg.getContentPane();
+		dlgcon.setLayout(new BorderLayout(5, 5));
+		JPanel dlgjp1 = new JPanel(new BorderLayout());
+		dlgjp1.setBorder(new TitledBorder(new BevelBorder(BevelBorder.RAISED), "기본정보"));
+		JPanel dlgjp2 = new JPanel(new GridLayout(3, 1));
+		dlgjp2.add(dlglb);
+		dlgjp2.add(dlglb1);
+		dlgjp2.add(dlglb2);
+		dlgjp1.add("West", dlgjp2);
+		JPanel dlgjp3 = new JPanel(new GridLayout(3, 1));
+		
+		dlgjp3.add(dlgtf);
+		dlgjp3.add(dlgtf1);
+		dlgjp3.add(dlgtf2);
+		dlgjp1.add("Center", dlgjp3);
+		dlgcon.add("North", dlgjp1);
+		dlgjsp.setBorder(new TitledBorder(new BevelBorder(BevelBorder.RAISED), "내용작성"));
+		dlgcon.add("Center", dlgjsp);
+		JPanel dlgjp = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		dlgbt.setBorder(new SoftBevelBorder(SoftBevelBorder.RAISED));
+		dlgbt1.setBorder(new SoftBevelBorder(SoftBevelBorder.RAISED));
+		dlgjp.add(dlgbt);
+		dlgjp.add(dlgbt1);
+		dlgcon.add("South", dlgjp);
+		jdlg.setSize(400, 400);
+		jdlg.setResizable(false);
+		Toolkit dlgtk = Toolkit.getDefaultToolkit();
+		Dimension dlgdi = dlgtk.getScreenSize();
+		Dimension dlgdi1 = jdlg.getSize();
+		jdlg.setLocation((int)(dlgdi.getWidth() / 2 - dlgdi1.getWidth() / 2), 
+		(int)(dlgdi.getHeight() / 2 - dlgdi1.getHeight() / 2));
+		//글쓰기 다이얼로그 구성끝..
+				
+		//리스트 목록 다이얼로그 구성...
+		adlgcon = adlg.getContentPane();
+		adlgcon.setLayout(new BorderLayout(5, 5));
+		adlgcon.add("North", adlglb);
+		adlgcon.add("Center", adlgjsp);
+		JPanel adlgjp = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		adlgjp.add(adlgbt);
+		adlgjp.add(adlgbt1);
+		adlgcon.add("South", adlgjp);
+		adlg.setSize(400, 400);
+		adlg.setResizable(false);
+		Toolkit adlgtk = Toolkit.getDefaultToolkit();
+		Dimension adlgdi = adlgtk.getScreenSize();
+		Dimension adlgdi1 = adlg.getSize();
+		adlg.setLocation((int)(adlgdi.getWidth() / 2 - adlgdi1.getWidth() / 2), 
+			(int)(adlgdi.getHeight() / 2 - adlgdi1.getHeight() / 2));
+		//리스트 목록 다이얼로그 구성끝...
+				
+		//글보기 다이얼로그 구성..
+		bdlgcon = bdlg.getContentPane();
+		bdlgcon.setLayout(new BorderLayout());
+		JPanel bdlgjp1 = new JPanel(new BorderLayout());
+		JPanel bdlgjp2 = new JPanel(new GridLayout(2, 1));
+		bdlgjp2.add(bdlglb);
+		bdlgjp2.add(bdlglb1);
+		bdlgjp1.add("West", bdlgjp2);
+		JPanel bdlgjp3 = new JPanel(new GridLayout(2, 1));
+		bdlgjp3.add(bdlgtf);
+		bdlgjp3.add(bdlgtf1);
+		bdlgjp1.add("Center", bdlgjp3);
+		bdlgcon.add("North", bdlgjp1);
+		bdlgcon.add("Center", bdlgjsp);
+		JPanel bdlgjp = new JPanel(new FlowLayout());
+		bdlgjp.add(bdlgbt);
+		bdlgcon.add("South", bdlgjp);
+		bdlgta.setEnabled(false);
+		bdlgta.setDisabledTextColor(Color.black);
+		bdlg.setSize(300, 200);
+		bdlg.setResizable(false);
+		Toolkit bdlgtk = Toolkit.getDefaultToolkit();
+		Dimension bdlgdi = bdlgtk.getScreenSize();
+		Dimension bdlgdi1 = bdlg.getSize();
+		bdlg.setLocation((int)(bdlgdi.getWidth() / 2 - bdlgdi1.getWidth() / 2), 
+				(int)(bdlgdi.getHeight() / 2 - bdlgdi1.getHeight() / 2));
+		//글보기 다이얼로그 구성끝...
+		
+		
 		tpmain.setVisible(true);
 		bestshow();
 		dateshow();
@@ -2728,116 +2653,17 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-/////////////아이디 및 비밀번호 찾기
-		if (e.getSource() == Findid) {
-			Finddlg.setVisible(true);
-			Findidtf.setText("사용하신 E-mail이나 전화번호를 입력하세요");
-			Findpwp.setVisible(false);
-			FindShowIDp.setVisible(false);
-			FindShowPWp.setVisible(false);
 
-		}
-		if (e.getSource() == Findpw) {
-			Finddlg.setVisible(true);
-			Findpwtf.setText("사용하신ID를 입력하세요");
-			Findidp.setVisible(false);
-			Findpwp.setVisible(true);
-			FindShowIDp.setVisible(false);
-			FindShowPWp.setVisible(false);
-
-		}
-
-		if (e.getSource() == Findid_fid) {
-			if (!Findidtf.getText().trim().equals("")) {
-
-				Findidp.setVisible(false);
-				Findpwp.setVisible(false);
-				FindShowIDp.setVisible(true);
-				FindShowPWp.setVisible(false);
-				FindidDB();
-			} else if (Findidtf.getText().trim().equals("")) {
-				Toolkit tk = Toolkit.getDefaultToolkit();
-				Dimension di = tk.getScreenSize();
-				Dimension di1 = Finderrdlg.getSize();
-				Finderrdlg.setLocation((int) (di.getWidth() / 2 - di1.getWidth() / 2),
-						(int) (di.getHeight() / 2 - di1.getHeight() / 2));
-				Finderrdlg.setVisible(true);
-			}
-
-		}
-
-		if (e.getSource() == Findid_fpw) {
-
-			Findidp.setVisible(false);
-			Findpwp.setVisible(true);
-			FindShowIDp.setVisible(false);
-			FindShowPWp.setVisible(false);
-			Findpwtf.setText("사용하신ID를 입력하세요");
-		}
-
-		if (e.getSource() == Findpwbt) {
-			if (!Findpwtf.getText().trim().equals("")) {
-
-				Findidp.setVisible(false);
-				Findpwp.setVisible(false);
-				FindShowIDp.setVisible(false);
-				FindShowPWp.setVisible(true);
-				FindpwDB();
-			} else if (Findpwtf.getText().trim().equals("")) {
-				Toolkit tk = Toolkit.getDefaultToolkit();
-				Dimension di = tk.getScreenSize();
-				Dimension di1 = Finderrdlg.getSize();
-				Finderrdlg.setLocation((int) (di.getWidth() / 2 - di1.getWidth() / 2),
-						(int) (di.getHeight() / 2 - di1.getHeight() / 2));
-				Finderrdlg.setVisible(true);
-			}
-
-		}
-
-		if (e.getSource() == Findpokbt) {
-
-			Findidp.setVisible(false);
-			Findpwp.setVisible(false);
-			FindShowIDp.setVisible(false);
-			FindShowPWp.setVisible(false);
-		}
-
-		if (e.getSource() == Findippclbt) {
-			Finddlg.setVisible(false);
-			;
-		}
-
-		if (e.getSource() == FindShowIDpclbt) {
-			Finddlg.setVisible(false);
-			;
-			/*
-			 * Findidp.setVisible(false); Findpwp.setVisible(false);
-			 * FindShowIDp.setVisible(false); FindShowPWp.setVisible(false);
-			 */
-		}
-
-		if (e.getSource() == FindShowPWpcokt) {
-			Finddlg.setVisible(false);
-			;
-			/*
-			 * Findidp.setVisible(false); Findpwp.setVisible(false);
-			 * FindShowIDp.setVisible(false); FindShowPWp.setVisible(false);
-			 */
-		}
-
-		if (e.getSource() == Finddlgbt) {
-			Finderrdlg.setVisible(false);
-		}
-		// 170518 이유미 수정 선택한 충전 잔액 저장
+		//170518 이유미 수정 선택한 충전 잔액 저장 
 		strChargePoint = cbChargePoint.getSelectedItem().toString();
-
+		
 		// 콤보 박스 예매 인원수
 		strPersonCnt = cbCount.getSelectedItem().toString();
 		lbAllSeat.setText(strPersonCnt);
 
-		// 170519 이유미 수정
-		if (e.getSource() == btnFAQ) { // 1:1 문의하기
-			// FAQServer faqserver = new FAQServer();
+		//170519 이유미 수정 
+		if (e.getSource() == btnFAQ) { // 1:1 문의하기 
+			//FAQServer faqserver = new FAQServer();
 			MultiChatClient mclient = new MultiChatClient(loginokdlglb1.getText());
 		} // 구매자 끼리
 
@@ -2850,131 +2676,30 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 
 		// 검색버튼
 		else if (e.getSource() == searchbt) {
-			srchresult.removeAll();
-			lbct = 0;
-			if (ch1.getSelectedItem() == "----------") { // 네루미가 -----상태일때
-				String rslt = searchtf.getText().trim();
-				for (int i = 0; i < num; i++) {
-					mvst[i] = mv[i].getText().trim();
-				}
-				ArrayList<String> list = new ArrayList<String>();
-				String[] toColumnNm = rslt.split("\\s");
-				for (int i = 0; i < toColumnNm.length; i++) {
-					list.add(toColumnNm[i]);
-				}
-				try {
-					Class.forName("oracle.jdbc.driver.OracleDriver");
-					conn = DriverManager.getConnection(url, id, pass);
-					for (String srchlist : list) {
-						String query = "select distinct sname from show natural join detshow where sname like '%' || ? || '%' or dtdate like '%' || ? || '%'";
-						PreparedStatement pstmt = conn.prepareStatement(query);
-						pstmt.setString(1, srchlist);
-						pstmt.setString(2, srchlist);
-						ResultSet rs = pstmt.executeQuery();
-						while (rs.next()) {
-							for (int i = 0; i < num; i++) {
-								if (mvst[i].equals(rs.getString("SNAME"))) {
-									mvc[i].setVerticalTextPosition(SwingConstants.BOTTOM);
-									mvc[i].setHorizontalTextPosition(SwingConstants.CENTER);
-									srchresult.add(mvc[i]);
-									++lbct;
-								}
-							}
-						}
-					}
-				} catch (Exception ee) {
-					System.err.println("검색 결과창 띄우기 실패");
-				}
-			} else if (ch1.getSelectedItem() == "공연이름") { // 네루미가 공연이름 상태일때
-				String rslt = searchtf.getText().trim();
-				for (int i = 0; i < num; i++) {
-					mvst[i] = mv[i].getText().trim();
-				}
-
-				ArrayList<String> list = new ArrayList<String>();
-				String[] toColumnNm = rslt.split("\\s");
-				for (int i = 0; i < toColumnNm.length; i++) {
-					list.add(toColumnNm[i]);
-				}
-				try {
-					Class.forName("oracle.jdbc.driver.OracleDriver");
-					conn = DriverManager.getConnection(url, id, pass);
-					for (String srchlist : list) {
-						String query = "select distinct sname from show where sname like '%' || ? || '%'";
-						PreparedStatement pstmt = conn.prepareStatement(query);
-						pstmt.setString(1, srchlist);
-						ResultSet rs = pstmt.executeQuery();
-
-						while (rs.next()) {
-							for (int i = 0; i < num; i++) {
-								if (mvst[i].equals(rs.getString("SNAME"))) {
-									mvc[i].setVerticalTextPosition(SwingConstants.BOTTOM);
-									mvc[i].setHorizontalTextPosition(SwingConstants.CENTER);
-									srchresult.add(mvc[i]);
-									++lbct;
-								}
-							}
-						}
-					}
-				} catch (Exception ee) {
-					System.out.println("검색 결과창 띄우기 실패");
-				}
-			} else if (ch1.getSelectedItem() == "공연날짜") { // 네루미가 공연날짜 상태일떄
-				String rslt = searchtf.getText().trim();
-				for (int i = 0; i < num; i++) {
-					mvst[i] = mv[i].getText().trim();
-				}
-
-				ArrayList<String> list = new ArrayList<String>();
-				String[] toColumnNm = rslt.split("\\s");
-				for (int i = 0; i < toColumnNm.length; i++) {
-					list.add(toColumnNm[i]);
-				}
-
-				try {
-					Class.forName("oracle.jdbc.driver.OracleDriver");
-					conn = DriverManager.getConnection(url, id, pass);
-					for (String srchlist : list) {
-						String query = "select distinct sname from show natural join detshow where dtdate like '%' || ? || '%'";
-						PreparedStatement pstmt = conn.prepareStatement(query);
-						pstmt.setString(1, srchlist);
-						ResultSet rs = pstmt.executeQuery();
-
-						while (rs.next()) {
-							for (int i = 0; i < num; i++) {
-								if (mvst[i].equals(rs.getString("SNAME"))) {
-									mvc[i].setVerticalTextPosition(SwingConstants.BOTTOM);
-									mvc[i].setHorizontalTextPosition(SwingConstants.CENTER);
-									srchresult.add(mvc[i]);
-									++lbct;
-								}
-							}
-						}
-					}
-				} catch (Exception ee) {
-					System.out.println("검색 결과창 띄우기 실패");
-				}
-
-			}
-			tpmaincard.setVisible(false);
-			tpmain.add("Center", srchresult);
-			searchtf.setText("제목 또는 날짜(예 : 7월 4일 => 07/04 또는 7/04) 입력");
 			srchresult.setVisible(true);
-			System.out.println(lbct);
-
-			if (lbct == 0 || lbct == num) {
-				srchresult.removeAll();
-				JOptionPane.showMessageDialog(null, "검색 결과가 없습니다!", "검색 결과 없음", JOptionPane.ERROR_MESSAGE);
-				tpmain.add("Center", tpmaincard);
-				tpmaincard.setVisible(true);
-				srchresult.setVisible(false);
-
+			srchresult.removeAll();
+			String rslt = searchtf.getText().trim();
+			for (int i = 0; i < num; i++) {
+				mvst[i] = mv[i].getText().trim();
 			}
 
-		} else if (e.getSource() == eventlgbt) {
-			logindlg.setVisible(true);
-		} else if (e.getSource() == eventclbt) {
-			eventdlg.setVisible(false);
+			try {
+				for (int i = 0; i < num; i++) {
+					if (mvst[i].matches(".*" + rslt + ".*")) {
+						mvc[i].setVerticalTextPosition(SwingConstants.BOTTOM);
+						mvc[i].setHorizontalTextPosition(SwingConstants.CENTER);
+						srchresult.add(mvc[i]);
+					}
+				}
+			} catch (PatternSyntaxException ee) {
+				System.err.println(ee);
+			}
+			for (int i = 0; i <= mok; i++) {
+				tp[i].setVisible(false);
+			}
+			tpmain.add("Center", srchresult);
+			searchtf.setText("제목 또는 날짜 검색");
+			srchresult.setVisible(true);
 		}
 
 		else if (e.getSource() == joinbt) { // 회원가입
@@ -3036,11 +2761,9 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 		} // 로그인
 
 		else if (e.getSource() == loginok) { // 로그인 다이얼로그의 완료
-			eventlgbt.setVisible(false);
 			loginMember();
 
 		} // 로그인 다이얼로그의 완료
-
 		else if (e.getSource() == loginx) { // 로그인 다이얼로그의 취소
 			loginidtf.setText("");
 			loginpwtf.setText(" ");
@@ -3090,8 +2813,8 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 			loginokdlglb1.setText(" ");
 			loginokdlglb1.setText("");
 			adminbt.setVisible(false);
+			btnReview.setVisible(false);
 			logoutMember();
-			eventlgbt.setVisible(true);
 		} // 로그아웃 버튼
 
 		else if (e.getSource() == btnCancle) { // 취소 버튼
@@ -3101,8 +2824,7 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 			cbSelectedDate = cbDay.getSelectedItem().toString();
 
 			if (loginokdlglb1.getText() == "") {
-				JOptionPane.showMessageDialog(null, "로그인을 해주세요!", "비로그인 상태", JOptionPane.WARNING_MESSAGE);
-				logindlg.setVisible(true);
+				loginplzdlg.setVisible(true);
 				return;
 			} else {
 				try { // DB에 있는 좌석 불러오기
@@ -3114,7 +2836,9 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 				}
 				sltSeatDlg.setVisible(true);
 			}
-		}  else if (e.getSource() == btnFinSeat) { // 좌석 선택 완료
+		} else if (e.getSource() == loginplzok) { // 로그인 해달라는 버튼
+			loginplzdlg.setVisible(false);
+		} else if (e.getSource() == btnFinSeat) { // 좌석 선택 완료
 			lbToPay.setText(String.valueOf(Integer.parseInt(strPersonCnt) * showPrice));
 			lbToPay.setForeground(Color.RED);
 			readPoint();
@@ -3129,18 +2853,144 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-		} else if (e.getSource() == mypagebt) { // 마이페이지
-			coupon1.setText("");
-			coupon2.setText("");
-			coupon3.setText("");
-			coupon4.setText("");
+		} 
+		
+		else if(e.getSource() == btnReview){
+			jdlg.setVisible(true);
+		}
+		else if(e.getSource() == dlgbt){
+			String str = dlgtf.getText().trim();//작성자
+			String str1 = dlgtf1.getText().trim();//제목
+			String str2 = new String(dlgtf2.getPassword());//비밀번호
+			String str3 = dlgta.getText().trim();//글내용
+			FreeBoard_Sub1 ess = new FreeBoard_Sub1(str, str1, str2, str3);
+			File dir = new File("C:\\workspace\\data");
+			String[] files = dir.list();
+			File file = null;
+			if(files.length == 0){
+				file = new File(dir, "1.myfile");
+				ess.setNumber(1);
+			}
+			else{
+				int[] ii = new int[files.length];
+				for(int i = 0; i < files.length; i++){
+					ii[i] = Integer.parseInt(files[i].substring(0, files[i].indexOf(".")));
+				}
+				int kkk = -1;
+				for(int i = 0; i < ii.length; i++){
+					if(kkk < ii[i]){
+						kkk = ii[i];
+					}
+				}
+				file = new File(dir, kkk + 1 + ".myfile");
+				ess.setNumber(kkk + 1);
+			}
+			try{
+				FileOutputStream fo = new FileOutputStream(file);
+				BufferedOutputStream bo = new BufferedOutputStream(fo);
+				ObjectOutputStream oos = new ObjectOutputStream(bo);
+				oos.writeObject(ess);
+				oos.close();
+				bo.close();
+				fo.close();			
+			}catch(FileNotFoundException ee){
+			}catch(IOException ee){}
+			dlgtf1.setText("");
+			dlgtf2.setText("");
+			dlgta.setText(" ");
+			dlgta.setText("");
+			jdlg.setVisible(false);
+		}
+		else if(e.getSource() == dlgbt1){
+			dlgtf1.setText("");
+			dlgtf2.setText("");
+			dlgta.setText(" ");
+			dlgta.setText("");
+			jdlg.setVisible(false);
+		}
+		else if(e.getSource() == bt){
+			//리스트를 보여주어야 한다.
+			File dir = new File("C:\\workspace\\data");
+			adlgvc.clear();
+			String[] files = dir.list();
+			for(int i = 0; i < files.length; i++){
+				File file = new File(dir, files[i]);
+				try{
+					FileInputStream fi = new FileInputStream(file);
+					BufferedInputStream bi = new BufferedInputStream(fi);
+					ObjectInputStream ois = new ObjectInputStream(bi);
+					FreeBoard_Sub1 ess = (FreeBoard_Sub1)ois.readObject();
+					ois.close();
+					bi.close();
+					fi.close();
+					String imsi = "";
+					imsi += files[i].substring(0, files[i].indexOf("."));
+					imsi += " : ";
+					imsi += ess.getTitle();
+					imsi += " : ";
+					imsi += ess.getName();
+					imsi += " : ";
+					imsi += ess.getDate();
+					imsi += " : ";
+					imsi += ess.getSearchnum();
+					adlgvc.add(imsi);
+				}catch(FileNotFoundException ee){
+				}catch(IOException ee){
+				}catch(ClassNotFoundException ee){}
+			}
+			adlgli.setListData(adlgvc);
+			//adlgli.updateUI();
+			adlg.setVisible(true);
+		}
+		else if(e.getSource() == adlgbt1){
+			adlg.setVisible(false);
+		}
+		else if(e.getSource() == adlgbt){
+			view();
+		}
+		else if(e.getSource() == bdlgbt){
+			bdlg.setVisible(false);
+			File dir = new File("C:\\workspace\\data");
+			adlgvc.clear();
+			String[] files = dir.list();
+			for(int i = 0; i < files.length; i++){
+				File file = new File(dir, files[i]);
+				try{
+					FileInputStream fi = new FileInputStream(file);
+					BufferedInputStream bi = new BufferedInputStream(fi);
+					ObjectInputStream ois = new ObjectInputStream(bi);
+					FreeBoard_Sub1 ess = (FreeBoard_Sub1)ois.readObject();
+					ois.close();
+					bi.close();
+					fi.close();
+					String imsi = "";
+					imsi += files[i].substring(0, files[i].indexOf("."));
+					imsi += " : ";
+					imsi += ess.getTitle();
+					imsi += " : ";
+					imsi += ess.getName();
+					imsi += " : ";
+					imsi += ess.getDate();
+					imsi += " : ";
+					imsi += ess.getSearchnum();
+					adlgvc.add(imsi);
+				}catch(FileNotFoundException ee){
+				}catch(IOException ee){
+				}catch(ClassNotFoundException ee){}
+			}
+			adlgli.setListData(adlgvc);
+			//adlgli.updateUI();
+			adlg.setVisible(true);
+		}
+		
+		else if (e.getSource() == mypagebt) { // 마이페이지
 			tpmain.setVisible(false);
 			srchresult.setVisible(false);
 			BuyerP.setVisible(false);
 			mypagep.setVisible(true);
 
 			numb = countShowMyTicket();
-			System.out.println("numb" + numb);
+			
 			mytkp = new JPanel[numb];
 			tkall = new JPanel[numb];
 			cancelcb = new Checkbox[numb];
@@ -3169,8 +3019,8 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 			img = new ImageIcon[numb];
 			cimg = new Image[numb];
 			mytkimg = new JLabel[numb];
+			
 			for (int i = 0; i < numb; i++) {
-				System.out.println(i);
 				mytkp[i] = new JPanel();
 				tkall[i] = new JPanel();
 				mytkinfp[i] = new Panel();
@@ -3197,7 +3047,7 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 
 				cancelcb[i] = new Checkbox();
 				mytkimg[i] = new JLabel();
-				System.out.println("numb111" + numb);
+				
 			}
 			showtkp.setLayout(new BoxLayout(showtkp, BoxLayout.Y_AXIS));
 
@@ -3219,10 +3069,9 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 				tkseatp[i].setLayout((new FlowLayout(FlowLayout.LEFT)));
 				mytkseat[i].setText("좌석: ");
 
-				img[i] = new ImageIcon("..\\ieiProject\\image\\8마일.jpg");
+				img[i] = new ImageIcon("..\\ieiProject\\image\\드레스덴.jpg");
 				cimg[i] = img[i].getImage().getScaledInstance(100, 150, Image.SCALE_SMOOTH);
 				img[i].setImage(cimg[i]);
-				System.out.println(img[i]);
 				mytkimg[i] = new JLabel(img[i]);
 
 				tknump[i].add(mytknum[i]);
@@ -3242,14 +3091,13 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 				mytkinfp[i].add(tkdatep[i]);
 				mytkinfp[i].add(tkseatp[i]);
 
-				mytkp[i].add("Center", mytkimg[i]);
-				mytkp[i].add("East", mytkinfp[i]);
+				mytkp[i].add("West", mytkimg[i]);
+				mytkp[i].add("Center", mytkinfp[i]);
 
 				tkall[i].add(cancelcb[i]);
 				tkall[i].add(mytkp[i]);
 				showtkp.add(tkall[i]);
 			}
-			System.out.println("numb11" + numb);
 
 			t11.add(showtkp);
 			show.add("North", canceltk);
@@ -3274,9 +3122,6 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 			updateokdlg.setVisible(false);
 
 		} // 수정 완료 다이얼로그 확인버튼
-		else if (e.getSource() == couponok) { // 쿠폰번호 확인 버튼
-			coupon();
-		}
 
 		///////////////////////////////////////////////////////// 포인트
 
@@ -3287,8 +3132,7 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 		else if (e.getSource() == chargebt) { // 170519 이유미 마이페이지에서 포인트 충전할 때
 			chargepoint(strChargePoint);
 			chargedlg.setVisible(false);
-		} else if (e.getSource() == btnAddPoint) { // 170519 이유미 결제 금액 부족시 포인트
-													// 충전
+		} else if (e.getSource() == btnAddPoint) { //170519 이유미 결제 금액 부족시 포인트 충전
 			addPointDlg.setVisible(false);
 			chargedlg.setVisible(true);
 		} else if (e.getSource() == btnPayDlgPay) { // 티켓들 결제 완료시
@@ -3308,7 +3152,7 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 				sltSeatDlg.setVisible(false);
 				rsvDlg.setVisible(false);
 			}
-		}
+		} 
 		///////////////////////////////////////////////////// 공연내역 예매취소
 
 		else if (e.getSource() == canceltk) {
@@ -3347,7 +3191,6 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 			payDlg.setVisible(false);
 			sltSeatDlg.setVisible(false);
 		}
-
 		else if (e.getSource() == ltdate) { // 날짜별 순위 리스트
 			if (ltdate.getSelectedItem().equals("김선욱and드레스덴 필하모닉")) {
 				saveshowname = mv[0].getText().trim();
@@ -3385,11 +3228,6 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 				rsvDlg.setVisible(true);
 			}
 
-			/*
-			 * for (int i = 0; i < num; i++) { if (e.getSource() == mvc[i]) {
-			 * saveshowname = mv[i].getText().trim(); detshow();
-			 * rsvDlg.setVisible(true); } }
-			 */
 
 		} // 날짜별 순위 리스트
 
@@ -3511,6 +3349,8 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 				count--;
 			}
 		}
+		
+		
 
 		// 좌석 콤보 박스 수만큼 선택
 		for (int i = 0; i < 6; i++) {
@@ -3532,6 +3372,8 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 				}
 			}
 		}
+		
+		
 
 	}
 
@@ -3557,12 +3399,11 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 			sstf5.setText((String) showtableView.getValueAt(updateshowRow, 4));
 			sstf6.setText((String) showtableView.getValueAt(updateshowRow, 5));
 		}
-/////////////아이디 및 비밀번호찾기
-		if(e.getSource()==Findidtf){
-			Findidtf.setText("");
-		}
-		if(e.getSource()==Findpwtf){
-			Findpwtf.setText("");		
+		
+		else if(e.getSource() == adlgli){
+			if(e.getClickCount() == 2){//더블클릭....
+				view();
+			}
 		}
 
 	}
@@ -3582,7 +3423,7 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 			srchresult.setVisible(false);
 			BuyerP.setVisible(false);
 			mypagep.setVisible(false);
-			searchtf.setText("제목 또는 날짜(예 : 7월 4일 => 07/04 또는 7/04) 입력");
+			searchtf.setText("제목 또는 날짜 검색");
 		} // 홈버튼
 
 		for (int i = 0; i < imgcount; i++) { // 포스터 이미지 눌렀을 때
@@ -3594,7 +3435,7 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 			}
 		}
 
-		for (int i = 0; i < imgcount; i++) {	//카피 포스터 이미지 눌렀을 때
+		for (int i = 0; i < imgcount; i++) {
 			if (e.getSource() == mvc[i]) {
 				saveshowname = mv[i].getText().trim();
 				detshow();
@@ -3622,14 +3463,6 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 		if (e.getSource() == searchtf) {
 			searchtf.setText("");
 		}
-//////////아이디및 비밀번호 찾기
-		if(e.getSource()==Findidtf){
-			Findidtf.setText("사용하신 E-mail이나 전화번호를 입력하세요");
-		}
-		if(e.getSource()==Findpwtf){
-			Findpwtf.setText("사용하신ID를 입력하세요");		
-		}
-//////////////////////////
 	}
 
 	@Override
@@ -3655,5 +3488,104 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 		// TODO Auto-generated method stub
 
 	}
-
+	
+	private void view(){
+		//System.out.println((String)adlgli.getSelectedValue());
+		File dir = new File("C:\\workspace\\data");
+		String str = (String)adlgli.getSelectedValue();
+		String imsi = str.substring(0, str.indexOf(":"));
+		imsi = imsi.trim();
+		File file = new File(dir, imsi + ".myfile");
+		FreeBoard_Sub1 ess = null;
+		try{
+			FileInputStream fi = new FileInputStream(file);
+			BufferedInputStream bi = new BufferedInputStream(fi);
+			ObjectInputStream ois = new ObjectInputStream(bi);
+			ess = (FreeBoard_Sub1)ois.readObject();
+			ois.close();
+			bi.close();
+			fi.close();
+		}catch(FileNotFoundException ee){
+		}catch(IOException ee){
+		}catch(ClassNotFoundException ee){}
+		bdlgtf.setText(ess.getTitle());
+		bdlgtf1.setText(ess.getName());
+		bdlgta.setText(ess.getMemo());
+		adlg.setVisible(false);
+		int iii = ess.getSearchnum();
+		iii++;
+		ess.setSearchnum(iii);
+		try{
+			FileOutputStream fo = new FileOutputStream(file);
+			BufferedOutputStream bo = new BufferedOutputStream(fo);
+			ObjectOutputStream oos = new ObjectOutputStream(bo);
+			oos.writeObject(ess);
+			oos.close();
+			bo.close();
+			fo.close();
+		}catch(FileNotFoundException ee){
+		}catch(IOException ee){}
+		bdlg.setVisible(true);
+	}
+}
+class FreeBoard_Sub1 implements Serializable{
+	String name;
+	String title;
+	String password;
+	String memo;
+	int number;
+	String date;
+	int searchnum;
+	public FreeBoard_Sub1(String a, String b, String c, String d){
+		name = a;
+		title = b;
+		password = c;
+		memo = d;
+		//넘버를 체크한다..저장...
+		Calendar ca = Calendar.getInstance();
+		int year = (int)ca.get(Calendar.YEAR);
+		int month = (int)ca.get(Calendar.MONTH) + 1;
+		int day = (int)ca.get(Calendar.DAY_OF_MONTH);
+		date = year + "/" + month + "/" + day;
+		searchnum = 0;
+	}
+	public String getName(){
+		return name;
+	}
+	public void setTitle(String a){
+		title = a;
+	}
+	public String getTitle(){
+		return title;
+	}
+	public void setPassword(String a){
+		password = a;
+	}
+	public String getPassword(){
+		return password;
+	}
+	public void setMemo(String a){
+		memo = a;
+	}
+	public String getMemo(){
+		return memo;
+	}
+	public void setDate(String a){
+		date = a;
+	}
+	public String getDate(){
+		return date;
+	}
+	public void setSearchnum(int a){
+		searchnum = a;
+	}
+	public int getSearchnum(){
+		return searchnum;
+	}
+	public void setNumber(int a){
+		number = a;
+	}
+	public int getNumber(){
+		return number;
+	}
 }
