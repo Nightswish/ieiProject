@@ -100,7 +100,7 @@ public class MultiChatClient {
 		Socket socket=null;
 		ClientFrame cf;
 		try{
-			socket=new Socket("192.168.1.101",3000);
+			socket=new Socket("127.0.0.1",3000);   //  localhost or 127.0.0.1 -> 현재 컴퓨터
 			System.out.println("연결성공!");
 			cf = new ClientFrame(socket,userid);
 			new ReadThread(socket, cf).start();
