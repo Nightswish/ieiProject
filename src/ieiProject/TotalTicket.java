@@ -3777,133 +3777,121 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 		}
 
 		else if (e.getSource() == mypagebt) { // 마이페이지
-			coupon1.setText("");
-			coupon2.setText("");
-			coupon3.setText("");
-			coupon4.setText("");
-			tpmain.setVisible(false);
-			srchresult.setVisible(false);
-			BuyerP.setVisible(false);
-                        mypagep.setVisible(true); 	
-			
-  		if (state) {				
-				numb = countShowMyTicket();
-				mytkp = new JPanel[numb];
-				tkall = new JPanel[numb];
-				cancelcb = new Checkbox[numb];
-
-				mytkinfp = new Panel[numb];
-				tknump = new Panel[numb];
-				mytknum = new JLabel[numb];
-				mytknum1 = new JLabel[numb];
-
-				tknamep = new Panel[numb];
-				mytkname = new JLabel[numb];
-				mytkname1 = new JLabel[numb];
-
-				tklocp = new Panel[numb];
-				mytkloc = new JLabel[numb];
-				mytkloc1 = new JLabel[numb];
-
-				tkdatep = new Panel[numb];
-				mytkdate = new JLabel[numb];
-				mytkdate1 = new JLabel[numb];
-
-				tkseatp = new Panel[numb];
-				mytkseat = new JLabel[numb];
-				mytkseat1 = new JLabel[numb];
-
-				img = new ImageIcon[numb];
-				cimg = new Image[numb];
-				mytkimg = new JLabel[numb];
-				for (int i = 0; i < numb; i++) {
-					mytkp[i] = new JPanel();
-					tkall[i] = new JPanel();
-					mytkinfp[i] = new Panel();
-
-					tknump[i] = new Panel();
-					mytknum[i] = new JLabel();
-					mytknum1[i] = new JLabel();
-
-					tknamep[i] = new Panel();
-					mytkname[i] = new JLabel();
-					mytkname1[i] = new JLabel();
-
-					tklocp[i] = new Panel();
-					mytkloc[i] = new JLabel();
-					mytkloc1[i] = new JLabel();
-
-					tkdatep[i] = new Panel();
-					mytkdate[i] = new JLabel();
-					mytkdate1[i] = new JLabel();
-
-					tkseatp[i] = new Panel();
-					mytkseat[i] = new JLabel();
-					mytkseat1[i] = new JLabel();
-
-					cancelcb[i] = new Checkbox();
-					mytkimg[i] = new JLabel();
-				}
-				showtkp.setLayout(new BoxLayout(showtkp, BoxLayout.Y_AXIS));
-
-				for (int i = 0; i < numb; i++) {
-
-					mytkp[i].setLayout(new BorderLayout(3, 3));
-					mytkp[i].setBorder(new BevelBorder(BevelBorder.RAISED));
-
-					tkall[i].setLayout(new FlowLayout());
-					mytkinfp[i].setLayout((new GridLayout(5, 1)));
-					tknump[i].setLayout((new FlowLayout(FlowLayout.LEFT)));
-					mytknum[i].setText("티켓번호: ");
-					tknamep[i].setLayout((new FlowLayout(FlowLayout.LEFT)));
-					mytkname[i].setText("공연이름: ");
-					tklocp[i].setLayout((new FlowLayout(FlowLayout.LEFT)));
-					mytkloc[i].setText("장소: ");
-					tkdatep[i].setLayout((new FlowLayout(FlowLayout.LEFT)));
-					mytkdate[i].setText("날짜: ");
-					tkseatp[i].setLayout((new FlowLayout(FlowLayout.LEFT)));
-					mytkseat[i].setText("좌석: ");
-
-					img[i] = new ImageIcon("..\\ieiProject\\image\\8마일.jpg");
-					cimg[i] = img[i].getImage().getScaledInstance(100, 150, Image.SCALE_SMOOTH);
-					img[i].setImage(cimg[i]);
-					mytkimg[i] = new JLabel(img[i]);
-
-					tknump[i].add(mytknum[i]);
-					tknump[i].add(mytknum1[i]);
-					tknamep[i].add(mytkname[i]);
-					tknamep[i].add(mytkname1[i]);
-					tklocp[i].add(mytkloc[i]);
-					tklocp[i].add(mytkloc1[i]);
-					tkdatep[i].add(mytkdate[i]);
-					tkdatep[i].add(mytkdate1[i]);
-					tkseatp[i].add(mytkseat[i]);
-					tkseatp[i].add(mytkseat1[i]);
-
-					mytkinfp[i].add(tknump[i]);
-					mytkinfp[i].add(tknamep[i]);
-					mytkinfp[i].add(tklocp[i]);
-					mytkinfp[i].add(tkdatep[i]);
-					mytkinfp[i].add(tkseatp[i]);
-
-					mytkp[i].add("Center", mytkimg[i]);
-					mytkp[i].add("East", mytkinfp[i]);
-
-					tkall[i].add(cancelcb[i]);
-					tkall[i].add(mytkp[i]);
-					showtkp.add(tkall[i]);
-				}
-
-				t11.add(showtkp);
-				show.add("North", canceltk);
-				show.add("Center", showfpsc);
-
-				ShowMyTicket();// (5/17)
-				state = false;
-
-			} else {
-			}
-		} // 마이페이지
+	         showtkp.removeAll();
+	         coupon1.setText("");
+	         coupon2.setText("");
+	         coupon3.setText("");
+	         coupon4.setText("");
+	         tpmain.setVisible(false);
+	         srchresult.setVisible(false);
+	         BuyerP.setVisible(false);
+	         mypagep.setVisible(true);
+	         //if(state){
+	            numb = countShowMyTicket();
+	            mytkp= new JPanel[numb];
+	            tkall= new JPanel[numb];
+	            cancelcb = new Checkbox[numb];
+	            
+	            mytkinfp = new Panel[numb];
+	            tknump = new Panel[numb];
+	            mytknum = new JLabel[numb];
+	            mytknum1 = new JLabel[numb]; 
+	            
+	            tknamep = new Panel[numb];
+	            mytkname = new JLabel[numb];
+	            mytkname1 = new JLabel[numb];
+	            
+	            tklocp = new Panel[numb];
+	            mytkloc = new JLabel[numb];
+	            mytkloc1 = new JLabel[numb]; 
+	            
+	            tkdatep = new Panel[numb];
+	            mytkdate = new JLabel[numb];
+	            mytkdate1 = new JLabel[numb];
+	            
+	            tkseatp = new Panel[numb];
+	            mytkseat = new JLabel[numb];
+	            mytkseat1 = new JLabel[numb]; 
+	   
+	             img = new ImageIcon[numb];
+	             cimg = new Image[numb];
+	             mytkimg = new JLabel[numb]; 
+	            for (int i=0; i < numb; i++) {
+	               mytkp[i]= new JPanel();
+	               tkall[i]= new JPanel();
+	               mytkinfp[i]= new Panel();
+	               
+	               tknump[i]= new Panel();
+	               mytknum[i]= new JLabel();
+	               mytknum1[i] = new JLabel();
+	               
+	               tknamep[i]= new Panel();
+	               mytkname[i]= new JLabel();
+	               mytkname1[i] = new JLabel();
+	                
+	               tklocp[i]= new Panel();
+	               mytkloc[i]= new JLabel();
+	               mytkloc1[i] = new JLabel();
+	               
+	               tkdatep[i]= new Panel();
+	               mytkdate[i]= new JLabel();
+	               mytkdate1[i] = new JLabel();
+	               
+	               tkseatp[i]= new Panel();
+	               mytkseat[i]= new JLabel();
+	               mytkseat1[i] = new JLabel();
+	               
+	               cancelcb[i]= new Checkbox();
+	               mytkimg[i] = new JLabel();
+	            }
+	            showtkp.setLayout(new BoxLayout(showtkp, BoxLayout.Y_AXIS));
+	            
+	            for(int i=0;i<numb;i++){
+	            
+	            mytkp[i].setLayout(new BorderLayout(3,3));
+	            mytkp[i].setBorder(new BevelBorder(BevelBorder.RAISED));
+	            
+	            tkall[i].setLayout(new FlowLayout());
+	            mytkinfp[i].setLayout((new GridLayout(5,1)));
+	            tknump[i].setLayout((new FlowLayout(FlowLayout.LEFT)));
+	            mytknum[i].setText("티켓번호: ");
+	            tknamep[i].setLayout((new FlowLayout(FlowLayout.LEFT)));
+	            mytkname[i].setText("공연이름: ");
+	            tklocp[i].setLayout((new FlowLayout(FlowLayout.LEFT)));
+	            mytkloc[i].setText("장소: ");
+	            tkdatep[i].setLayout((new FlowLayout(FlowLayout.LEFT)));
+	            mytkdate[i].setText("날짜: ");
+	            tkseatp[i].setLayout((new FlowLayout(FlowLayout.LEFT)));
+	            mytkseat[i].setText("좌석: ");
+	            
+	            img[i]= new ImageIcon("..\\FinalProject\\image\\8마일.jpg");
+	            cimg[i] = img[i].getImage().getScaledInstance(100,150, Image.SCALE_SMOOTH);   
+	            img[i].setImage(cimg[i]);
+	            mytkimg[i]= new JLabel(img[i]);
+	            
+	            tknump[i].add(mytknum[i]);tknump[i].add(mytknum1[i]);
+	            tknamep[i].add(mytkname[i]);tknamep[i].add(mytkname1[i]);
+	            tklocp[i].add(mytkloc[i]);tklocp[i].add(mytkloc1[i]);
+	            tkdatep[i].add(mytkdate[i]);tkdatep[i].add(mytkdate1[i]);
+	            tkseatp[i].add(mytkseat[i]);tkseatp[i].add(mytkseat1[i]);
+	            
+	            mytkinfp[i].add(tknump[i]);mytkinfp[i].add(tknamep[i]);mytkinfp[i].add(tklocp[i]);
+	            mytkinfp[i].add(tkdatep[i]);mytkinfp[i].add(tkseatp[i]);
+	            
+	            mytkp[i].add("Center", mytkimg[i]);
+	            mytkp[i].add("East", mytkinfp[i]);
+	            
+	            tkall[i].add(cancelcb[i]); 
+	            tkall[i].add(mytkp[i]);
+	            showtkp.add(tkall[i]);
+	            }
+	   
+	            t11.add(showtkp);
+	            show.add("North", canceltk);
+	            show.add("Center", showfpsc);
+	   
+	            ShowMyTicket();//(5/17)
+	      } // 마이페이지
 
 		else if (e.getSource() == check) { // 마이페이지 수정 확인버튼
 			updateMember();
@@ -4298,7 +4286,7 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		if (e.getSource() == homebt) { // 홈버튼
-			tpmaincard.add(tp[0]);
+			tpmaincard.setVisible(true);;
 			tp[0].setVisible(true);
 			tp[1].setVisible(false);
 			tpmain.setVisible(true);
