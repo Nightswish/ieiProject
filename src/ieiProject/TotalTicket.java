@@ -3947,13 +3947,10 @@ class TotalTicket_sub12345 extends JFrame implements ActionListener, MouseListen
 		///////////////////////////////////////////////////// 공연내역 예매취소
 
 		else if (e.getSource() == canceltk) {
-			for (int i = 0; i < numb; i++) {
-				if (cancelcb[i].getState() == true) {
-					canceldlg.setSize(200, 200);
-					canceldlg.setVisible(true);
-
-				}
-			}
+			
+				canceldlg.setSize(200, 200);
+				canceldlg.setVisible(true);
+			
 		} else if (e.getSource() == cancelokbt) {
 
 			for (int i = 0; i < numb; i++) {
